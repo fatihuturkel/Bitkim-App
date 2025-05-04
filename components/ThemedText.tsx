@@ -1,4 +1,4 @@
-import { StyleSheet, Text, type TextProps } from 'react-native';
+import { Text, type TextProps, StyleSheet } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 
@@ -15,7 +15,7 @@ export function ThemedText({
   type = 'default',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'label');
 
   return (
     <Text
@@ -33,28 +33,32 @@ export function ThemedText({
   );
 }
 
+// Styles adapted towards iOS guidelines
+// Color is now handled dynamically by useThemeColor
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 17, // Standard iOS body font size
+    lineHeight: 22, // Standard iOS body line height
   },
   defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
+    fontSize: 17,
+    lineHeight: 22,
+    fontWeight: '600', // Semibold
   },
   title: {
-    fontSize: 32,
+    fontSize: 34, // Large Title size
     fontWeight: 'bold',
-    lineHeight: 32,
+    lineHeight: 41, // Large Title line height
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 20, // Title 3 size (often used as subtitle)
+    fontWeight: '600', // Semibold or Bold depending on context
+    lineHeight: 25,
   },
   link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
+    // Link color is now handled by useThemeColor with the 'link' key
+    fontSize: 17, // Match default text size
+    lineHeight: 22, // Match default text line height
+    // Removed hardcoded color: color: '#0a7ea4',
   },
 });
