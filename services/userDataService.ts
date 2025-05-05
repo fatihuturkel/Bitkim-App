@@ -33,27 +33,36 @@
  * @sideEffects Updates the state of `useUserStore` by calling `setUserData` or `clearUserData`.
  * @sideEffects Interacts with Firebase Authentication and Firestore services.
  */
+import i18n from '@/i18n';
+import useUserStore from '@/zustand/userStore'; // Adjust the path to your zustand store
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
-import useUserStore from '@/zustand/userStore'; // Adjust the path to your zustand store
 
 export const fetchAuthenticatedUserData = async (): Promise<void> => {
   const { setUserData, clearUserData } = useUserStore.getState(); // Get actions directly from the store state
 
-  const currentUser = auth.currentUser; // Get the current user from Firebase Auth
-  currentUser?.reload(); // Reload the user to ensure we have the latest data
-
-  if (!currentUser) {
-    return; // Exit if no authenticated user is found
-  }
-
-  const userId = currentUser.uid; // Get the UID directly from the auth object
-
-  // Get email and verification status directly from the authenticated user
-  const authenticatedUserEmail = currentUser.email || '';
-  const isUserVerified = currentUser.emailVerified; // Get verification status
-
   try {
+    const currentUser = auth.currentUser; // Get the current user from Firebase Auth
+    
+    // Try to reload the user to ensure we have the latest data
+    // This will fail if there's no internet connection
+    try {
+      await currentUser?.reload();
+    } catch (reloadError) {
+      // Network error during reload, throw a more specific error
+      throw new Error(i18n.t("error.network_error"));
+    }
+
+    if (!currentUser) {
+      return; // Exit if no authenticated user is found
+    }
+
+    const userId = currentUser.uid; // Get the UID directly from the auth object
+
+    // Get email and verification status directly from the authenticated user
+    const authenticatedUserEmail = currentUser.email || '';
+    const isUserVerified = currentUser.emailVerified; // Get verification status
+
     const userDocRef = doc(db, 'users', userId); // Reference to the user's document in the 'users' collection
     const userDocSnap = await getDoc(userDocRef);
 
@@ -113,9 +122,14 @@ export const fetchAuthenticatedUserData = async (): Promise<void> => {
     }
   } catch (error) {
     // Handle error (e.g., show a message, clear user data)
-    clearUserData(); // Clear data in case of an error
-    // Optionally re-throw the error if the caller needs to handle it
-    // throw error;
+    //clearUserData(); // Clear data in case of an error
+    
+    // Re-throw the error with a descriptive message for better error handling
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch user data: ${error.message}`);
+    } else {
+      throw new Error('Failed to fetch user data: Unknown error');
+    }
   }
 };
 

@@ -21,21 +21,22 @@
  */
 
 // External libraries
-import React, { useLayoutEffect, useState, useCallback } from "react";
-import { Button, ScrollView, StyleSheet } from "react-native";
-import { useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import { Button, ScrollView, StyleSheet } from "react-native";
 
 // Internal state management
 import useUserStore from "@/zustand/userStore";
 
 // Internal components
-import ToastNotification from "@/components/ToastNotification";
-import AppleSection from "@/components/Section";
 import ListItem from "@/components/ListItem";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import ToastNotification from "@/components/ToastNotification";
 import { auth } from "@/firebaseConfig";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import i18n from "@/i18n";
 import { sendEmailVerification } from "firebase/auth";
 
 export default function VerifyEmailPage() {
@@ -76,9 +77,9 @@ export default function VerifyEmailPage() {
             setIsLoading(true);
             try {
                 await sendEmailVerification(auth.currentUser);
-                showToast('Verification email sent successfully. Please check your inbox.', 'success');
+                showToast(i18n.t('success.verification_email_sent'), 'success');
             } catch (error) {
-                showToast('Failed to send verification email. Please try again.', 'error');
+                showToast(i18n.t('error.generic_error'), 'error');
             } finally {
                 setIsLoading(false);
             }
@@ -97,7 +98,7 @@ export default function VerifyEmailPage() {
                 return (
                     <Button
                         onPress={handleEmailVerification}
-                        title={isLoading ? "Sending" : "Send"}
+                        title={isLoading ? i18n.t('common.sending') : i18n.t('common.send')}
                         disabled={isLoading} // Disable only if loading
                     />
                 );
@@ -129,7 +130,7 @@ export default function VerifyEmailPage() {
                         onPress={() => { }}
                     />
                     <ListItem
-                        label={isEmailVerified ? "Verified" : "Not Verified"}
+                        label={isEmailVerified ? i18n.t('auth.verified') : i18n.t('auth.not_verified')}
                         icon={isEmailVerified
                             ? <Ionicons name="checkmark-circle-outline" />
                             : <Ionicons name="close-circle-outline" />}

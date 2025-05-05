@@ -21,21 +21,21 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="security/(signOut)/index" // Corresponds to signout.tsx
         options={{
-          title: 'Sign Out',
+          title: i18n.t('auth.signout'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />
       <Stack.Screen
         name="security/(emailVerification)/index" // Corresponds to emailverification.tsx
         options={{
-          title: 'Email Verification',
+          title: i18n.t('auth.email_verification'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />
       <Stack.Screen
         name="security/(changePassword)/index" // Corresponds to changepassword.tsx
         options={{
-          title: 'Change Password',
+          title: i18n.t('auth.change_password'),
           headerBackButtonDisplayMode: 'generic',
           // headerRight is set dynamically within the component itself
         }}
@@ -44,7 +44,7 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="security/(resetPassword)/index" // Corresponds to resetpassword.tsx
         options={{
-          title: 'Reset Password',
+          title: i18n.t('auth.reset_password'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />
@@ -52,7 +52,7 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="security/(changeEmail)/index" // Corresponds to twofactor.tsx
         options={{
-          title: 'Change Email',
+          title: i18n.t('auth.change_email'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />

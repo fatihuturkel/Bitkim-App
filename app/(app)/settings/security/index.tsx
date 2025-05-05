@@ -1,17 +1,18 @@
 // External libraries
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
 // Internal state management
 import useUserStore from "@/zustand/userStore";
 
 // Internal components
-import ToastNotification from "@/components/ToastNotification";
-import AppleSection from "@/components/Section";
 import ListItem from "@/components/ListItem";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
+import ToastNotification from "@/components/ToastNotification";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import i18n from "@/i18n";
 import { fetchAuthenticatedUserData } from "@/services/userDataService";
 
 export default function Settings() {
@@ -46,8 +47,7 @@ export default function Settings() {
     try {
       await fetchAuthenticatedUserData();
     } catch (error) {
-      showToast("Failed to refresh user data", "error");
-    } finally {
+      showToast(i18n.t("error.user_data_refresh_error"), "error");
       setRefreshing(false);
     }
   };
@@ -72,25 +72,25 @@ export default function Settings() {
           />
         }
       >
-        <AppleSection title="Security Information">
+        <AppleSection title={i18n.t('security.title')}>
           <ListItem
-            label="Email"
+            label={i18n.t('auth.email')}
             value={email}
             onPress={() => router.push('/(app)/settings/security/(changeEmail)')}
           />
           <ListItem
-            label="E-Mail Verification"
-            value={isEmailVerified ? "Verified" : "Not Verified"}
+            label={i18n.t('auth.email_verification')}
+            value={isEmailVerified ? i18n.t('auth.verified') : i18n.t('auth.not_verified')}
             valueStyle={{ color: isEmailVerified ? systemGreen : systemRed }}
             onPress={() => { if (!isEmailVerified) router.push('/(app)/settings/security/(emailVerification)'); }}
             accessoryType={isEmailVerified ? "none" : "chevron"}
           />
           <ListItem
-            label="Change Password"
+            label={i18n.t('auth.change_password')}
             onPress={() => router.push('/(app)/settings/security/(changePassword)')}
           />
           <ListItem
-            label="Reset Password"
+            label={i18n.t('auth.reset_password')}
             onPress={() => router.push('/(app)/settings/security/(resetPassword)')}
           />
           <ListItem

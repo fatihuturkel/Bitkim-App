@@ -1,18 +1,18 @@
 // External libraries
-import React, { useLayoutEffect, useState } from "react";
-import { ScrollView, StyleSheet, Button, Alert } from "react-native";
-import { KeyboardAvoidingView, Platform } from "react-native";
 import { useNavigation } from "expo-router";
+import React, { useLayoutEffect, useState } from "react";
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 
 // Internal state management
 import useUserStore from "@/zustand/userStore";
 
 // Internal components
-import ToastNotification from "@/components/ToastNotification";
-import AppleSection from "@/components/Section";
 import FormInputField from "@/components/Input";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
+import ToastNotification from "@/components/ToastNotification";
 import { auth } from "@/firebaseConfig";
+import i18n from "@/i18n";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function ResetPassword() {
@@ -54,10 +54,10 @@ export default function ResetPassword() {
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      setEmailError('Email address is required');
+      setEmailError(i18n.t('error.email_required'));
       isValid = false;
     } else if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError(i18n.t('error.invalid_email'));
       isValid = false;
     } else {
       setEmailError('');
@@ -76,7 +76,7 @@ export default function ResetPassword() {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      showToast('Password reset email sent. Check your inbox.', 'success');
+      showToast(i18n.t('success.password_reset_email_sent'), 'success');
 
     } catch (error: any) {
       // Handle specific Firebase errors
@@ -85,15 +85,15 @@ export default function ResetPassword() {
           // Even if the user is not found, we can still show a success message for security reasons
           // Wait for 1 seconds to mimic sending time for security
           await new Promise(resolve => setTimeout(resolve, 1000));
-          showToast('Password reset email sent. Check your inbox.', 'success');
+          showToast(i18n.t('success.password_reset_email_sent'), 'success');
           break;
         case 'auth/invalid-email':
-          setEmailError('The email address is not valid.');
-          showToast('The email address is not valid.', 'error');
+          setEmailError(i18n.t('error.invalid_email'));
+          showToast(i18n.t('error.invalid_email'), 'error');
           break;
         default:
-          setEmailError('An unexpected error occurred. Please try again.');
-          showToast('An unexpected error occurred. Please try again.', 'error');
+          setEmailError(i18n.t('error.generic_error'));
+          showToast(i18n.t('error.generic_error'), 'error');
       }
     } finally {
       setIsLoading(false);
@@ -106,7 +106,7 @@ export default function ResetPassword() {
       headerRight: () => (
         <Button
           onPress={handleSubmit}
-          title={isLoading ? "Sending" : "Send"}
+          title={isLoading ? i18n.t('common.sending') : i18n.t('common.send')}
           disabled={isLoading}
         />
       ),
@@ -130,7 +130,7 @@ export default function ResetPassword() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <AppleSection title="Reset Password" footer="Enter the email address associated with your account to receive a password reset link.">
+          <AppleSection title={i18n.t('reset_password.title')} footer={i18n.t('reset_password.description')}>
             <FormInputField
               formItems={[
                 {
@@ -140,7 +140,7 @@ export default function ResetPassword() {
                     setEmail(value);
                     if (emailError) setEmailError(''); // Clear error on change
                   },
-                  placeholder: 'Enter your email address',
+                  placeholder: i18n.t('auth.email_placeholder'),
                   showClearButton: true,
                   secureTextEntry: false,
                   errorMessage: emailError,

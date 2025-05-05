@@ -34,20 +34,21 @@
  */
 
 // External libraries
-import React, { useLayoutEffect, useState, useCallback } from "react";
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 import { useNavigation } from "expo-router";
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 
 // Internal state management
 import useUserStore from "@/zustand/userStore";
 
 // Internal components
-import ToastNotification from "@/components/ToastNotification";
-import AppleSection from "@/components/Section";
 import FormInputField from "@/components/Input";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
-import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, sendPasswordResetEmail, updateEmail } from "firebase/auth";
+import ToastNotification from "@/components/ToastNotification";
 import { auth } from "@/firebaseConfig";
+import i18n from "@/i18n";
+import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, sendPasswordResetEmail, updateEmail } from "firebase/auth";
 
 export default function ChangeEmailPage() {
   // For header options
@@ -91,12 +92,12 @@ export default function ChangeEmailPage() {
 
     // Validate new email
     if (!newEmail) {
-      setNewEmailError('New email is required');
+      setNewEmailError(i18n.t('error.new_email_required'));
       isValid = false;
     } else {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(newEmail)) {
-        setNewEmailError('Please enter a valid email address.');
+        setNewEmailError(i18n.t('error.invalid_email'));
         isValid = false;
       } else {
         setNewEmailError('');
@@ -105,10 +106,10 @@ export default function ChangeEmailPage() {
 
     // Validate current password
     if (!currentPassword) {
-      setCurrentPasswordError('Current password is required');
+      setCurrentPasswordError(i18n.t('error.password_required'));
       isValid = false;
     } else if (currentPassword.length < 6) {
-      setCurrentPasswordError('Password must be at least 6 characters long.');
+      setCurrentPasswordError(i18n.t('error.password_length'));
       isValid = false;
     } else {
       setCurrentPasswordError('');
@@ -129,13 +130,13 @@ export default function ChangeEmailPage() {
     }
 
     if (!authenticatedUser) {
-      showToast('User not authenticated. Please log in again.', 'error');
+      showToast(i18n.t('error.user_not_authenticated'), 'error');
       setIsLoading(false); // Ensure loading is set to false
       return;
     }
 
     if (authenticatedUser.email === newEmail) {
-      showToast('New email address is the same as the current one.', 'info');
+      showToast(i18n.t('error.new_email_same_as_current'), 'info');
       setIsLoading(false); // Ensure loading is set to false
       return;
     }
@@ -159,7 +160,7 @@ export default function ChangeEmailPage() {
       // send verification email to the new address
       await sendEmailVerification(authenticatedUser);
 
-      showToast('Email changed successfully! A verification email has been sent.', 'success');
+      showToast(i18n.t('success.email_changed'), 'success');
 
       // clear password field after successful change
       setNewEmail('');
@@ -174,12 +175,12 @@ export default function ChangeEmailPage() {
         case 'auth/invalid-credential':
         case 'auth/wrong-password':
           errorMessage = 'Incorrect current password. Please try again.';
-          setCurrentPasswordError('Incorrect current password.');
+          setCurrentPasswordError(i18n.t('error.wrong_password'));
           break;
 
         case 'auth/invalid-email':
           errorMessage = 'Invalid new email address format.';
-          setNewEmailError('Invalid email address format.');
+          setNewEmailError(i18n.t('error.invalid_email'));
           break;
 
         case 'auth/email-already-in-use':
@@ -191,7 +192,7 @@ export default function ChangeEmailPage() {
             // Do nothing, we already handled the error above
           }
 
-          showToast('Email changed successfully! A verification email has been sent.', 'success');
+          showToast(i18n.t('success.email_updated'), 'success');
           break;
 
         case 'auth/requires-recent-login':
@@ -202,7 +203,7 @@ export default function ChangeEmailPage() {
 
         default:
           // Generic error for other cases
-          setCurrentPasswordError('An error occurred. Please try again.');
+          setCurrentPasswordError(i18n.t('error.generic_error'));
           break;
       }
 
@@ -230,10 +231,10 @@ export default function ChangeEmailPage() {
   // useLayoutEffect to set header options
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Change Email',
+      headerTitle: i18n.t('auth.change_email'),
       headerRight: () => (
         <Button
-          title={isLoading ? 'Saving' : 'Save'}
+          title={isLoading ? i18n.t('common.saving') : i18n.t('common.save')}
           onPress={handleChangeEmail}
           disabled={isLoading} // Disable button while loading
         />
@@ -261,7 +262,7 @@ export default function ChangeEmailPage() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <AppleSection title="New Email Address" >
+          <AppleSection title={i18n.t('auth.new_email_address')} >
             <FormInputField
               formItems={
                 [
@@ -272,7 +273,7 @@ export default function ChangeEmailPage() {
                       setNewEmail(value);
                       if (newEmailError) setNewEmailError(''); // Clear error message on input change
                     },
-                    placeholder: 'Enter your new email address',
+                    placeholder: i18n.t('auth.enter_new_email'),
                     keyboardType: 'email-address',
                     maxLength: 50,
                     multiline: false,
@@ -285,7 +286,7 @@ export default function ChangeEmailPage() {
                 ]}
             />
           </AppleSection>
-          <AppleSection title="Current Password" footer="Enter your current password to confirm the change.">
+          <AppleSection title={i18n.t('auth.current_password')} footer={i18n.t('auth.current_password_footer')}>
             <FormInputField
               formItems={
                 [
@@ -296,7 +297,7 @@ export default function ChangeEmailPage() {
                       setCurrentPassword(value);
                       if (currentPasswordError) setCurrentPasswordError(''); // Clear error message on input change
                     },
-                    placeholder: 'Enter your current password',
+                    placeholder: i18n.t('auth.enter_current_password'),
                     keyboardType: 'default',
                     maxLength: 50,
                     multiline: false,

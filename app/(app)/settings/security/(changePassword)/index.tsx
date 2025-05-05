@@ -25,19 +25,18 @@
  */
 
 // External libraries
-import { ScrollView, StyleSheet } from "react-native";
 import { router, useNavigation } from "expo-router"; // Import useNavigation
-import { KeyboardAvoidingView } from "react-native";
-import { Platform, Button } from "react-native";
-import { useState, useLayoutEffect } from "react"; // Import useEffect or useLayoutEffect
+import { useLayoutEffect, useState } from "react"; // Import useEffect or useLayoutEffect
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 
 // Internal components
-import AppleSection from "@/components/Section";
 import FormInputField from "@/components/Input";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
-import { auth } from "@/firebaseConfig";
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import ToastNotification from "@/components/ToastNotification"; // Import your Toast component
+import { auth } from "@/firebaseConfig";
+import i18n from "@/i18n";
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 const MIN_PASSWORD_LENGTH = 6; // Define constant for minimum password length
 
 export default function ChangePassword() {
@@ -83,7 +82,7 @@ export default function ChangePassword() {
 
     // Validate current password
     if (!currentPassword) {
-      setCurrentPasswordError('Current password is required');
+      setCurrentPasswordError(i18n.t('error.password_required'));
       isValid = false;
     } else {
       setCurrentPasswordError('');
@@ -91,10 +90,10 @@ export default function ChangePassword() {
 
     // Validate new password
     if (!newPassword) {
-      setNewPasswordError('New password is required');
+      setNewPasswordError(i18n.t('error.password_required'));
       isValid = false;
     } else if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      setNewPasswordError(`New password must be at least ${MIN_PASSWORD_LENGTH} characters long`);
+      setNewPasswordError(i18n.t(`error.password_length`));
       isValid = false;
     } else {
       setNewPasswordError('');
@@ -102,10 +101,10 @@ export default function ChangePassword() {
 
     // Validate confirm password
     if (!confirmNewPassword) {
-      setConfirmPasswordError('Confirm password is required');
+      setConfirmPasswordError(i18n.t('error.password_required'));
       isValid = false;
     } else if (confirmNewPassword !== newPassword) {
-      setConfirmPasswordError('Passwords do not match');
+      setConfirmPasswordError(i18n.t('error.password_mismatch'));
       isValid = false;
     } else {
       setConfirmPasswordError('');
@@ -142,7 +141,7 @@ export default function ChangePassword() {
       // Update the password
       await updatePassword(currentUser, newPassword);
 
-      showToast('Password changed successfully', 'success');
+      showToast(i18n.t('success.password_changed'), 'success');
 
       // Navigate to the previous screen after a delay
       setTimeout(() => {
@@ -153,11 +152,11 @@ export default function ChangePassword() {
       // Handle errors
       switch (error.code) {
         case 'auth/wrong-password':
-          setCurrentPasswordError('The current password is incorrect');
+          setCurrentPasswordError(i18n.t('error.incorrect_password'));
           break;
 
         case 'auth/weak-password':
-          setNewPasswordError('The new password is too weak');
+          setNewPasswordError(i18n.t('error.weak_password'));
           break;
 
         case 'auth/requires-recent-login':
@@ -178,7 +177,7 @@ export default function ChangePassword() {
       headerRight: () => (
         <Button
           onPress={handleSubmit}
-          title={isLoading ? "Changing" : "Change"}
+          title={isLoading ? i18n.t('common.changing') : i18n.t('common.change')}
           disabled={isLoading}
         />
       ),
@@ -204,7 +203,7 @@ export default function ChangePassword() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <AppleSection title="Current Password">
+          <AppleSection title={i18n.t('auth.current_password')}>
             <FormInputField
               formItems={[
                 {
@@ -214,7 +213,7 @@ export default function ChangePassword() {
                     setCurrentPassword(value);
                     if (currentPasswordError) setCurrentPasswordError('');
                   },
-                  placeholder: 'Enter current password',
+                  placeholder: i18n.t('auth.enter_current_password'),
                   showClearButton: true,
                   secureTextEntry: true,
                   errorMessage: currentPasswordError,
@@ -224,7 +223,7 @@ export default function ChangePassword() {
             />
           </AppleSection>
 
-          <AppleSection title={`New Password`} footer={`Your password must be at least ${MIN_PASSWORD_LENGTH} characters long.`}>
+          <AppleSection title={`New Password`} footer={i18n.t('error.password_length')}>
             <FormInputField
               formItems={[
                 {
@@ -234,7 +233,7 @@ export default function ChangePassword() {
                     setNewPassword(value);
                     if (newPasswordError) setNewPasswordError('');
                   },
-                  placeholder: 'Enter new password',
+                  placeholder: i18n.t('auth.enter_new_password'),
                   showClearButton: true,
                   secureTextEntry: true,
                   errorMessage: newPasswordError,
@@ -247,7 +246,7 @@ export default function ChangePassword() {
                     setConfirmNewPassword(value);
                     if (confirmPasswordError) setConfirmPasswordError('');
                   },
-                  placeholder: 'Confirm new password',
+                  placeholder: i18n.t('auth.enter_new_password'),
                   showClearButton: true,
                   secureTextEntry: true,
                   errorMessage: confirmPasswordError,

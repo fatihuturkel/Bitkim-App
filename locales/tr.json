@@ -1,7 +1,14 @@
 {
   "common": {
     "welcome": "Hoş Geldiniz!",
-    "loading": "Yükleniyor..."
+    "loading": "Yükleniyor...",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "cancel": "İptal",
+    "change": "Değiştir",
+    "changing": "Değiştiriliyor...",
+    "send": "Gönder",
+    "sending": "Gönderiliyor..."
   },
   "navigation": {
     "home": "Ana Sayfa",
@@ -16,19 +23,55 @@
     "logout": "Çıkış Yap",
     "register": "Kayıt Ol",
     "forgot_password": "Şifrenizi mi Unuttunuz?",
-    "reset_password": "Şifreyi Sıfırla"
+    "reset_password": "Şifreyi Sıfırla",
+    "email": "E-posta",
+    "password": "Şifre",
+    "new_email_address": "Yeni E-posta Adresi",
+    "current_password": "Mevcut Şifre",
+    "enter_new_email": "Yeni e-posta adresinizi girin",
+    "enter_current_password": "Mevcut şifrenizi girin",
+    "current_password_footer": "Değişikliği onaylamak için mevcut şifrenizi girin.",
+    "change_email": "E-posta Değiştir",
+    "enter_new_password": "Yeni şifrenizi girin",
+    "verified": "Doğrulandı",
+    "not_verified": "Doğrulanmadı",
+    "email_verification": "E-posta Doğrulama",
+    "change_password": "Şifre Değiştir"
   },
   "error": {
     "email_required": "E-posta gereklidir",
+    "new_email_required": "Yeni e-posta gereklidir",
     "password_required": "Şifre gereklidir", 
     "invalid_email": "Geçersiz e-posta formatı",
     "password_length": "Şifre en az 6 karakter uzunluğunda olmalıdır",
     "generic_error": "Beklenmeyen bir hata oluştu",
-    "user_data_refresh_error": "Kullanıcı bilgileri yenilenemedi"
+    "user_data_refresh_error": "Kullanıcı bilgileri yenilenemedi",
+    "user_not_authenticated": "Kullanıcı kimliği doğrulanmadı, lütfen giriş yapın",
+    "new_email_same_as_current": "Yeni e-posta adresi mevcut adres ile aynı.",
+    "email_already_in_use": "E-posta adresi zaten kullanımda",
+    "wrong_password": "Yanlış şifre",
+    "password_mismatch": "Şifreler eşleşmiyor",
+    "weak_password": "Şifre çok zayıf",
+    "network_error": "Ağ hatası, lütfen bağlantınızı kontrol edin"
   },
   "security": {
     "title": "Güvenlik",
     "description": "Güvenlik ayarlarınızı yönetin",
     "two_factor_authentication": "İki Faktörlü Kimlik Doğrulama"
+  },
+  "success": {
+    "email_changed": "E-posta başarıyla değiştirildi! Doğrulama e-postası gönderildi.",
+    "password_changed": "Şifre başarıyla değiştirildi",
+    "two_factor_enabled": "İki Faktörlü Kimlik Doğrulama etkinleştirildi",
+    "two_factor_disabled": "İki Faktörlü Kimlik Doğrulama devre dışı bırakıldı",
+    "verification_email_sent": "Doğrulama e-postası gönderildi.",
+    "password_reset_email_sent": "Şifre sıfırlama e-postası gönderildi."
+  },
+  "reset_password": {
+    "title": "Şifre Sıfırlama",
+    "description": "Şifre sıfırlama bağlantısı almak için e-postanızı girin.",
+    "email_placeholder": "E-posta adresinizi girin",
+    "send_reset_link": "Sıfırlama Bağlantısı Gönder",
+    "reset_link_sent": "Sıfırlama bağlantısı e-postanıza gönderildi."
   }
 }
