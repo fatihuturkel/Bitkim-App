@@ -1,0 +1,34 @@
+{
+  "common": {
+    "welcome": "Hoş Geldiniz!",
+    "loading": "Yükleniyor..."
+  },
+  "navigation": {
+    "home": "Ana Sayfa",
+    "explore": "Keşfet",
+    "settings": "Ayarlar",
+    "security": "Güvenlik"
+  },
+  "auth": {
+    "email_placeholder": "E-posta adresinizi girin",
+    "password_placeholder": "Şifrenizi girin",
+    "login": "Giriş Yap",
+    "logout": "Çıkış Yap",
+    "register": "Kayıt Ol",
+    "forgot_password": "Şifrenizi mi Unuttunuz?",
+    "reset_password": "Şifreyi Sıfırla"
+  },
+  "error": {
+    "email_required": "E-posta gereklidir",
+    "password_required": "Şifre gereklidir", 
+    "invalid_email": "Geçersiz e-posta formatı",
+    "password_length": "Şifre en az 6 karakter uzunluğunda olmalıdır",
+    "generic_error": "Beklenmeyen bir hata oluştu",
+    "user_data_refresh_error": "Kullanıcı bilgileri yenilenemedi"
+  },
+  "security": {
+    "title": "Güvenlik",
+    "description": "Güvenlik ayarlarınızı yönetin",
+    "two_factor_authentication": "İki Faktörlü Kimlik Doğrulama"
+  }
+}

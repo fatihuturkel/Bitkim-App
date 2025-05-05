@@ -1,17 +1,11 @@
-import { Redirect, Stack, Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, Text } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-import { BlurView } from 'expo-blur';
-import { StyleSheet } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import i18n from '@/i18n';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { BlurView } from 'expo-blur';
+import { Redirect, Tabs } from 'expo-router';
+import React from 'react';
+import { Platform, StyleSheet, Text } from 'react-native';
 import { useSession } from '../../context/AuthContext';
 
 // Helper component for cross-platform icons
@@ -29,7 +23,7 @@ export default function TabLayout() {
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text>{i18n.t('common.loading')}</Text>;
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -74,7 +68,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: i18n.t('navigation.home'),
           tabBarIcon: ({ color }) => (
             <TabIcon
               ionIcon="home-sharp"
@@ -86,7 +80,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
+          title: i18n.t('navigation.explore'),
           tabBarIcon: ({ color }) => (
             <TabIcon
               ionIcon="search"
@@ -98,7 +92,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: i18n.t('navigation.settings'),
           tabBarIcon: ({ color }) => (
             <TabIcon
               ionIcon="settings-sharp"

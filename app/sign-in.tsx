@@ -1,13 +1,13 @@
-import { StyleSheet, Platform, View, Alert, Text, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native'; // Import View, Alert, Text, ActivityIndicator
 import Button from '@/components/Button';
-import { ThemedView } from '@/components/ThemedView';
-import { useThemeColor } from '@/hooks/useThemeColor';
-import AppleSection from '@/components/Section';
 import FormInputField from '@/components/Input'; // Import AppleGroupedForm
-import { useState, useEffect } from 'react'; // Import useEffect
+import AppleSection from '@/components/Section';
+import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/context/AuthContext'; // Import useSession
+import { useThemeColor } from '@/hooks/useThemeColor';
+import i18n from '@/i18n';
 import { useRouter } from 'expo-router'; // Import useRouter for navigation
-
+import { useEffect, useState } from 'react'; // Import useEffect
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from 'react-native'; // Import View, Alert, Text, ActivityIndicator
 
 export default function Login() {
   // Define state variables for theme colors
@@ -131,7 +131,7 @@ export default function Login() {
                     if (emailErrorMessage) setEmailErrorMessage(''); // Clear error message on input change
                     if (loginError) setLoginError(''); // Clear general login error
                   },
-                  placeholder: 'Enter your email',
+                  placeholder: i18n.t('auth.email_placeholder'),
                   keyboardType: 'email-address',
                   maxLength: 50,
                   multiline: false,
@@ -147,7 +147,7 @@ export default function Login() {
                     if (passwordErrorMessage) setPasswordErrorMessage(''); // Clear error message on input change
                     if (loginError) setLoginError(''); // Clear general login error
                   },
-                  placeholder: 'Enter your password',
+                  placeholder: i18n.t('auth.password_placeholder'),
                   keyboardType: 'default',
                   maxLength: 50,
                   multiline: false,
@@ -166,7 +166,7 @@ export default function Login() {
 
           <AppleSection>
             <Button
-              title="Login"
+              title={isLoading ? i18n.t('common.loading') : i18n.t('auth.login')}
               onPress={handleLoginPress}
               disabled={isLoading} // Disable button while loading (use context isLoading)
             />

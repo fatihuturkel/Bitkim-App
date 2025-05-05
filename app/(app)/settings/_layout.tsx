@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { Stack } from 'expo-router';
 import React from 'react';
 
@@ -7,13 +8,13 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Settings',
+          title: i18n.t('navigation.settings'),
         }}
       />
       <Stack.Screen
         name="security/index" // Corresponds to security.tsx
         options={{
-          title: 'Security',
+          title: i18n.t('navigation.security'),
           headerBackButtonDisplayMode: 'default', // Too keep 'Settings' in the header
         }}
       />

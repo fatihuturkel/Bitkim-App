@@ -1,19 +1,20 @@
 // External libraries
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
-import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
 
 // Internal state management
 import useUserStore from "@/zustand/userStore";
 
 // Internal components
-import ToastNotification from "@/components/ToastNotification";
-import AppleSection from "@/components/Section";
 import ListItem from "@/components/ListItem";
 import UserProfileListItem from "@/components/ListProfilePicItem";
+import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
+import ToastNotification from "@/components/ToastNotification";
+import i18n from "@/i18n";
 import { fetchAuthenticatedUserData } from "@/services/userDataService";
 
 
@@ -51,7 +52,7 @@ export default function Settings() {
       try {
         await fetchAuthenticatedUserData();
       } catch (error) {
-        showToast("Failed to refresh user data", "error");
+        showToast(i18n.t("error.user_data_refresh_error"), "error");
       } finally {
         setRefreshing(false);
       }
@@ -86,7 +87,7 @@ export default function Settings() {
           />
         </AppleSection>
 
-        <AppleSection title="Settings">
+        <AppleSection title={i18n.t("navigation.settings")}>
           <ListItem
             label="Activity"
             onPress={() => console.log("Activity pressed")}
