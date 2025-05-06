@@ -1,14 +1,14 @@
-import React, { isValidElement, cloneElement } from 'react';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Ionicons
+import React, { cloneElement, isValidElement } from 'react';
 import {
   StyleSheet,
-  View,
   Text,
-  TouchableOpacity,
-  ViewStyle,
   TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Ionicons
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 
 // Define standard iOS padding and colors
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   label: {
     paddingVertical: IOS_VERTICAL_PADDING_ITEM, // Apply standard vertical padding to label
-    marginLeft: IOS_HORIZONTAL_PADDING, // Standard left padding for label
+    //marginLeft: IOS_HORIZONTAL_PADDING, // Standard left padding for label
     fontSize: IOS_LABEL_FONT_SIZE,
     fontWeight: '400', // Regular weight
     flex: 1, // Allow label to take available space

@@ -52,7 +52,8 @@
     "wrong_password": "Wrong password",
     "password_mismatch": "Passwords do not match",
     "weak_password": "Password is too weak",
-    "network_error": "Network error, please check your connection"
+    "network_error": "Network error, please check your connection",
+    "preferences_update_failed": "Failed to update preferences"
   },
   "security": {
     "title": "Security",
@@ -73,5 +74,11 @@
     "email_placeholder": "Enter your email address",
     "send_reset_link": "Send Reset Link",
     "reset_link_sent": "Reset link sent to your email."
+  },
+  "preference": {
+    "title": "Preferences",
+    "description": "Manage your app preferences",
+    "language": "Language",
+    "theme": "Theme"
   }
 }

@@ -95,7 +95,7 @@ export default function Settings() {
           />
           <ListItem
             label="Preferences"
-            onPress={() => console.log("Preferences pressed")}
+            onPress={() => router.push('/(app)/settings/preferences')}
             icon={<Ionicons name="options-outline" />}
           />
           <ListItem

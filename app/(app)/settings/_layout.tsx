@@ -50,13 +50,22 @@ export default function SettingsLayout() {
       />
 
       <Stack.Screen
-        name="security/(changeEmail)/index" // Corresponds to twofactor.tsx
+        name="security/(changeEmail)/index" // Corresponds to changeemail.tsx
         options={{
           title: i18n.t('auth.change_email'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />
+
+      <Stack.Screen
+        name="preferences/index" // Corresponds to preferences.tsx
+        options={{
+          title: i18n.t('preference.title'),
+          headerBackButtonDisplayMode: 'generic',
+        }}
+      />
       {/* Add other nested setting screens here */}
+      
     </Stack>
   );
 }
