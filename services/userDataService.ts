@@ -35,10 +35,11 @@
  */
 import i18n from '@/i18n';
 import useUserStore from '@/zustand/userStore'; // Adjust the path to your zustand store
+import * as Localization from 'expo-localization';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
 
-export const fetchAuthenticatedUserData = async (): Promise<void> => {
+export const retrieveCurrentUserData = async (): Promise<void> => {
   const { setUserData, clearUserData } = useUserStore.getState(); // Get actions directly from the store state
 
   try {
@@ -90,9 +91,30 @@ export const fetchAuthenticatedUserData = async (): Promise<void> => {
         createdAtISOString = new Date().toISOString();
       }
 
+      // Extract preferences from Firestore data with defaults if not present
+      const preferences = {
+        notifications: userDocumentData.preferences?.notifications ?? true,
+        darkMode: userDocumentData.preferences?.darkMode ?? false,
+        language: userDocumentData.preferences?.language ?? 
+          (userDocumentData.language || Localization.getLocales()[0]?.languageCode || 'en'),
+      };
+
+      // Extract address if available
+      const address = userDocumentData.address ? {
+        street: userDocumentData.address.street || '',
+        country: userDocumentData.address.country || '',
+        postalCode: userDocumentData.address.postalCode || '',
+      } : undefined;
+
+      // Extract activity data if available
+      const activity = {
+        lastActive: userDocumentData.activity?.lastActive || new Date().toISOString(),
+        totalScans: userDocumentData.activity?.totalScans || 0,
+        favoriteLeaves: userDocumentData.activity?.favoriteLeaves || [],
+      };
+
       setUserData({
         // Map Firestore data to your Zustand state structure
-        // Make sure to handle potential undefined fields and data types (e.g., Timestamps)
         firstName: userDocumentData.firstName || '',
         lastName: userDocumentData.lastName || '',
         phoneNumber: userDocumentData.phoneNumber || '',
@@ -100,24 +122,19 @@ export const fetchAuthenticatedUserData = async (): Promise<void> => {
         isEmailVerified: isUserVerified, // Set the verified status from the authenticated user
         createdAt: createdAtISOString, // Use the processed ISO string
         bio: userDocumentData.bio || '',
-        // Add any other fields from your Firestore document
+        loggedIn: true, // Set logged in status
+        preferences, // Include preferences from Firestore
+        address, // Include address data if available
+        activity, // Include activity data
       });
     } else {
       // Handle case where user document doesn't exist (e.g., first login)
-      // Option 1: Clear data
-      // clearUserData();
-      // Option 2: Set some defaults based on auth user (if available outside this function)
-      // setUserData({ email: authUserEmail }); // You'd need to pass the email in
-      // Option 3: Set minimal default data
       setUserData({
-        // Set default values for your state if no document is found
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
+        // Set authentication data and leave other fields empty or default
         email: authenticatedUserEmail, // Use email from auth
         isEmailVerified: isUserVerified, // Use verified status from auth
-        createdAt: new Date().toISOString(),
-        bio: '',
+        loggedIn: true,
+        // Keep default preferences from the store
       });
     }
   } catch (error) {

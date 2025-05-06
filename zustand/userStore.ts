@@ -1,3 +1,4 @@
+import * as Localization from 'expo-localization';
 import { create } from 'zustand';
 
 interface User {
@@ -56,7 +57,7 @@ const useUserStore = create<UserState>((set) => ({
   preferences: {
     notifications: true,
     darkMode: false,
-    language: 'en', // Default language
+    language: Localization.getLocales()[0]?.languageCode || 'en',
   },
   activity: {
     lastActive: new Date().toISOString(),

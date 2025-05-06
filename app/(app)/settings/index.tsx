@@ -1,21 +1,15 @@
-// External libraries
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
-
-
-// Internal state management
-import useUserStore from "@/zustand/userStore";
-
-// Internal components
 import ListItem from "@/components/ListItem";
 import UserProfileListItem from "@/components/ListProfilePicItem";
 import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
 import ToastNotification from "@/components/ToastNotification";
 import i18n from "@/i18n";
-import { fetchAuthenticatedUserData } from "@/services/userDataService";
+import { retrieveCurrentUserData } from "@/services/userDataService";
+import useUserStore from "@/zustand/userStore";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
 
 export default function Settings() {
@@ -50,7 +44,7 @@ export default function Settings() {
       setRefreshing(true);
   
       try {
-        await fetchAuthenticatedUserData();
+        await retrieveCurrentUserData();
       } catch (error) {
         showToast(i18n.t("error.user_data_refresh_error"), "error");
       } finally {

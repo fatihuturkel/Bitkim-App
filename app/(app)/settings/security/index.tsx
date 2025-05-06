@@ -1,19 +1,14 @@
-// External libraries
-import { router } from "expo-router";
-import { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet } from "react-native";
-
-// Internal state management
-import useUserStore from "@/zustand/userStore";
-
-// Internal components
 import ListItem from "@/components/ListItem";
 import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
 import ToastNotification from "@/components/ToastNotification";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import i18n from "@/i18n";
-import { fetchAuthenticatedUserData } from "@/services/userDataService";
+import { retrieveCurrentUserData } from "@/services/userDataService";
+import useUserStore from "@/zustand/userStore";
+import { router } from "expo-router";
+import { useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 
 export default function Settings() {
   const systemGreen = useThemeColor({}, 'systemGreen'); // For success messages
@@ -45,7 +40,7 @@ export default function Settings() {
     setRefreshing(true);
 
     try {
-      await fetchAuthenticatedUserData();
+      await retrieveCurrentUserData();
     } catch (error) {
       showToast(i18n.t("error.user_data_refresh_error"), "error");
       setRefreshing(false);

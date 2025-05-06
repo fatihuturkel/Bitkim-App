@@ -1,8 +1,8 @@
+import useUserStore from '@/zustand/userStore'; // Import the zustand store hook
+import { signOut as firebaseSignOut, onAuthStateChanged, signInWithEmailAndPassword, type User } from 'firebase/auth';
 import React, { createContext, useContext, useEffect, useState, type PropsWithChildren } from 'react';
 import { auth } from '../firebaseConfig';
-import { onAuthStateChanged, signOut as firebaseSignOut, type User, signInWithEmailAndPassword } from 'firebase/auth';
-import { fetchAuthenticatedUserData } from '../services/userDataService'; // Import the fetch function
-import useUserStore from '@/zustand/userStore'; // Import the zustand store hook
+import { retrieveCurrentUserData } from '../services/userDataService'; // Import the fetch function
 
 // Define the shape of the context value
 interface AuthContextType {
@@ -43,7 +43,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         // User is signed in, fetch their data using the service
         console.log("Auth state changed: User signed in", currentUser.uid);
         try {
-          await fetchAuthenticatedUserData();
+          await retrieveCurrentUserData();
         } catch (error) {
           // Handle potential errors from fetchUserData if it re-throws them
           console.error("Error during post-auth data fetch:", error);
