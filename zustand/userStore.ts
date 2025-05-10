@@ -11,7 +11,7 @@ interface User {
   isEmailVerified?: boolean;
 }
 
-interface UserPreferences {
+export interface UserPreferences {
   notifications: boolean;
   darkMode: boolean;
   language: string;

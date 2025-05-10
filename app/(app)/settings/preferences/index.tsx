@@ -3,6 +3,7 @@ import ListItem from '@/components/ListItem';
 import ListSwitch from '@/components/ListSwitch';
 import AppleSection from '@/components/Section';
 import { ThemedView } from '@/components/ThemedView';
+import { updateUserPreferences } from '@/services/userDataService';
 import useUserStore from '@/zustand/userStore'; // Import the hook
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -25,8 +26,6 @@ const languageOptions = [
 export default function Preferences() {
   // Use optional chaining for safer access
   const userLanguagePreference = useUserStore((state) => state.preferences?.language); // Get the user's language preference from Zustand store
-  // Get the update function from the store
-  const updatePreferences = useUserStore((state) => state.updatePreferences);
 
   // Example state and function for the switch (replace with actual state management)
   const [isEnabled, setIsEnabled] = useState(false);
@@ -39,6 +38,17 @@ export default function Preferences() {
 
   // Find the display label for the selected language code
   const selectedLanguageLabel = languageOptions.find(lang => lang.value === selectedLanguageCode)?.label || 'English';
+
+  const handleLanguageChange = async (languageCode: string) => {
+    try {
+      await updateUserPreferences({ language: languageCode });
+      // The local store is already updated in the function if Firebase update succeeds
+      setShowLanguageModal(false);
+    } catch (error) {
+      // Handle error (show error message to user)
+      console.error("Failed to update language preference:", error);
+    }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -84,8 +94,7 @@ export default function Preferences() {
         selectedOption={selectedLanguageCode} // Pass the code
         onSelect={(value) => { // Receive the code
           setSelectedLanguageCode(value);
-          updatePreferences({ language: value }); // Update the Zustand store
-          setShowLanguageModal(false); // Close modal after selection
+          handleLanguageChange(value); // Update the Firebase store
         }}
       />
     </ThemedView>

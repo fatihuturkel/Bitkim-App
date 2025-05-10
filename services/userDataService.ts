@@ -36,7 +36,7 @@
 import i18n from '@/i18n';
 import useUserStore from '@/zustand/userStore'; // Adjust the path to your zustand store
 import * as Localization from 'expo-localization';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
 
 export const retrieveCurrentUserData = async (): Promise<void> => {
@@ -152,3 +152,66 @@ export const retrieveCurrentUserData = async (): Promise<void> => {
 
 // You can add other data fetching/manipulation functions related to user data here
 // e.g., updateUserData, createUserDocument, etc.
+
+/**
+ * Updates a user's preferences in both Firebase Firestore and the local Zustand store.
+ * 
+ * This function takes a partial UserPreferences object containing one or more preference 
+ * settings to update. It first attempts to update the preferences in Firestore.
+ * If successful, it then updates the local Zustand store with the same preferences.
+ * 
+ * @async
+ * @function updateUserPreferences
+ * @param {Partial<UserPreferences>} updatedPreferences - The preference settings to update
+ * @returns {Promise<void>} A promise that resolves when the update is complete
+ * @throws {Error} If there's no authenticated user, or if the Firestore update fails
+ */
+import { UserPreferences } from '@/zustand/userStore'; // Make sure to import the interface
+export const updateUserPreferences = async (updatedPreferences: Partial<UserPreferences>): Promise<void> => {
+  const currentUser = auth.currentUser;
+  const { updatePreferences } = useUserStore.getState(); // Get the update function from the store
+
+  if (!currentUser) {
+    throw new Error(i18n.t("error.not_authenticated"));
+  }
+
+  try {
+    const userId = currentUser.uid;
+    const userDocRef = doc(db, 'users', userId);
+    
+    // First, get the current document to ensure it exists
+    const userDocSnap = await getDoc(userDocRef);
+    
+    if (userDocSnap.exists()) {
+      // Update only the specified preferences in Firestore
+      // Using updateDoc to update only the specific preference fields
+      await updateDoc(userDocRef, {
+        'preferences': {
+          // Merge with existing preferences
+          ...(userDocSnap.data().preferences || {}),
+          ...updatedPreferences
+        }
+      });
+      
+      // On successful Firestore update, update the local Zustand store
+      updatePreferences(updatedPreferences);
+    } else {
+      // If user document doesn't exist yet, create it with the preferences
+      await setDoc(userDocRef, {
+        preferences: updatedPreferences,
+        createdAt: new Date().toISOString()
+      });
+      
+      // Update the local store
+      updatePreferences(updatedPreferences);
+    }
+  } catch (error) {
+    // Handle error appropriately
+    console.error("Failed to update preferences:", error);
+    if (error instanceof Error) {
+      throw new Error(`${i18n.t("error.update_preferences")}: ${error.message}`);
+    } else {
+      throw new Error(i18n.t("error.update_preferences"));
+    }
+  }
+};
