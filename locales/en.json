@@ -14,7 +14,11 @@
     "home": "Home",
     "explore": "Explore",
     "settings": "Settings",
-    "security": "Security"
+    "security": "Security",
+    "activity": "Activity",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "scan": "Scan"
   },
   "auth": {
     "email_placeholder": "Enter your email address",
@@ -36,7 +40,8 @@
     "verified": "Verified",
     "not_verified": "Not Verified",
     "email_verification": "Email Verification",
-    "change_password": "Change Password"
+    "change_password": "Change Password",
+    "sign_out": "Sign Out"
   },
   "error": {
     "email_required": "Email is required",
@@ -79,6 +84,8 @@
     "title": "Preferences",
     "description": "Manage your app preferences",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "select_language": "Select Language",
+    "app_language": "App Language"
   }
 }

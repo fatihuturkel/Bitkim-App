@@ -83,17 +83,17 @@ export default function Settings() {
 
         <AppleSection title={i18n.t("navigation.settings")}>
           <ListItem
-            label="Activity"
+            label={i18n.t("navigation.activity")}
             onPress={() => console.log("Activity pressed")}
             icon={<Ionicons name="analytics-outline" />}
           />
           <ListItem
-            label="Preferences"
+            label={i18n.t("navigation.preferences")}
             onPress={() => router.push('/(app)/settings/preferences')}
             icon={<Ionicons name="options-outline" />}
           />
           <ListItem
-            label="Security"
+            label={i18n.t("navigation.security")}
             onPress={() => router.push('/(app)/settings/security')}
             isLast={true}
             icon={<Ionicons name="shield-outline" />}

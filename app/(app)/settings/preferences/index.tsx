@@ -1,8 +1,8 @@
 import CustomModal from '@/components/CustomModal';
 import ListItem from '@/components/ListItem';
-import ListSwitch from '@/components/ListSwitch';
 import AppleSection from '@/components/Section';
 import { ThemedView } from '@/components/ThemedView';
+import i18n from '@/i18n';
 import { updateUserPreferences } from '@/services/userDataService';
 import useUserStore from '@/zustand/userStore'; // Import the hook
 import { useState } from 'react';
@@ -10,9 +10,9 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 // Define language options with labels and codes
 const languageOptions = [
-  { label: 'English', value: 'en' },
   { label: 'Türkçe', value: 'tr' },
-  { label: 'Español', value: 'es' },
+  { label: 'English', value: 'en' },
+  /*{ label: 'Español', value: 'es' },
   { label: 'Français', value: 'fr' },
   { label: 'Deutsch', value: 'de' },
   { label: '日本語', value: 'ja' },
@@ -20,7 +20,7 @@ const languageOptions = [
   { label: 'Русский', value: 'ru' },
   { label: 'Italiano', value: 'it' },
   { label: 'Português', value: 'pt' },
-  { label: '한국어', value: 'ko' },
+  { label: '한국어', value: 'ko' },*/
 ];
 
 export default function Preferences() {
@@ -57,6 +57,7 @@ export default function Preferences() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
+        {/* 
         <AppleSection title="Display">
           <ListSwitch
             label="Example Switch"
@@ -71,11 +72,12 @@ export default function Preferences() {
             disabled={false}
             isLast={true}
           />
-        </AppleSection>
+        </AppleSection> 
+        */}
 
-        <AppleSection title="Language">
+        <AppleSection title={i18n.t("preference.language")}>
           <ListItem
-            label="App Language"
+            label={i18n.t("preference.app_language")}
             value={selectedLanguageLabel} // Display the label
             disabled={false}
             isLast={true}
@@ -89,7 +91,7 @@ export default function Preferences() {
       <CustomModal
         visible={showLanguageModal}
         onClose={() => setShowLanguageModal(false)}
-        title="Select Language"
+        title={i18n.t("preference.select_language")}
         options={languageOptions} // Pass the array of objects
         selectedOption={selectedLanguageCode} // Pass the code
         onSelect={(value) => { // Receive the code

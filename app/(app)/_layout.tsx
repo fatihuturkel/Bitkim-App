@@ -80,7 +80,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: i18n.t('navigation.explore'),
+          title: i18n.t('navigation.scan'),
           tabBarIcon: ({ color }) => (
             <TabIcon
               ionIcon="search"

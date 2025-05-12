@@ -89,7 +89,7 @@ export default function Settings() {
             onPress={() => router.push('/(app)/settings/security/(resetPassword)')}
           />
           <ListItem
-            label="Sign Out"
+            label={i18n.t('auth.sign_out')}
             onPress={() => router.push('/(app)/settings/security/(signOut)')}
             isLast={true}
           />
