@@ -64,6 +64,15 @@ export default function SettingsLayout() {
           headerBackButtonDisplayMode: 'generic',
         }}
       />
+
+        <Stack.Screen
+        name = "profile/index" // Corresponds to profile.tsx
+        options={{
+          title: i18n.t('navigation.profile'),
+          headerBackButtonDisplayMode: 'generic',
+        }} />
+
+
       {/* Add other nested setting screens here */}
       
     </Stack>

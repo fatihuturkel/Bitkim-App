@@ -33,22 +33,17 @@
  * @returns {React.ReactElement} The rendered change email screen.
  */
 
-// External libraries
-import { useNavigation } from "expo-router";
-import React, { useCallback, useLayoutEffect, useState } from "react";
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
-
-// Internal state management
-import useUserStore from "@/zustand/userStore";
-
-// Internal components
 import FormInputField from "@/components/Input";
 import AppleSection from "@/components/Section";
 import { ThemedView } from "@/components/ThemedView";
 import ToastNotification from "@/components/ToastNotification";
 import { auth } from "@/firebaseConfig";
 import i18n from "@/i18n";
+import useUserStore from "@/zustand/userStore";
+import { useNavigation } from "expo-router";
 import { EmailAuthProvider, reauthenticateWithCredential, sendEmailVerification, sendPasswordResetEmail, updateEmail } from "firebase/auth";
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
 
 export default function ChangeEmailPage() {
   // For header options

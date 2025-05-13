@@ -67,7 +67,7 @@ export default function Settings() {
           />
         }
       >
-        <AppleSection title={i18n.t('security.title')}>
+        <AppleSection title={i18n.t('security.title_email_and_password')}>
           <ListItem
             label={i18n.t('auth.email')}
             value={email}

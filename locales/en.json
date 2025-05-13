@@ -46,7 +46,7 @@
   "error": {
     "email_required": "Email is required",
     "new_email_required": "New email is required",
-    "password_required": "Password is required", 
+    "password_required": "Password is required",
     "invalid_email": "Enter a valid email address.",
     "password_length": "Password must be at least 6 characters long",
     "generic_error": "An unexpected error occurred",
@@ -58,12 +58,23 @@
     "password_mismatch": "Passwords do not match",
     "weak_password": "Password is too weak",
     "network_error": "Network error, please check your connection",
-    "preferences_update_failed": "Failed to update preferences"
+    "preferences_update_failed": "Failed to update preferences",
+    "first_name_required": "First name is required",
+    "last_name_required": "Last name is required",
+    "no_changes_detected": "No changes detected",
+    "failed_to_update_name": "Failed to update name",
+    "not_authenticated": "User not authenticated, please log in",
+    "update_preferences": "Failed to update preferences",
+    "update_profile_name": "Failed to update profile name",
+    "phone_number_required": "Phone number is required.",
+    "phone_number_invalid_format": "Phone number format is invalid. Expected 10 digits.",
+    "update_phone_number": "Failed to update phone number"
   },
   "security": {
     "title": "Security",
     "description": "Manage your security settings",
-    "two_factor_authentication": "Two-Factor Authentication"
+    "two_factor_authentication": "Two-Factor Authentication",
+    "title_email_and_password": "Email and Password"
   },
   "success": {
     "email_changed": "Email changed successfully! A verification email has been sent.",
@@ -71,7 +82,8 @@
     "two_factor_enabled": "Two-Factor Authentication enabled",
     "two_factor_disabled": "Two-Factor Authentication disabled",
     "verification_email_sent": "Verification email sent.",
-    "password_reset_email_sent": "Password reset email sent."
+    "password_reset_email_sent": "Password reset email sent.",
+    "name_updated": "Name updated successfully"
   },
   "reset_password": {
     "title": "Reset Password",
@@ -87,5 +99,21 @@
     "theme": "Theme",
     "select_language": "Select Language",
     "app_language": "App Language"
+  },
+  "profile": {
+    "title": "Profile",
+    "personal_info": "Personal Information",
+    "user_profile": "User Profile",
+    "email": "Email",
+    "bio": "Bio",
+    "profile_picture": "Profile Picture",
+    "update_profile": "Update Profile",
+    "profile_updated": "Profile updated successfully",
+    "name": "Profile Name",
+    "phone_number": "Phone Number",
+    "first_name_placeholder": "Enter your first name",
+    "last_name_placeholder": "Enter your last name",
+    "edit_name_title": "Edit Name",
+    "edit_name": "Edit Name"
   }
 }

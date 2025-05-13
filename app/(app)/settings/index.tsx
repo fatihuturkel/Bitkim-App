@@ -75,7 +75,7 @@ export default function Settings() {
         <AppleSection>
           <UserProfileListItem
             headline={userName || "User Name"}
-            onPress={() => console.log("User Profile pressed")}
+            onPress={() => router.push('/(app)/settings/profile')}
             subheading={email || "User Email"}
             isLast={true}
           />
