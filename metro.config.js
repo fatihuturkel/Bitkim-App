@@ -5,8 +5,8 @@ const { getDefaultConfig } = require('expo/metro-config');
 const config = getDefaultConfig(__dirname);
 
 config.resolver.resolveRequest = (context, moduleImport, platform) => {
-  // Always import the ESM version of all `@firebase/*` packages
-  if (moduleImport.startsWith('@firebase/')) {
+  // Only apply ESM import for Firebase packages and exclude web platform
+  if (moduleImport.startsWith('@firebase/') && platform !== 'web') {
     return context.resolveRequest(
       {
         ...context,
