@@ -23,7 +23,7 @@ export default function Profile() {
         contentContainerStyle={{ padding: 16 }}
         keyboardShouldPersistTaps="handled"
       >
-        <AppleSection title={i18n.t('profile.user_profile')}>
+        <AppleSection title={i18n.t('profile.profile_section_title')}>
           <ListItem
             label={i18n.t('profile.name')}
             value={`${firstName} ${lastName}`}

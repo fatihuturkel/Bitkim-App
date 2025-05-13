@@ -143,7 +143,7 @@ export default function EditName() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <AppleSection title={i18n.t('profile.edit_name')}>
+          <AppleSection title={i18n.t('profile.name_and_surname_section_title')}>
             <FormInputField
               formItems={[
                 {

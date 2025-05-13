@@ -1,4 +1,5 @@
 {
+  "_comment": "This is a Turkish translation file. Section titles are in uppercase.",
   "common": {
     "welcome": "Hoş Geldiniz!",
     "loading": "Yükleniyor...",
@@ -58,12 +59,23 @@
     "password_mismatch": "Şifreler eşleşmiyor",
     "weak_password": "Şifre çok zayıf",
     "network_error": "Ağ hatası, lütfen bağlantınızı kontrol edin",
-    "preferences_update_failed": "Tercihler güncellenemedi"
+    "preferences_update_failed": "Tercihler güncellenemedi",
+    "first_name_required": "Ad gereklidir",
+    "last_name_required": "Soyad gereklidir",
+    "no_changes_detected": "Değişiklik tespit edilmedi",
+    "failed_to_update_name": "Ad güncellenemedi",
+    "not_authenticated": "Kullanıcı kimliği doğrulanmadı, lütfen giriş yapın",
+    "update_preferences": "Tercihler güncellenemedi",
+    "update_profile_name": "Profil adı güncellenemedi",
+    "phone_number_required": "Telefon numarası gereklidir.",
+    "phone_number_invalid_format": "Telefon numarası biçimi geçersiz. 10 hane bekleniyor.",
+    "update_phone_number": "Telefon numarası güncellenemedi"
   },
   "security": {
     "title": "Güvenlik",
     "description": "Güvenlik ayarlarınızı yönetin",
-    "two_factor_authentication": "İki Faktörlü Kimlik Doğrulama"
+    "two_factor_authentication": "İki Faktörlü Kimlik Doğrulama",
+    "email_and_password_section_title": "E-POSTA VE ŞİFRE",
   },
   "success": {
     "email_changed": "E-posta başarıyla değiştirildi! Doğrulama e-postası gönderildi.",
@@ -71,7 +83,8 @@
     "two_factor_enabled": "İki Faktörlü Kimlik Doğrulama etkinleştirildi",
     "two_factor_disabled": "İki Faktörlü Kimlik Doğrulama devre dışı bırakıldı",
     "verification_email_sent": "Doğrulama e-postası gönderildi.",
-    "password_reset_email_sent": "Şifre sıfırlama e-postası gönderildi."
+    "password_reset_email_sent": "Şifre sıfırlama e-postası gönderildi.",
+    "name_updated": "Ad başarıyla güncellendi"
   },
   "reset_password": {
     "title": "Şifre Sıfırlama",
@@ -83,10 +96,27 @@
   "preference": {
     "title": "Tercihler",
     "description": "Uygulama tercihlerinizi yönetin",
-    "language": "DİL",
+    "language_section_title": "DİL",
     "theme": "Tema",
     "select_language": "Dil Seçin",
     "app_language": "Uygulama Dili"
-
+  },
+  "profile": {
+    "title": "Profil",
+    "personal_info": "Kişisel Bilgiler",
+    "user_profile": "Kullanıcı Profili",
+    "email": "E-posta",
+    "bio": "Biyografi",
+    "profile_picture": "Profil Resmi",
+    "update_profile": "Profili Güncelle",
+    "profile_updated": "Profil başarıyla güncellendi",
+    "name": "Profil Adı",
+    "phone_number": "Telefon Numarası",
+    "first_name_placeholder": "Adınızı girin",
+    "last_name_placeholder": "Soyadınızı girin",
+    "edit_name_title": "Adı Düzenle",
+    "edit_name": "Adı Düzenle",
+    "name_and_surname_section_title": "AD VE SOYAD",
+    "profile_section_title" : "PROFİL BİLGİLERİ"
   }
 }

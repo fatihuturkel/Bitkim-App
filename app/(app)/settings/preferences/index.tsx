@@ -75,7 +75,7 @@ export default function Preferences() {
         </AppleSection> 
         */}
 
-        <AppleSection title={i18n.t("preference.language")}>
+        <AppleSection title={i18n.t("preference.language_section_title")}>
           <ListItem
             label={i18n.t("preference.app_language")}
             value={selectedLanguageLabel} // Display the label

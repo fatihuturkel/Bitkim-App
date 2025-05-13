@@ -74,7 +74,7 @@
     "title": "Security",
     "description": "Manage your security settings",
     "two_factor_authentication": "Two-Factor Authentication",
-    "title_email_and_password": "Email and Password"
+    "email_and_password_section_title": "Email and Password"
   },
   "success": {
     "email_changed": "Email changed successfully! A verification email has been sent.",
@@ -95,7 +95,7 @@
   "preference": {
     "title": "Preferences",
     "description": "Manage your app preferences",
-    "language": "Language",
+    "language_section_title": "Language",
     "theme": "Theme",
     "select_language": "Select Language",
     "app_language": "App Language"
@@ -114,6 +114,8 @@
     "first_name_placeholder": "Enter your first name",
     "last_name_placeholder": "Enter your last name",
     "edit_name_title": "Edit Name",
-    "edit_name": "Edit Name"
+    "edit_name": "Edit Name",
+    "name_and_surname_section_title": "Name and Surname",
+    "profile_section_title": "Profile Details"
   }
 }
