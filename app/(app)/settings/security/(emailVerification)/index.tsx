@@ -109,18 +109,18 @@ export default function VerifyEmailPage() {
 
     return (
         <ThemedView style={styles.container}>
+
+            <ToastNotification
+                message={toastMessage}
+                type={toastType}
+                visible={toastVisible}
+                onDismiss={dismissToast}
+            />
             <ScrollView
                 style={styles.scrollView}
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
             >
-                <ToastNotification
-                    message={toastMessage}
-                    type={toastType}
-                    visible={toastVisible}
-                    onDismiss={dismissToast}
-                />
-
                 <AppleSection title={i18n.t('auth.email_verification_status_section_title')}>
                     <ListItem
                         label={activeUserEmail}
