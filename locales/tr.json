@@ -32,17 +32,19 @@
     "email": "E-posta",
     "password": "Şifre",
     "new_email_address": "Yeni E-posta Adresi",
-    "current_password": "Mevcut Şifre",
+    "current_password_section_title": "MEVCUT ŞİFRE",
     "enter_new_email": "Yeni e-posta adresinizi girin",
     "enter_current_password": "Mevcut şifrenizi girin",
     "current_password_footer": "Değişikliği onaylamak için mevcut şifrenizi girin.",
     "change_email": "E-posta Değiştir",
     "enter_new_password": "Yeni şifrenizi girin",
+    "new_password_section_title": "YENİ ŞİFRE",
     "verified": "Doğrulandı",
     "not_verified": "Doğrulanmadı",
     "email_verification": "E-posta Doğrulama",
     "change_password": "Şifre Değiştir",
-    "sign_out": "Çıkış Yap"
+    "sign_out": "Çıkış Yap",
+    "email_verification_status_section_title": "E-POSTA DOĞRULAMA DURUMU"
   },
   "error": {
     "email_required": "E-posta gereklidir",
@@ -75,7 +77,7 @@
     "title": "Güvenlik",
     "description": "Güvenlik ayarlarınızı yönetin",
     "two_factor_authentication": "İki Faktörlü Kimlik Doğrulama",
-    "email_and_password_section_title": "E-POSTA VE ŞİFRE",
+    "email_and_password_section_title": "E-POSTA VE ŞİFRE"
   },
   "success": {
     "email_changed": "E-posta başarıyla değiştirildi! Doğrulama e-postası gönderildi.",

@@ -281,7 +281,7 @@ export default function ChangeEmailPage() {
                 ]}
             />
           </AppleSection>
-          <AppleSection title={i18n.t('auth.current_password')} footer={i18n.t('auth.current_password_footer')}>
+          <AppleSection title={i18n.t('auth.current_password_section_title')} footer={i18n.t('auth.current_password_footer')}>
             <FormInputField
               formItems={
                 [

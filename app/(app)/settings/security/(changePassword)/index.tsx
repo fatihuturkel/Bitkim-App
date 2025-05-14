@@ -203,7 +203,7 @@ export default function ChangePassword() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <AppleSection title={i18n.t('auth.current_password')}>
+          <AppleSection title={i18n.t('auth.current_password_section_title')}>
             <FormInputField
               formItems={[
                 {
@@ -223,7 +223,7 @@ export default function ChangePassword() {
             />
           </AppleSection>
 
-          <AppleSection title={`New Password`} footer={i18n.t('error.password_length')}>
+          <AppleSection title={i18n.t('auth.new_password_section_title')} footer={i18n.t('error.password_length')}>
             <FormInputField
               formItems={[
                 {

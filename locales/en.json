@@ -31,17 +31,19 @@
     "email": "Email",
     "password": "Password",
     "new_email_address": "New Email Address",
-    "current_password": "Current Password",
+    "current_password_section_title": "Current Password",
     "enter_new_email": "Enter new email address",
     "enter_current_password": "Enter current password",
     "current_password_footer": "Enter current password to confirm the change.",
     "change_email": "Change Email",
     "enter_new_password": "Enter new password",
+    "new_password_section_title": "New Password",
     "verified": "Verified",
     "not_verified": "Not Verified",
     "email_verification": "Email Verification",
     "change_password": "Change Password",
-    "sign_out": "Sign Out"
+    "sign_out": "Sign Out",
+    "email_verification_status_section_title": "Email Verification Status"
   },
   "error": {
     "email_required": "Email is required",

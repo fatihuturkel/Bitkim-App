@@ -104,7 +104,7 @@ const ListItem: React.FC<ListItemProps> = ({
   const isFunctionallyDisabled = disabled || !onPress;
 
   // Calculate the left padding/margin needed for alignment based on icon presence
-  const contentLeftOffset = icon ? ICON_CONTAINER_WIDTH + ICON_LABEL_SPACING * 2  : IOS_HORIZONTAL_PADDING * 2;
+  const contentLeftOffset = icon ? ICON_CONTAINER_WIDTH + ICON_LABEL_SPACING * 2  : IOS_HORIZONTAL_PADDING * 1;
   const disabledOpacityStyle = isFunctionallyDisabled ? styles.contentDisabled : {}; // Style for content opacity
 
   // Prepare the icon element, applying color and size

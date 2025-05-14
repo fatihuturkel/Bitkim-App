@@ -121,7 +121,7 @@ export default function VerifyEmailPage() {
                     onDismiss={dismissToast}
                 />
 
-                <AppleSection title="Verification Status" >
+                <AppleSection title={i18n.t('auth.email_verification_status_section_title')}>
                     <ListItem
                         label={activeUserEmail}
                         icon={<Ionicons name="mail-outline" />}
