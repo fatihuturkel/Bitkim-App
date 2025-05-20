@@ -101,7 +101,18 @@ export default function TabLayout() {
           ),
         }}
       />
-
+      <Tabs.Screen
+        name="chat/index"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="legacyanalyze/index"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
