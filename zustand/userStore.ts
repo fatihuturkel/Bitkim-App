@@ -15,6 +15,7 @@ export interface UserPreferences {
   notifications: boolean;
   darkMode: boolean;
   language: string;
+  scanHistory: boolean; // Add this line
 }
 
 interface UserActivity {
@@ -58,6 +59,7 @@ const useUserStore = create<UserState>((set) => ({
     notifications: true,
     darkMode: false,
     language: Localization.getLocales()[0]?.languageCode || 'en',
+    scanHistory: true, // Add this line with a default value
   },
   activity: {
     lastActive: new Date().toISOString(),
@@ -100,6 +102,7 @@ const useUserStore = create<UserState>((set) => ({
         notifications: true,
         darkMode: false,
         language: 'en',
+        scanHistory: true, // Add this line
       },
       bio: undefined,
       activity: {

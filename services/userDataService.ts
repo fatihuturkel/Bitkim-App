@@ -97,6 +97,7 @@ export const retrieveCurrentUserData = async (): Promise<void> => {
         darkMode: userDocumentData.preferences?.darkMode ?? false,
         language: userDocumentData.preferences?.language ?? 
           (userDocumentData.language || Localization.getLocales()[0]?.languageCode || 'en'),
+        scanHistory: userDocumentData.preferences?.scanHistory ?? true, // Add this line
       };
 
       // Extract address if available

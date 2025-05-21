@@ -2,6 +2,7 @@ import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 import { auth, db } from '../firebaseConfig'; // Import Firestore and auth
 import { PredictionData, UriPrediction, useImagePredictionStore } from '../zustand/imagePredictionData';
 import { useImageSelectionStore } from '../zustand/imageSelectionStore';
+import useUserStore from '../zustand/userStore'; // Import the user store
 
 const API_URL = "https://plant-disease-api-2859171769.europe-west1.run.app/predict/";
 
@@ -68,6 +69,13 @@ const savePredictionToFirestore = async (uriPrediction: UriPrediction): Promise<
   const currentUser = auth.currentUser;
   if (!currentUser) {
     console.warn("User not authenticated. Cannot save prediction to Firestore.");
+    return;
+  }
+
+  // Check scan history preference
+  const scanHistoryEnabled = useUserStore.getState().preferences?.scanHistory;
+  if (scanHistoryEnabled === false) { // Explicitly check for false
+    console.log("Scan history is disabled. Skipping save to Firestore.");
     return;
   }
 
