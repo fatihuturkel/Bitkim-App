@@ -78,9 +78,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="scan"
+        name="analyze"
         options={{
-          title: i18n.t('navigation.scan'),
+          title: i18n.t('navigation.analyze'),
           tabBarIcon: ({ color }) => (
             <TabIcon
               ionIcon="search"
@@ -99,18 +99,6 @@ export default function TabLayout() {
               color={color}
             />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="chat/index"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="legacyanalyze/index"
-        options={{
-          href: null,
         }}
       />
     </Tabs>

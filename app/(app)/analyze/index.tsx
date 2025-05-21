@@ -92,12 +92,12 @@ export default function Scan() {
                 <View style={styles.rightButtonsContainer}>
                   <Button
                     title="AI Chat"
-                    onPress={() => router.push('/(app)/chat')}
+                    onPress={() => router.push('/analyze/chat')}
                     role="normal"
                   />
                   <Button
                     title="Legacy Analyzer"
-                    onPress={() => router.push('/(app)/legacyanalyze')}
+                    onPress={() => router.push('/analyze/legacyanalyze')}
                     role="normal"
                     style={styles.legacyAnalyzerButton}
                   />
@@ -122,12 +122,12 @@ export default function Scan() {
                 <AppleStyleCard
                   style={styles.expandedCard}
                   title="Legacy Analyze"
-                  onPress={() => router.push('/(app)/legacyanalyze')}
+                  onPress={() => router.push('/analyze/legacyanalyze')}
                 />
                 <AppleStyleCard
                   style={styles.expandedCard}
                   title="AI Chat"
-                  onPress={() => router.push('/(app)/chat')}
+                  onPress={() => router.push('/analyze/chat')}
                 />
               </View>
             </>

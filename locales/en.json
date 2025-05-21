@@ -18,7 +18,9 @@
     "activity": "Activity",
     "profile": "Profile",
     "preferences": "Preferences",
-    "scan": "Scan"
+    "analyze": "Analyze",
+    "legacyAnalyze": "Legacy Analyze",
+    "aichat": "AI Chat"
   },
   "auth": {
     "email_placeholder": "Enter your email address",

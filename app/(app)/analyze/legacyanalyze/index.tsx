@@ -1,6 +1,9 @@
 import ResultList, { ResultItem } from '@/components/ResultList';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { uploadImagesForPrediction } from '@/services/imageService';
+import { UriPrediction, useImagePredictionStore } from '@/zustand/imagePredictionData';
+import { useImageSelectionStore } from '@/zustand/imageSelectionStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native'; // Added import
 import React, { useEffect, useState } from 'react';
@@ -16,9 +19,6 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Import the hook
-import { uploadImagesForPrediction } from '../../../services/imageService';
-import { UriPrediction, useImagePredictionStore } from '../../../zustand/imagePredictionData';
-import { useImageSelectionStore } from '../../../zustand/imageSelectionStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 
