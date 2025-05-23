@@ -1,12 +1,14 @@
 import AppleStyleCard from "@/components/AppleStyleCard";
 import Button from "@/components/Button";
 import { ThemedView } from "@/components/ThemedView";
+import { useImageSelectionStore } from '@/zustand/imageSelectionStore'; // Import the store
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from "react";
-import { Alert, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-export default function Scan() {
-  const [firstImageUri, setFirstImageUri] = useState<string | null>(null);
-  const [selectedImageCount, setSelectedImageCount] = useState<number>(0);
+import { router } from "expo-router";
+import React from "react"; // Removed useState
+import { Alert, Dimensions, FlatList, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+export default function Analyze() {
+  const { selectedImageUris, setSelectedImageUris, addImageUri, clearSelectedImages: clearStoreImages } = useImageSelectionStore();
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -20,8 +22,8 @@ export default function Scan() {
     console.log(result);
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setFirstImageUri(result.assets[0].uri);
-      setSelectedImageCount(result.assets.length);
+      const uris = result.assets.map(asset => asset.uri);
+      setSelectedImageUris(uris);
     }
   };
 
@@ -49,32 +51,37 @@ export default function Scan() {
     console.log(result);
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setFirstImageUri(result.assets[0].uri);
-      setSelectedImageCount(1); // Camera usually returns one image
+      setSelectedImageUris([result.assets[0].uri]);
     }
   };
 
   const clearImages = () => {
-    setFirstImageUri(null);
-    setSelectedImageCount(0);
+    clearStoreImages();
   };
 
-  const handleNavigate = () => {
-    // Navigation logic will be implemented later
-    Alert.alert("Navigate", "Navigation will be implemented here.");
-  };
+  const selectedImageCount = selectedImageUris.length;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemedView style={styles.container}>
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {firstImageUri && selectedImageCount > 0 ? (
+          {selectedImageUris.length > 0 ? (
             <View style={styles.imagePreviewContainer}>
-              <Image source={{ uri: firstImageUri }} style={styles.previewImage} />
+              <FlatList
+                data={selectedImageUris}
+                renderItem={({ item }) => (
+                  <Image source={{ uri: item }} style={styles.previewImage} />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                style={styles.imageList}
+              />
               <Text style={styles.imageCountText}>Selected Images: {selectedImageCount}</Text>
               <View style={styles.buttonContainer}>
                 <Button
@@ -82,12 +89,19 @@ export default function Scan() {
                   onPress={clearImages}
                   role="destructive"
                 />
-                <Button
-                  title="Navigate"
-                  onPress={handleNavigate}
-                  role="normal"
-                />
-
+                <View style={styles.rightButtonsContainer}>
+                  <Button
+                    title="AI Chat"
+                    onPress={() => router.push('/analyze/chat')}
+                    role="normal"
+                  />
+                  <Button
+                    title="Legacy Analyzer"
+                    onPress={() => router.push('/analyze/legacyanalyze')}
+                    role="normal"
+                    style={styles.legacyAnalyzerButton}
+                  />
+                </View>
               </View>
             </View>
           ) : (
@@ -107,20 +121,20 @@ export default function Scan() {
               <View style={styles.cardContainer}>
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="Scan QR Cod"
-                  onPress={() => Alert.alert('Scan QR Code')}
+                  title="Legacy Analyze"
+                  onPress={() => router.push('/analyze/legacyanalyze')}
                 />
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="Scan Barcode"
-                  onPress={() => Alert.alert('Scan Barcode')}
+                  title="AI Chat"
+                  onPress={() => router.push('/analyze/chat')}
                 />
               </View>
             </>
           )}
         </ScrollView>
-      </ThemedView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
 
@@ -144,16 +158,19 @@ const styles = StyleSheet.create({
   },
   imagePreviewContainer: {
     flex: 1,
-    //alignItems: 'center',
-    //justifyContent: 'center',
+    //alignItems: 'center', // Keep commented or adjust as needed
+    //justifyContent: 'center', // Keep commented or adjust as needed
+  },
+  imageList: {
+    height: Dimensions.get('window').width - 32, // Assuming padding of 16 on each side
+    // Or a fixed height, e.g., 300
   },
   previewImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    aspectRatio: 1,
+    width: Dimensions.get('window').width - 32, // Match parent FlatList item width (ScrollView padding)
+    height: '100%', // Take full height of the FlatList item
+    aspectRatio: 1, // Keep aspect ratio if desired, or remove for full height
     resizeMode: 'contain',
-    verticalAlign: 'middle',
+    // verticalAlign: 'middle', // Not applicable for FlatList items directly like this
   },
   imageCountText: {
     fontSize: 16,
@@ -165,6 +182,14 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start', // Align items to the top
+  },
+  rightButtonsContainer: {
+    flexDirection: 'column',
+    alignItems: 'stretch', // Changed from 'flex-end' to 'stretch'
+  },
+  legacyAnalyzerButton: {
+    marginTop: 8, // Add some space between AI Chat and Legacy Analyzer buttons
   },
 });
 

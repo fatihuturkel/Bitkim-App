@@ -9,7 +9,8 @@
     "change": "Değiştir",
     "changing": "Değiştiriliyor...",
     "send": "Gönder",
-    "sending": "Gönderiliyor..."
+    "sending": "Gönderiliyor...",
+    "clear": "Temizle"
   },
   "navigation": {
     "home": "Ana Sayfa",
@@ -19,7 +20,10 @@
     "activity": "Etkinlik",
     "profile": "Profil",
     "preferences": "Tercihler",
-    "scan": "Tara"
+    "scan": "Tara",
+    "analyze": "Analiz Et",
+    "legacyAnalyze": "Eski Analiz",
+    "aichat": "Yapay Zeka Sohbeti"
   },
   "auth": {
     "email_placeholder": "E-posta adresinizi girin",
@@ -120,5 +124,43 @@
     "edit_name": "Adı Düzenle",
     "name_and_surname_section_title": "AD VE SOYAD",
     "profile_section_title" : "PROFİL BİLGİLERİ"
+  },
+  "chat": {
+    "clear_chat_confirm_title": "Sohbeti Temizle",
+    "clear_chat_confirm_message": "Tüm mesajları temizlemek istediğinizden emin misiniz?",
+    "permission_needed_title": "İzin Gerekli",
+    "permission_needed_message": "Lütfen kamera erişim izni verin.",
+    "open_settings": "Ayarları Aç",
+    "error_opening_settings": "Hata",
+    "error_opening_settings_message": "Ayarlar açılamadı. Lütfen ayarları manuel olarak açın.",
+    "empty_message_error_title": "Boş Mesaj Gönderilemez",
+    "empty_message_error_message": "Lütfen bir mesaj yazın.",
+    "image_upload_failed_suffix": "(Resim yükleme başarısız)",
+    "ai_response_error": "Üzgünüm, isteğinizi işleme alamadım. Lütfen tekrar deneyin.",
+    "clear_chat_button": "Temizle",
+    "empty_chat_placeholder": "Henüz mesaj yok. Bir konuşma başlatın!",
+    "ai_thinking": "Yapay Zeka Düşünüyor...",
+    "take_photo": "Fotoğraf Çek",
+    "pick_from_gallery": "Galeriden Seç",
+    "input_placeholder": "Bitkiler hakkında her şeyi sorun..."
+  },
+  "analyze": {
+    "analyzing_images": "Görüntüler analiz ediliyor...",
+    "no_images_selected": "Analiz için görüntü seçilmedi.",
+    "please_go_back_select": "Lütfen geri dönün ve analiz için görüntü seçin.",
+    "analysis_details": "Analiz Detayları",
+    "no_analysis_data": "Bu öğe için analiz verisi mevcut değil.",
+    "top_prediction": "En İyi: %{name}",
+    "alternative_prediction": "Alt. %{index}: %{name}",
+    "performance_metrics": "Performans Metrikleri",
+    "preprocessing": "Ön İşleme: %{ms} ms",
+    "inference": "Çıkarım: %{ms} ms",
+    "postprocessing": "Son İşleme: %{ms} ms",
+    "turkish": "Türkçe: %{name}",
+    "latin": "Latince: %{name}",
+    "confidence": "Güven: %{percentage}%",
+    "prediction": "Tahmin",
+    "alternative": "Alternatif",
+    "metrics": "Metrikler"
   }
 }

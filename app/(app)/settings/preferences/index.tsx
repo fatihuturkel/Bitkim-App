@@ -1,5 +1,6 @@
 import CustomModal from '@/components/CustomModal';
 import ListItem from '@/components/ListItem';
+import ListSwitch from '@/components/ListSwitch'; // Import the ListSwitch component
 import AppleSection from '@/components/Section';
 import { ThemedView } from '@/components/ThemedView';
 import i18n from '@/i18n';
@@ -25,16 +26,16 @@ const languageOptions = [
 
 export default function Preferences() {
   // Use optional chaining for safer access
-  const userLanguagePreference = useUserStore((state) => state.preferences?.language); // Get the user's language preference from Zustand store
-
-  // Example state and function for the switch (replace with actual state management)
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const userLanguagePreference = useUserStore((state) => state.preferences?.language);
+  const userScanHistoryPreference = useUserStore((state) => state.preferences?.scanHistory); // Get scan history preference
 
   // Language picker state - store the language code
   // Initialize with store value or default to 'en'
   const [selectedLanguageCode, setSelectedLanguageCode] = useState(userLanguagePreference || 'en');
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+  // Scan History switch state
+  const [isScanHistoryEnabled, setIsScanHistoryEnabled] = useState(userScanHistoryPreference ?? true);
 
   // Find the display label for the selected language code
   const selectedLanguageLabel = languageOptions.find(lang => lang.value === selectedLanguageCode)?.label || 'English';
@@ -42,11 +43,24 @@ export default function Preferences() {
   const handleLanguageChange = async (languageCode: string) => {
     try {
       await updateUserPreferences({ language: languageCode });
-      // The local store is already updated in the function if Firebase update succeeds
+      // The local store is already updated by updateUserPreferences if Firebase update succeeds
       setShowLanguageModal(false);
     } catch (error) {
       // Handle error (show error message to user)
       console.error("Failed to update language preference:", error);
+    }
+  };
+
+  const toggleScanHistorySwitch = async () => {
+    const newValue = !isScanHistoryEnabled;
+    setIsScanHistoryEnabled(newValue); // Optimistically update UI
+    try {
+      await updateUserPreferences({ scanHistory: newValue });
+      // Zustand store is updated by updateUserPreferences
+    } catch (error) {
+      console.error("Failed to update scan history preference:", error);
+      setIsScanHistoryEnabled(!newValue); // Revert UI on error
+      // Optionally, show an error message to the user
     }
   };
 
@@ -57,23 +71,17 @@ export default function Preferences() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {/* 
-        <AppleSection title="Display">
+        
+        <AppleSection title="Scan Settings"
+          footer='Scan history is automatically saved in cloud storage. You can delete it from the settings page.'>
           <ListSwitch
-            label="Example Switch"
-            value={isEnabled}
-            onValueChange={toggleSwitch}
+            label="Scan History"
+            value={isScanHistoryEnabled}
+            onValueChange={toggleScanHistorySwitch}
             disabled={false}
-          />
-          <ListSwitch
-            label="Another Switch"
-            value={isEnabled}
-            onValueChange={toggleSwitch}
-            disabled={false}
-            isLast={true}
           />
         </AppleSection> 
-        */}
+      
 
         <AppleSection title={i18n.t("preference.language_section_title")}>
           <ListItem
