@@ -135,6 +135,8 @@
     "empty_message_error_message": "Please write a message.",
     "image_upload_failed_suffix": "(Image upload failed)",
     "ai_response_error": "Sorry, I couldn't process your request. Please try again.",
+    "ai_auth_error": "Authentication error. Please check your API key.",
+    "ai_rate_limit_error": "You have exceeded the API rate limit. Please try again later.",
     "clear_chat_button": "Clear",
     "empty_chat_placeholder": "No messages yet. Start a conversation!",
     "ai_thinking": "AI is Thinking...",

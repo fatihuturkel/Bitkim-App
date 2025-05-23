@@ -59,8 +59,12 @@ export async function generateAIResponse(prompt: string, imageUrl?: string, hist
     const assistantResponse = response.choices[0]?.message?.content || "I don't have a response for that.";
 
     return assistantResponse;
-  } catch (error) {
-    console.error('Error calling OpenAI API:', error);
+  } catch (error: any) { // Add 'any' type for error to access properties like 'status'
+    if (error && error.status === 401) {
+      return i18n.t('chat.ai_auth_error'); // Create a new i18n key for this
+    } else if (error && error.status === 429) {
+      return i18n.t('chat.ai_rate_limit_error'); // Create a new i18n key for this
+    }
     return i18n.t('chat.ai_response_error');
   }
 }
