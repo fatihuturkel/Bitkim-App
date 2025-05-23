@@ -174,6 +174,13 @@ export default function Login() {
             {isLoading && <ActivityIndicator size="small" color={systemBlue} style={styles.loadingIndicator} />}
           </AppleSection>
 
+          <Text
+  style={styles.registerLink}
+  onPress={() => router.push('/sign-up')}
+>
+  Hesabınız yok mu? Kayıt olun
+</Text>
+
         </ScrollView>
       </KeyboardAvoidingView>
     </ThemedView>
@@ -209,5 +216,12 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     marginTop: 10, // Add some space above the indicator if needed
-  }
+  },
+   registerLink: {
+    color: '#007aff',
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 15,
+    fontWeight: '500',
+  },
 });
