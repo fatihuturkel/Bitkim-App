@@ -137,6 +137,8 @@
     "empty_message_error_message": "Lütfen bir mesaj yazın.",
     "image_upload_failed_suffix": "(Resim yükleme başarısız)",
     "ai_response_error": "Üzgünüm, isteğinizi işleme alamadım. Lütfen tekrar deneyin.",
+    "ai_auth_error": "Kimlik doğrulama hatası. Lütfen API anahtarınızı kontrol edin.",
+    "ai_rate_limit_error": "API hız limitini aştınız. Lütfen daha sonra tekrar deneyin.",
     "clear_chat_button": "Temizle",
     "empty_chat_placeholder": "Henüz mesaj yok. Bir konuşma başlatın!",
     "ai_thinking": "Yapay Zeka Düşünüyor...",
@@ -161,6 +163,6 @@
     "confidence": "Güven: %{percentage}%",
     "prediction": "Tahmin",
     "alternative": "Alternatif",
-    "metrics": "Metrikler"
+    "metrics": "Değerler"
   }
 }
