@@ -27,7 +27,7 @@ const languageOptions = [
 export default function Preferences() {
   // Use optional chaining for safer access
   const userLanguagePreference = useUserStore((state) => state.preferences?.language);
-  const userScanHistoryPreference = useUserStore((state) => state.preferences?.scanHistory); // Get scan history preference
+  const userScanHistoryPreference = useUserStore((state) => state.preferences?.isBasicScanHistoryEnabled); // Get scan history preference
 
   // Language picker state - store the language code
   // Initialize with store value or default to 'en'
@@ -55,7 +55,7 @@ export default function Preferences() {
     const newValue = !isScanHistoryEnabled;
     setIsScanHistoryEnabled(newValue); // Optimistically update UI
     try {
-      await updateUserPreferences({ scanHistory: newValue });
+      await updateUserPreferences({ isBasicScanHistoryEnabled: newValue });
       // Zustand store is updated by updateUserPreferences
     } catch (error) {
       console.error("Failed to update scan history preference:", error);
@@ -72,10 +72,10 @@ export default function Preferences() {
         keyboardShouldPersistTaps="handled"
       >
         
-        <AppleSection title="Scan Settings"
-          footer='Scan history is automatically saved in cloud storage. You can delete it from the settings page.'>
+        <AppleSection title={i18n.t("preference.scan_settings_title")}
+          footer={i18n.t("preference.scan_settings_footer")}>
           <ListSwitch
-            label="Scan History"
+            label={i18n.t("preference.base_scan_history_label")}
             value={isScanHistoryEnabled}
             onValueChange={toggleScanHistorySwitch}
             disabled={false}
