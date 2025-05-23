@@ -7,7 +7,7 @@ import { router } from "expo-router";
 import React from "react"; // Removed useState
 import { Alert, Dimensions, FlatList, Image, Linking, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-export default function Scan() {
+export default function Analyze() {
   const { selectedImageUris, setSelectedImageUris, addImageUri, clearSelectedImages: clearStoreImages } = useImageSelectionStore();
 
   const pickImage = async () => {

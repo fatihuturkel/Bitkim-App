@@ -8,7 +8,8 @@
     "change": "Change",
     "changing": "Changing...",
     "send": "Send",
-    "sending": "Sending..."
+    "sending": "Sending...",
+    "clear": "Clear"
   },
   "navigation": {
     "home": "Home",
@@ -121,5 +122,43 @@
     "edit_name": "Edit Name",
     "name_and_surname_section_title": "Name and Surname",
     "profile_section_title": "Profile Details"
+  },
+  "chat": {
+    "clear_chat_confirm_title": "Clear Chat",
+    "clear_chat_confirm_message": "Are you sure you want to clear all messages?",
+    "permission_needed_title": "Permission Needed",
+    "permission_needed_message": "Please grant camera access permission.",
+    "open_settings": "Open Settings",
+    "error_opening_settings": "Error",
+    "error_opening_settings_message": "Could not open settings. Please open settings manually.",
+    "empty_message_error_title": "Empty Message Cannot Be Sent",
+    "empty_message_error_message": "Please write a message.",
+    "image_upload_failed_suffix": "(Image upload failed)",
+    "ai_response_error": "Sorry, I couldn't process your request. Please try again.",
+    "clear_chat_button": "Clear",
+    "empty_chat_placeholder": "No messages yet. Start a conversation!",
+    "ai_thinking": "AI is Thinking...",
+    "take_photo": "Take Photo",
+    "pick_from_gallery": "Pick from Gallery",
+    "input_placeholder": "Ask anything about plants..."
+  },
+  "analyze": {
+    "analyzing_images": "Analyzing images...",
+    "no_images_selected": "No images selected for analysis.",
+    "please_go_back_select": "Please go back and select images to analyze.",
+    "analysis_details": "Analysis Details",
+    "no_analysis_data": "No analysis data available for this item.",
+    "top_prediction": "Top: %{name}",
+    "alternative_prediction": "Alt. %{index}: %{name}",
+    "performance_metrics": "Performance Metrics",
+    "preprocessing": "Preprocessing: %{ms} ms",
+    "inference": "Inference: %{ms} ms",
+    "postprocessing": "Postprocessing: %{ms} ms",
+    "turkish": "Turkish: %{name}",
+    "latin": "Latin: %{name}",
+    "confidence": "Confidence: %{percentage}%",
+    "prediction": "Prediction",
+    "alternative": "Alternative",
+    "metrics": "Metrics"
   }
 }

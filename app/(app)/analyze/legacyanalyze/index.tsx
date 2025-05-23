@@ -5,8 +5,8 @@ import { uploadImagesForPrediction } from '@/services/imageService';
 import { UriPrediction, useImagePredictionStore } from '@/zustand/imagePredictionData';
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore';
 import { Ionicons } from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/native'; // Added import
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -18,7 +18,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context'; // Import the hook
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import i18n from '@/i18n'; // Add this import
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -27,7 +28,7 @@ export default function Analyze() {
   const predictionsFromStore = useImagePredictionStore((state) => state.predictions);
   const clearStorePredictions = useImagePredictionStore((state) => state.clearPredictions);
 
-  // const [analysisData, setAnalysisData] = useState<UriPrediction[]>([]); // Removed
+  // const [analysisData, setAnalysisData] = useState<UriPrediction[]>(> // Removed
   const [isLoading, setIsLoading] = useState(false);
   const [currentBatchUris, setCurrentBatchUris] = useState<string[]>([]);
 
@@ -36,6 +37,29 @@ export default function Analyze() {
   const tertiaryTextColor = useThemeColor({}, 'tertiaryLabel');
   const insets = useSafeAreaInsets();
   const isFocused = useIsFocused(); // Added
+  const navigation = useNavigation<any>(); // Added navigation
+
+  // Add useFocusEffect to hide/show tab bar
+  useFocusEffect(
+    useCallback(() => {
+      const parentNavigator = navigation.getParent();
+      if (parentNavigator) {
+        // Hide the tab bar
+        parentNavigator.setOptions({
+          tabBarStyle: { display: 'none' },
+        });
+      }
+
+      return () => {
+        // Restore the tab bar when the screen is unfocused
+        if (parentNavigator) {
+          parentNavigator.setOptions({
+            tabBarStyle: undefined, // Resets to the default style defined in the Tabs navigator
+          });
+        }
+      };
+    }, [navigation])
+  );
 
   useEffect(() => {
     if (isFocused) { // Check if the screen is focused
@@ -86,14 +110,14 @@ export default function Analyze() {
     if (top) {
       analysisResults.push({
         id: `${item.uri}-top-prediction`,
-        title: `Top: ${top.english_name}`,
+        title: i18n.t('analyze.top_prediction', { name: top.english_name }),
         details: [
-          `Turkish: ${top.turkish_name}`,
-          `Latin: ${top.latin_name}`,
-          `Confidence: ${(top.confidence * 100).toFixed(2)}%`,
+          i18n.t('analyze.turkish', { name: top.turkish_name }),
+          i18n.t('analyze.latin', { name: top.latin_name }),
+          i18n.t('analyze.confidence', { percentage: (top.confidence * 100).toFixed(2) }),
         ],
         icon: 'checkmark-circle-outline' as keyof typeof Ionicons.glyphMap,
-        status: 'Prediction',
+        status: i18n.t('analyze.prediction'),
         isItemCollapsible: true,
         initiallyItemCollapsed: true,
       });
@@ -103,14 +127,17 @@ export default function Analyze() {
       item.prediction.analysis_results.alternative_predictions.forEach((alt, index) => {
         analysisResults.push({
           id: `${item.uri}-alt-prediction-${index}`,
-          title: `Alt. ${index + 1}: ${alt.english_name}`,
+          title: i18n.t('analyze.alternative_prediction', { 
+            index: index + 1, 
+            name: alt.english_name 
+          }),
           details: [
-            `Turkish: ${alt.turkish_name}`,
-            `Latin: ${alt.latin_name}`,
-            `Confidence: ${(alt.confidence * 100).toFixed(2)}%`,
+            i18n.t('analyze.turkish', { name: alt.turkish_name }),
+            i18n.t('analyze.latin', { name: alt.latin_name }),
+            i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }),
           ],
           icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
-          status: 'Alternative',
+          status: i18n.t('analyze.alternative'),
           isItemCollapsible: true,
           initiallyItemCollapsed: true,
         });
@@ -121,14 +148,14 @@ export default function Analyze() {
     if (perf) {
       analysisResults.push({
         id: `${item.uri}-performance-metrics`,
-        title: 'Performance Metrics',
+        title: i18n.t('analyze.performance_metrics'),
         details: [
-          `Preprocessing: ${perf.preprocessing_ms} ms`,
-          `Inference: ${perf.inference_ms} ms`,
-          `Postprocessing: ${perf.postprocessing_ms} ms`,
+          i18n.t('analyze.preprocessing', { ms: perf.preprocessing_ms?.toString() || '0' }),
+          i18n.t('analyze.inference', { ms: perf.inference_ms?.toString() || '0' }),
+          i18n.t('analyze.postprocessing', { ms: perf.postprocessing_ms?.toString() || '0' }),
         ],
         icon: 'speedometer-outline' as keyof typeof Ionicons.glyphMap,
-        status: 'Metrics',
+        status: i18n.t('analyze.metrics'),
         isItemCollapsible: true,
         initiallyItemCollapsed: true,
       });
@@ -143,9 +170,9 @@ export default function Analyze() {
         >
           <ResultList
             results={analysisResults}
-            title="Analysis Details"
+            title={i18n.t('analyze.analysis_details')}
             headerIcon={'analytics-outline' as keyof typeof Ionicons.glyphMap}
-            emptyText="No analysis data available for this item."
+            emptyText={i18n.t('analyze.no_analysis_data')}
             isCollapsible={false}
             initiallyCollapsed={false}
           />
@@ -160,7 +187,9 @@ export default function Analyze() {
         <SafeAreaView style={styles.container}>
           <View style={styles.emptyContainer}>
             <ActivityIndicator size="large" color={textColor} />
-            <Text style={{ color: textColor, marginTop: 10 }}>Analyzing images...</Text>
+            <Text style={{ color: textColor, marginTop: 10 }}>
+              {i18n.t('analyze.analyzing_images')}
+            </Text>
           </View>
         </SafeAreaView>
       </ThemedView>
@@ -172,8 +201,12 @@ export default function Analyze() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.container}>
           <View style={styles.emptyContainer}>
-            <Text style={{ color: textColor }}>No images selected for analysis.</Text>
-            <Text style={{ color: tertiaryTextColor }}>Please go back and select images to analyze.</Text>
+            <Text style={{ color: textColor }}>
+              {i18n.t('analyze.no_images_selected')}
+            </Text>
+            <Text style={{ color: tertiaryTextColor }}>
+              {i18n.t('analyze.please_go_back_select')}
+            </Text>
           </View>
         </SafeAreaView>
       </ThemedView>
