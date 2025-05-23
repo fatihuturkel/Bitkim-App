@@ -54,7 +54,7 @@ export default function Login() {
     setLoginError(''); // Clear previous login errors on new attempt
     // check if email is valid
     if (!validateEmail(email)) {
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage(i18n.t('error.invalid_email'));
       isValid = false;
     } else {
       setEmailErrorMessage(''); // Clear error if valid
@@ -62,7 +62,7 @@ export default function Login() {
 
     // check if password is valid
     if (!validatePassword(password)) {
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage(i18n.t('error.password_length'));
       isValid = false;
     } else {
       setPasswordErrorMessage(''); // Clear error if valid
@@ -88,9 +88,34 @@ export default function Login() {
       // Navigation is handled by the useEffect hook watching user
     } catch (err: any) {
       console.error("Login failed in component:", err);
-      // Set local error state based on the error from signIn
-      // You might want to parse the error message for a user-friendly display
-      setLoginError(err.message || 'Login failed. Please check your credentials.');
+      let displayMessageKey = 'auth.loginFailed'; // Default error key
+
+      if (err.code) {
+        switch (err.code) {
+          case 'auth/invalid-email':
+            displayMessageKey = 'error.invalid_email';
+            break;
+          case 'auth/wrong-password': // Specific to some SDK versions
+          case 'auth/invalid-credential': // Common for wrong password or user not found in newer Firebase SDKs
+          case 'auth/user-not-found': // Add this case
+            displayMessageKey = 'error.invalid_credentials';
+            break;
+          case 'auth/user-disabled':
+            displayMessageKey = 'error.user_disabled';
+            break;
+          // Add more specific error codes from your auth provider as needed
+          default:
+            console.warn(`Unhandled auth error code: ${err.code}. Falling back to default login error message.`);
+            // displayMessageKey remains 'auth.loginFailed'
+            break;
+        }
+      } else if (err.message) {
+        // If no code, but there's a message, log it and use the default translated error.
+        // Avoid displaying raw err.message directly if it's not meant for users or not translated.
+        console.warn(`Login error without specific code (message: ${err.message}). Falling back to default login error message.`);
+        // displayMessageKey remains 'auth.loginFailed'
+      }
+      setLoginError(i18n.t(displayMessageKey));
     }
   };
 
