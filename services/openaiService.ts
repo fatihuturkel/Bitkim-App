@@ -1,4 +1,5 @@
 import { OPENAI_API_KEY } from '@/constants/Config'; // Ensure you have the correct environment variable set up
+import i18n from '@/i18n'; // Import i18n
 import { ChatMessage } from '@/zustand/chatStore'; // Import ChatMessage from chatStore
 import OpenAI from 'openai';
 
@@ -60,6 +61,6 @@ export async function generateAIResponse(prompt: string, imageUrl?: string, hist
     return assistantResponse;
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
-    return "Sorry, I encountered an error processing your request.";
+    return i18n.t('chat.ai_response_error');
   }
 }
