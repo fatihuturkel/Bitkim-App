@@ -38,6 +38,8 @@ import useUserStore, { UserPreferences, UserState } from '@/zustand/userStore'; 
 import * as Localization from 'expo-localization';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
 
 export const retrieveCurrentUserData = async (): Promise<void> => {
   const { setUserData, clearUserData } = useUserStore.getState(); // Get actions directly from the store state
@@ -386,5 +388,27 @@ export const updateUserPhoneNumber = async (phoneNumber: string): Promise<void> 
     }
   }
 };
+
+
+
+
+export const signUp = async (email: string, password: string, firstName: string, lastName: string): Promise<void> => {
+  const { setUserData } = useUserStore.getState();
+
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  const userData = {
+    email,
+    firstName,
+    lastName,
+    isEmailVerified: user.emailVerified,
+    createdAt: new Date().toISOString(),
+  };
+
+  await setDoc(doc(db, 'users', user.uid), userData);
+  setUserData({ ...userData, loggedIn: true });
+};
+
 
 

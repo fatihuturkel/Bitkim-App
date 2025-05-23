@@ -1,26 +1,43 @@
-import useUserStore from '@/zustand/userStore'; // Import the zustand store hook
-import { signOut as firebaseSignOut, onAuthStateChanged, signInWithEmailAndPassword, type User } from 'firebase/auth';
-import React, { createContext, useContext, useEffect, useState, type PropsWithChildren } from 'react';
+import useUserStore from '@/zustand/userStore';
+import {
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  type User,
+} from 'firebase/auth';
 import { auth } from '../firebaseConfig';
-import { retrieveCurrentUserData } from '../services/userDataService'; // Import the fetch function
+import { retrieveCurrentUserData } from '../services/userDataService';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import * as Localization from 'expo-localization';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from 'react';
 
-// Define the shape of the context value
+// ----------------------------------
+// 1. Context Arayüzü
+// ----------------------------------
 interface AuthContextType {
-  signIn: (email: string, password: string) => Promise<void>; // Update signIn signature
-  signOut: () => Promise<void>; // Make signOut async
-  user: User | null; // Store the Firebase User object
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  user: User | null;
   isLoading: boolean;
 }
 
-// Create the context with default values
 const AuthContext = createContext<AuthContextType>({
-  signIn: async (_email, _password) => { throw new Error('signIn function not implemented'); }, // Update default signIn
-  signOut: async () => { throw new Error('signOut function not implemented'); },
+  signIn: async () => { throw new Error('signIn not implemented'); },
+  signUp: async () => { throw new Error('signUp not implemented'); },
+  signOut: async () => { throw new Error('signOut not implemented'); },
   user: null,
-  isLoading: true, // Start with loading true until auth state is checked
+  isLoading: true,
 });
 
-// Custom hook to use the session context
 export function useSession() {
   const value = useContext(AuthContext);
   if (!value) {
@@ -29,72 +46,114 @@ export function useSession() {
   return value;
 }
 
-// Provider component
+// ----------------------------------
+// 2. Provider Component
+// ----------------------------------
 export function SessionProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Start loading
-  const clearUserData = useUserStore((state) => state.clearUserData); // Get clear action from Zustand
+  const [isLoading, setIsLoading] = useState(true);
+  const clearUserData = useUserStore((state) => state.clearUserData);
+  const setUserData = useUserStore((state) => state.setUserData);
 
   useEffect(() => {
-    // Subscribe to Firebase auth state changes
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => { // Make callback async
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
       if (currentUser) {
-        // User is signed in, fetch their data using the service
         console.log("Auth state changed: User signed in", currentUser.uid);
         try {
           await retrieveCurrentUserData();
         } catch (error) {
-          // Handle potential errors from fetchUserData if it re-throws them
           console.error("Error during post-auth data fetch:", error);
-          // Optionally clear user data or show an error message
-          clearUserData(); // Clear data if fetch fails after login
+          clearUserData();
         } finally {
-          setIsLoading(false); // Set loading false after fetch attempt
+          setIsLoading(false);
         }
       } else {
-        // User is signed out
         console.log("Auth state changed: User signed out");
-        clearUserData(); // Clear user data from Zustand store on sign out
-        setIsLoading(false); // Set loading false after sign out
+        clearUserData();
+        setIsLoading(false);
       }
-      // Note: Moved setIsLoading(false) inside the if/else blocks
-      // to ensure it runs after async operations complete.
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
-    // clearUserData is stable from Zustand, no need to add as dependency usually
-  }, [clearUserData]); // Include clearUserData if your linter requires it
+  }, [clearUserData]);
 
-  const signIn = async (email: string, password: string) => { // Accept email and password
+  // ----------------------------------
+  // 3. signIn Fonksiyonu
+  // ----------------------------------
+  const signIn = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged will handle setting the user, fetching data, and setting isLoading to false
     } catch (error) {
       console.error("Firebase sign-in error:", error);
-      setIsLoading(false); // Ensure loading is false if sign-in fails immediately
-      clearUserData(); // Clear any potentially stale data if sign-in fails
+      setIsLoading(false);
+      clearUserData();
       throw error;
     }
   };
 
-  const signOut = async () => {
-    setIsLoading(true); // Set loading true when sign-out starts
+  // ----------------------------------
+  // 4. signUp Fonksiyonu (Eksik Olan Kısım)
+  // ----------------------------------
+  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
+    setIsLoading(true);
     try {
-      await firebaseSignOut(auth);
-      // onAuthStateChanged will handle setting user to null, clearing data, and setting isLoading to false
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      if (!user) throw new Error('Kullanıcı oluşturulamadı');
+
+      const userData = {
+        email,
+        firstName,
+        lastName,
+        isEmailVerified: user.emailVerified,
+        createdAt: new Date().toISOString(),
+        preferences: {
+          notifications: true,
+          darkMode: false,
+          language: Localization.getLocales()[0]?.languageCode || 'en',
+        },
+        activity: {
+          lastActive: new Date().toISOString(),
+          totalScans: 0,
+          favoriteLeaves: [],
+        },
+      };
+
+      await setDoc(doc(db, 'users', user.uid), userData);
+      setUserData({ ...userData, loggedIn: true });
     } catch (error) {
-      console.error("Firebase sign-out error:", error);
-      setIsLoading(false); // Ensure loading is false if sign-out fails
+      console.error('Firebase sign-up error:', error);
+      setIsLoading(false);
+      clearUserData();
+      throw error;
     }
   };
 
+  // ----------------------------------
+  // 5. signOut Fonksiyonu
+  // ----------------------------------
+  const signOut = async () => {
+    setIsLoading(true);
+    try {
+      await firebaseSignOut(auth);
+    } catch (error) {
+      console.error("Firebase sign-out error:", error);
+      setIsLoading(false);
+    }
+  };
+
+  // ----------------------------------
+  // 6. Context Sağlayıcı Dönüşü
+  // ----------------------------------
   return (
     <AuthContext.Provider
       value={{
         signIn,
+        signUp,
         signOut,
         user,
         isLoading,
