@@ -73,7 +73,7 @@ const savePredictionToFirestore = async (uriPrediction: UriPrediction): Promise<
   }
 
   // Check scan history preference
-  const scanHistoryEnabled = useUserStore.getState().preferences?.scanHistory;
+  const scanHistoryEnabled = useUserStore.getState().preferences?.isBasicScanHistoryEnabled;
   if (scanHistoryEnabled === false) { // Explicitly check for false
     console.log("Scan history is disabled. Skipping save to Firestore.");
     return;

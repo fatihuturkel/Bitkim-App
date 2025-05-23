@@ -22,7 +22,7 @@
     "preferences": "Tercihler",
     "scan": "Tara",
     "analyze": "Analiz Et",
-    "legacyAnalyze": "Eski Analiz",
+    "legacyAnalyze": "Temel Analiz",
     "aichat": "Yapay Zeka Sohbeti"
   },
   "auth": {
@@ -113,7 +113,10 @@
     "language_section_title": "DİL",
     "theme": "Tema",
     "select_language": "Dil Seçin",
-    "app_language": "Uygulama Dili"
+    "app_language": "Uygulama Dili",
+    "scan_settings_title": "Tarama Ayarları",
+    "scan_settings_footer": "Tarama geçmişi otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
+    "base_scan_history_label": "Temel Tarama Geçmişi"
   },
   "profile": {
     "title": "Profil",
@@ -171,6 +174,14 @@
     "confidence": "Güven: %{percentage}%",
     "prediction": "Tahmin",
     "alternative": "Alternatif",
-    "metrics": "Değerler"
+    "metrics": "Değerler",
+    "clear_images": "Resimleri Temizle",
+    "ai_chat_button": "Yapay Zeka Sohbeti",
+    "legacy_analyzer_button": "Temel Analiz",
+    "camera_roll_card_title": "Film Rulosu",
+    "take_photo_card_title": "Fotoğraf Çek",
+    "selected_images_count": "Seçili Resimler: %{count}",
+    "permission_required_title": "İzin Gerekli",
+    "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?"
   }
 }

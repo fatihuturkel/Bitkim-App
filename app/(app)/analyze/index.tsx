@@ -1,6 +1,7 @@
 import AppleStyleCard from "@/components/AppleStyleCard";
 import Button from "@/components/Button";
 import { ThemedView } from "@/components/ThemedView";
+import i18n from '@/i18n'; // Add this import
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore'; // Import the store
 import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router";
@@ -32,11 +33,11 @@ export default function Analyze() {
 
     if (cameraPermission.status !== 'granted') {
       Alert.alert(
-        'Permission Required',
-        'Permission to access camera is required! Do you want to go to settings to grant permission?',
+        i18n.t('analyze.permission_required_title'),
+        i18n.t('analyze.permission_required_message'),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Open Settings', onPress: () => Linking.openSettings() },
+          { text: i18n.t('common.cancel'), style: 'cancel' },
+          { text: i18n.t('chat.open_settings'), onPress: () => Linking.openSettings() },
         ]
       );
       return;
@@ -82,21 +83,21 @@ export default function Analyze() {
                 showsHorizontalScrollIndicator={false}
                 style={styles.imageList}
               />
-              <Text style={styles.imageCountText}>Selected Images: {selectedImageCount}</Text>
+              <Text style={styles.imageCountText}>{i18n.t('analyze.selected_images_count', { count: selectedImageCount })}</Text>
               <View style={styles.buttonContainer}>
                 <Button
-                  title="Clear Images"
+                  title={i18n.t('analyze.clear_images')}
                   onPress={clearImages}
                   role="destructive"
                 />
                 <View style={styles.rightButtonsContainer}>
                   <Button
-                    title="AI Chat"
+                    title={i18n.t('analyze.ai_chat_button')}
                     onPress={() => router.push('/analyze/chat')}
                     role="normal"
                   />
                   <Button
-                    title="Legacy Analyzer"
+                    title={i18n.t('analyze.legacy_analyzer_button')}
                     onPress={() => router.push('/analyze/legacyanalyze')}
                     role="normal"
                     style={styles.legacyAnalyzerButton}
@@ -109,24 +110,24 @@ export default function Analyze() {
               <View style={styles.cardContainer}>
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="Camera Roll"
+                  title={i18n.t('analyze.camera_roll_card_title')}
                   onPress={pickImage}
                 />
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="Take Photo"
+                  title={i18n.t('analyze.take_photo_card_title')}
                   onPress={takePhoto}
                 />
               </View>
               <View style={styles.cardContainer}>
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="Legacy Analyze"
+                  title={i18n.t('analyze.legacy_analyzer_button')}
                   onPress={() => router.push('/analyze/legacyanalyze')}
                 />
                 <AppleStyleCard
                   style={styles.expandedCard}
-                  title="AI Chat"
+                  title={i18n.t('analyze.ai_chat_button')}
                   onPress={() => router.push('/analyze/chat')}
                 />
               </View>

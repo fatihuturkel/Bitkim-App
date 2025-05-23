@@ -19,8 +19,9 @@
     "activity": "Activity",
     "profile": "Profile",
     "preferences": "Preferences",
+    "scan": "Scan",
     "analyze": "Analyze",
-    "legacyAnalyze": "Legacy Analyze",
+    "legacyAnalyze": "Base Analyze",
     "aichat": "AI Chat"
   },
   "auth": {
@@ -111,7 +112,10 @@
     "language_section_title": "Language",
     "theme": "Theme",
     "select_language": "Select Language",
-    "app_language": "App Language"
+    "app_language": "App Language",
+    "scan_settings_title": "Scan Settings",
+    "scan_settings_footer": "Scan history is automatically saved in cloud storage. You can delete it from the settings page.",
+    "base_scan_history_label": "Base Scan History"
   },
   "profile": {
     "title": "Profile",
@@ -169,6 +173,14 @@
     "confidence": "Confidence: %{percentage}%",
     "prediction": "Prediction",
     "alternative": "Alternative",
-    "metrics": "Metrics"
+    "metrics": "Metrics",
+    "clear_images": "Clear Images",
+    "ai_chat_button": "AI Chat",
+    "legacy_analyzer_button": "Base Analyze",
+    "camera_roll_card_title": "Camera Roll",
+    "take_photo_card_title": "Take Photo",
+    "selected_images_count": "Selected Images: %{count}",
+    "permission_required_title": "Permission Required",
+    "permission_required_message": "Permission to access camera is required! Do you want to go to settings to grant permission?"
   }
 }

@@ -16,6 +16,7 @@ export interface UserPreferences {
   notifications: boolean;
   darkMode: boolean;
   language: string;
+  isBasicScanHistoryEnabled: boolean;
 }
 
 // Define and export default user preferences
@@ -23,6 +24,7 @@ export const defaultUserPreferences: UserPreferences = {
   notifications: true,
   darkMode: Appearance.getColorScheme() === 'dark',
   language: Localization.getLocales()[0]?.languageCode || 'en',
+  isBasicScanHistoryEnabled: true,
 };
 
 interface UserActivity {
