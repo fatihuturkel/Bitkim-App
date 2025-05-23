@@ -3,6 +3,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor'; // Added import
 import i18n from '@/i18n'; // Added import
 import { generateAIResponse } from '@/services/openaiService';
+import { ChatMessage, Message, useChatStore } from '@/zustand/chatStore'; // Import the new chat store and types
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore'; // Add this import
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -11,32 +12,21 @@ import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'; // Add useLayoutEffect
 import { ActivityIndicator, Alert, FlatList, Image, KeyboardAvoidingView, Linking, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
 
-// Define ChatMessage type for the OpenAI API
-type ChatMessage = {
-  role: 'user' | 'assistant' | 'system';
-  content: string | { type: string; text?: string; image_url?: { url: string } }[];
-};
-
-// UI Message type for rendering messages in chat
-type Message = {
-  id: string;
-  text: string;
-  imageUri?: string;
-  timestamp: Date;
-  isUser: boolean;
-  isThinking?: boolean; // Add this flag
-};
-
-// Remove the route param type definition as we're not using route params anymore
 
 export default function ChatScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  // Zustand store for chat
+  const messages = useChatStore((state) => state.messages);
+  const chatHistory = useChatStore((state) => state.chatHistory);
+  const addMessage = useChatStore((state) => state.addMessage);
+  const addChatMessageToHistory = useChatStore((state) => state.addChatMessageToHistory);
+  const replaceMessages = useChatStore((state) => state.replaceMessages);
+  const clearChat = useChatStore((state) => state.clearChat);
 
   // Remove route and replace with Zustand store
   const storeSelectedImageUris = useImageSelectionStore((state) => state.selectedImageUris);
@@ -134,8 +124,7 @@ export default function ChatScreen() {
       // For web platform, use browser's confirm dialog
       const confirmed = window.confirm(i18n.t('chat.clear_chat_confirm_message'));
       if (confirmed) {
-        setMessages([]);
-        setChatHistory([]); // Clear chat history as well
+        clearChat(); // Use Zustand action
         console.log('Chat cleared (web)');
       }
     } else {
@@ -151,8 +140,7 @@ export default function ChatScreen() {
           {
             text: i18n.t('common.clear'),
             onPress: () => {
-              setMessages([]);
-              setChatHistory([]); // Clear chat history as well
+              clearChat(); // Use Zustand action
               console.log('Chat cleared (native)');
             },
             style: "destructive"
@@ -241,7 +229,7 @@ export default function ChatScreen() {
     };
 
     // Add user message to chat UI
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
+    addMessage(newMessage); // Use Zustand action
 
     // Create appropriate user message for the API chat history
     let userChatMessage: ChatMessage;
@@ -300,8 +288,8 @@ export default function ChatScreen() {
     }
 
     // Create a copy of the chat history with the new message
-    const updatedChatHistory = [...chatHistory, userChatMessage];
-    setChatHistory(updatedChatHistory);
+    // const updatedChatHistory = [...chatHistory, userChatMessage]; // History is updated via Zustand action
+    addChatMessageToHistory(userChatMessage); // Use Zustand action to update history
 
     // Clear input and image AFTER preparing messages
     setInputText('');
@@ -316,30 +304,30 @@ export default function ChatScreen() {
       isUser: false,
       isThinking: true,
     };
-    setMessages((prevMessages) => [...prevMessages, thinkingMessage]);
+    addMessage(thinkingMessage); // Use Zustand action
 
     // Set loading state (still useful for disabling send button)
     setIsLoading(true);
 
     try {
-      // Generate AI response with full conversation history
+      // Generate AI response with full conversation history from Zustand
+      const currentChatHistory = useChatStore.getState().chatHistory;
       const aiResponse = await generateAIResponse(
         currentInputText, // Use captured text
         newMessage.imageUri, // Use image URI from the user message object
-        updatedChatHistory // Pass the updated chat history
+        currentChatHistory // Pass the updated chat history from Zustand
       );
 
       // Remove thinking message and add AI response
-      setMessages((prevMessages) => {
-        const filteredMessages = prevMessages.filter(msg => msg.id !== thinkingMessageId);
-        const responseMessage: Message = {
-          id: (Date.now() + 1).toString(), // Ensure unique ID
-          text: aiResponse,
-          timestamp: new Date(),
-          isUser: false
-        };
-        return [...filteredMessages, responseMessage];
-      });
+      const currentMessages = useChatStore.getState().messages;
+      const filteredMessages = currentMessages.filter(msg => msg.id !== thinkingMessageId);
+      const responseMessage: Message = {
+        id: (Date.now() + 1).toString(), // Ensure unique ID
+        text: aiResponse,
+        timestamp: new Date(),
+        isUser: false
+      };
+      replaceMessages([...filteredMessages, responseMessage]); // Use Zustand action
 
       // Add AI response to chat history with consistent format
       const assistantChatMessage: ChatMessage = {
@@ -348,21 +336,20 @@ export default function ChatScreen() {
           { type: "text", text: aiResponse }
         ],
       };
-      setChatHistory((prevHistory) => [...prevHistory, assistantChatMessage]);
+      addChatMessageToHistory(assistantChatMessage); // Use Zustand action
     } catch (error) {
       console.error('Error generating AI response:', error);
 
       // Remove thinking message and add error message
-      setMessages((prevMessages) => {
-        const filteredMessages = prevMessages.filter(msg => msg.id !== thinkingMessageId);
-        const errorMessage: Message = {
-          id: (Date.now() + 1).toString(), // Ensure unique ID
-          text: i18n.t('chat.ai_response_error'),
-          timestamp: new Date(),
-          isUser: false
-        };
-        return [...filteredMessages, errorMessage];
-      });
+      const currentMessagesOnError = useChatStore.getState().messages;
+      const filteredMessagesOnError = currentMessagesOnError.filter(msg => msg.id !== thinkingMessageId);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(), // Ensure unique ID
+        text: i18n.t('chat.ai_response_error'),
+        timestamp: new Date(),
+        isUser: false
+      };
+      replaceMessages([...filteredMessagesOnError, errorMessage]); // Use Zustand action
     } finally {
       setIsLoading(false);
     }
@@ -401,8 +388,9 @@ export default function ChatScreen() {
             <Button
               onPress={handleClearChat}
               title={i18n.t('chat.clear_chat_button')} // Or remove title if icon is enough
-              icon={<Ionicons name="trash-outline" size={22} />} // iOS blue icon
+              icon={<Ionicons name="trash-outline" size={20} />} // iOS blue icon
               buttonStyle='gray'
+              role='destructive'
             />
           </View>
 
@@ -419,15 +407,6 @@ export default function ChatScreen() {
               </View>
             )}
           />
-
-          {/* Remove the old loading container
-          {isLoading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={tintColor} />
-              <Text style={[styles.loadingText, { color: tintColor }]}>{i18n.t('chat.ai_thinking')}</Text>
-            </View>
-          )}
-          */}
 
           <View style={[styles.inputContainer, { borderTopColor: separatorColor, backgroundColor: themedBackgroundColor }]}>
             {selectedImage ? (
@@ -494,7 +473,7 @@ export default function ChatScreen() {
               <Button
                 onPress={handleSend}
                 icon={<Ionicons name="arrow-up-outline" size={20} />} // iOS-like send icon (filled)
-                disabled={isLoading}
+                disabled={isLoading || inputText.trim() === ''}
               />
             </View>
           </View>
@@ -510,7 +489,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    paddingVertical: 16,
+    paddingVertical: 8,
     paddingHorizontal: 16, // Adjusted horizontal padding
   },
   headerContainer: {

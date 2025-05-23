@@ -1,4 +1,5 @@
 import { OPENAI_API_KEY } from '@/constants/Config'; // Ensure you have the correct environment variable set up
+import { ChatMessage } from '@/zustand/chatStore'; // Import ChatMessage from chatStore
 import OpenAI from 'openai';
 
 // Initialize the OpenAI client
@@ -12,12 +13,6 @@ const openai = new OpenAI({
     "X-Title": "expodeneme1", // Optional. Site title for rankings on openrouter.ai.
   },
 });
-
-// Type definitions for chat messages
-type ChatMessage = {
-  role: 'user' | 'assistant' | 'system';
-  content: string | { type: string; text?: string; image_url?: { url: string } }[];
-};
 
 // Define a type that is compatible with OpenAI's ChatCompletionMessageParam
 type OpenAIChatMessage = {
