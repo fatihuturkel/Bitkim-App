@@ -1,4 +1,5 @@
 import * as Localization from 'expo-localization';
+import { Appearance } from 'react-native';
 import { create } from 'zustand';
 
 interface User {
@@ -15,14 +16,27 @@ export interface UserPreferences {
   notifications: boolean;
   darkMode: boolean;
   language: string;
-  scanHistory: boolean; // Add this line
 }
+
+// Define and export default user preferences
+export const defaultUserPreferences: UserPreferences = {
+  notifications: true,
+  darkMode: Appearance.getColorScheme() === 'dark',
+  language: Localization.getLocales()[0]?.languageCode || 'en',
+};
 
 interface UserActivity {
   lastActive: string;
   totalScans: number;
   favoriteLeaves: string[];
 }
+
+// Define and export default user activity
+export const defaultUserActivity: UserActivity = {
+  lastActive: new Date().toISOString(),
+  totalScans: 0,
+  favoriteLeaves: [],
+};
 
 // Define the UserAddress interface
 interface UserAddress {
@@ -55,17 +69,8 @@ const useUserStore = create<UserState>((set) => ({
   isEmailVerified: false,
   loggedIn: false,
   address: undefined, // Initialize address as undefined or with default values
-  preferences: {
-    notifications: true,
-    darkMode: false,
-    language: Localization.getLocales()[0]?.languageCode || 'en',
-    scanHistory: true, // Add this line with a default value
-  },
-  activity: {
-    lastActive: new Date().toISOString(),
-    totalScans: 0,
-    favoriteLeaves: [],
-  },
+  preferences: { ...defaultUserPreferences }, // Use default preferences
+  activity: { ...defaultUserActivity }, // Use default activity
 
   // Actions
   setUserData: (data) => set((state) => ({ ...state, ...data })),
@@ -98,18 +103,9 @@ const useUserStore = create<UserState>((set) => ({
       isEmailVerified: false,
       createdAt: new Date().toISOString(),
       address: undefined, // Reset address
-      preferences: {
-        notifications: true,
-        darkMode: false,
-        language: 'en',
-        scanHistory: true, // Add this line
-      },
+      preferences: { ...defaultUserPreferences }, // Reset to default preferences
       bio: undefined,
-      activity: {
-        lastActive: new Date().toISOString(),
-        totalScans: 0,
-        favoriteLeaves: [],
-      },
+      activity: { ...defaultUserActivity }, // Reset to default activity
     }),
 }));
 

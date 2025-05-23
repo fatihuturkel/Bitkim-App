@@ -1,4 +1,5 @@
 import { useColorScheme } from '@/hooks/useColorScheme';
+import i18n from '@/i18n'; // Assuming your i18n instance is exported from @/i18n
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -31,8 +32,8 @@ export default function RootLayout() {
     <SessionProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen name="index" options={{ headerShown: true }} />
-          <Stack.Screen name="sign-in" options={{ headerShown: true }} />
+          <Stack.Screen name="index" options={{ title: i18n.t('navigation.home'), headerShown: true }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>

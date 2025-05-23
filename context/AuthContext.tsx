@@ -1,16 +1,12 @@
-import useUserStore from '@/zustand/userStore';
+import useUserStore, { defaultUserActivity, defaultUserPreferences } from '@/zustand/userStore';
 import {
+  createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   type User,
 } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
-import { retrieveCurrentUserData } from '../services/userDataService';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import * as Localization from 'expo-localization';
 import React, {
   createContext,
   useContext,
@@ -18,6 +14,8 @@ import React, {
   useState,
   type PropsWithChildren,
 } from 'react';
+import { auth, db } from '../firebaseConfig';
+import { retrieveCurrentUserData } from '../services/userDataService';
 
 // ----------------------------------
 // 1. Context Arayüzü
@@ -111,16 +109,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         lastName,
         isEmailVerified: user.emailVerified,
         createdAt: new Date().toISOString(),
-        preferences: {
-          notifications: true,
-          darkMode: false,
-          language: Localization.getLocales()[0]?.languageCode || 'en',
-        },
-        activity: {
-          lastActive: new Date().toISOString(),
-          totalScans: 0,
-          favoriteLeaves: [],
-        },
+        preferences: { ...defaultUserPreferences }, // Use imported default preferences
+        activity: { ...defaultUserActivity, lastActive: new Date().toISOString() }, // Use imported default activity, ensure lastActive is current
       };
 
       await setDoc(doc(db, 'users', user.uid), userData);
