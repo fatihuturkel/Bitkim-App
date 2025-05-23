@@ -24,6 +24,7 @@ type Message = {
   imageUri?: string;
   timestamp: Date;
   isUser: boolean;
+  isThinking?: boolean; // Add this flag
 };
 
 // Remove the route param type definition as we're not using route params anymore
@@ -227,11 +228,14 @@ export default function ChatScreen() {
     }
     setIsMenuVisible(false); // Close menu
 
+    const currentInputText = inputText;
+    const currentSelectedImage = selectedImage;
+
     // Create a new message for UI
     const newMessage: Message = {
       id: Date.now().toString(),
-      text: inputText,
-      imageUri: selectedImage || undefined,
+      text: currentInputText,
+      imageUri: currentSelectedImage || undefined,
       timestamp: new Date(),
       isUser: true
     };
@@ -243,15 +247,15 @@ export default function ChatScreen() {
     let userChatMessage: ChatMessage;
 
     // Always use content array format for API consistency
-    if (selectedImage) {
+    if (currentSelectedImage) {
       // For mobile platforms, convert image to base64
       if (Platform.OS !== 'web') {
         try {
-          const base64Image = await imageToBase64(selectedImage);
+          const base64Image = await imageToBase64(currentSelectedImage);
           userChatMessage = {
             role: 'user',
             content: [
-              { type: "text", text: inputText },
+              { type: "text", text: currentInputText },
               {
                 type: "image_url",
                 image_url: {
@@ -266,7 +270,7 @@ export default function ChatScreen() {
           userChatMessage = {
             role: 'user',
             content: [
-              { type: "text", text: inputText + " " + i18n.t('chat.image_upload_failed_suffix') }
+              { type: "text", text: currentInputText + " " + i18n.t('chat.image_upload_failed_suffix') }
             ],
           };
         }
@@ -275,11 +279,11 @@ export default function ChatScreen() {
         userChatMessage = {
           role: 'user',
           content: [
-            { type: "text", text: inputText },
+            { type: "text", text: currentInputText },
             {
               type: "image_url",
               image_url: {
-                url: selectedImage,
+                url: currentSelectedImage,
               },
             },
           ],
@@ -290,7 +294,7 @@ export default function ChatScreen() {
       userChatMessage = {
         role: 'user',
         content: [
-          { type: "text", text: inputText }
+          { type: "text", text: currentInputText }
         ],
       };
     }
@@ -299,30 +303,43 @@ export default function ChatScreen() {
     const updatedChatHistory = [...chatHistory, userChatMessage];
     setChatHistory(updatedChatHistory);
 
-    // Clear input and image
+    // Clear input and image AFTER preparing messages
     setInputText('');
     setSelectedImage(null);
 
-    // Set loading state
+    // Add thinking indicator message to UI
+    const thinkingMessageId = `thinking-${Date.now()}`;
+    const thinkingMessage: Message = {
+      id: thinkingMessageId,
+      text: i18n.t('chat.ai_thinking'), // You might want a shorter text like "..." or a dedicated i18n key
+      timestamp: new Date(),
+      isUser: false,
+      isThinking: true,
+    };
+    setMessages((prevMessages) => [...prevMessages, thinkingMessage]);
+
+    // Set loading state (still useful for disabling send button)
     setIsLoading(true);
 
     try {
       // Generate AI response with full conversation history
       const aiResponse = await generateAIResponse(
-        inputText,
-        newMessage.imageUri,
+        currentInputText, // Use captured text
+        newMessage.imageUri, // Use image URI from the user message object
         updatedChatHistory // Pass the updated chat history
       );
 
-      // Add AI response to UI messages
-      const responseMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: aiResponse,
-        timestamp: new Date(),
-        isUser: false
-      };
-
-      setMessages((prevMessages) => [...prevMessages, responseMessage]);
+      // Remove thinking message and add AI response
+      setMessages((prevMessages) => {
+        const filteredMessages = prevMessages.filter(msg => msg.id !== thinkingMessageId);
+        const responseMessage: Message = {
+          id: (Date.now() + 1).toString(), // Ensure unique ID
+          text: aiResponse,
+          timestamp: new Date(),
+          isUser: false
+        };
+        return [...filteredMessages, responseMessage];
+      });
 
       // Add AI response to chat history with consistent format
       const assistantChatMessage: ChatMessage = {
@@ -331,34 +348,45 @@ export default function ChatScreen() {
           { type: "text", text: aiResponse }
         ],
       };
-
       setChatHistory((prevHistory) => [...prevHistory, assistantChatMessage]);
     } catch (error) {
       console.error('Error generating AI response:', error);
 
-      // Add error message
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: i18n.t('chat.ai_response_error'),
-        timestamp: new Date(),
-        isUser: false
-      };
-
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      // Remove thinking message and add error message
+      setMessages((prevMessages) => {
+        const filteredMessages = prevMessages.filter(msg => msg.id !== thinkingMessageId);
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(), // Ensure unique ID
+          text: i18n.t('chat.ai_response_error'),
+          timestamp: new Date(),
+          isUser: false
+        };
+        return [...filteredMessages, errorMessage];
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const renderMessage = ({ item }: { item: Message }) => (
-    <View style={[styles.messageContainer, item.isUser ? styles.userMessage : styles.botMessage, item.isUser ? { backgroundColor: userMessageBackgroundColor } : { backgroundColor: botMessageBackgroundColor }]}>
-      {item.imageUri && (
-        <Image source={{ uri: item.imageUri }} style={styles.messageImage} />
-      )}
-      {item.text ? <Text style={item.isUser ? [styles.userMessageText, { color: userMessageTextColor }] : [styles.messageText, { color: primaryTextColor }]}>{item.text}</Text> : null}
-      <Text style={[styles.timestamp, { color: item.isUser ? userMessageTextColor + '99' : secondaryTextColor }]}>{item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-    </View>
-  );
+  const renderMessage = ({ item }: { item: Message }) => {
+    if (item.isThinking) {
+      return (
+        <View style={[styles.messageContainer, styles.botMessage, { backgroundColor: botMessageBackgroundColor, flexDirection: 'row', alignItems: 'center' }]}>
+          <ActivityIndicator size="small" color={primaryTextColor} style={{ marginRight: 8 }} />
+          <Text style={[styles.messageText, { color: primaryTextColor }]}>{item.text}</Text>
+        </View>
+      );
+    }
+    return (
+      <View style={[styles.messageContainer, item.isUser ? styles.userMessage : styles.botMessage, item.isUser ? { backgroundColor: userMessageBackgroundColor } : { backgroundColor: botMessageBackgroundColor }]}>
+        {item.imageUri && (
+          <Image source={{ uri: item.imageUri }} style={styles.messageImage} />
+        )}
+        {item.text ? <Text style={item.isUser ? [styles.userMessageText, { color: userMessageTextColor }] : [styles.messageText, { color: primaryTextColor }]}>{item.text}</Text> : null}
+        <Text style={[styles.timestamp, { color: item.isUser ? userMessageTextColor + '99' : secondaryTextColor }]}>{item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+      </View>
+    );
+  };
 
   return (
     <ThemedView style={[styles.container, { marginBottom: tabBarHeight, backgroundColor: themedBackgroundColor }]}>
@@ -385,7 +413,6 @@ export default function ChatScreen() {
             keyExtractor={(item) => item.id}
             inverted={false}
             contentContainerStyle={styles.chatListContent}
-            key={`messages-${messages.length}`}
             ListEmptyComponent={() => (
               <View style={styles.emptyChat}>
                 <Text style={[styles.emptyChatText, { color: placeholderColor }]}>{i18n.t('chat.empty_chat_placeholder')}</Text>
@@ -393,12 +420,14 @@ export default function ChatScreen() {
             )}
           />
 
+          {/* Remove the old loading container
           {isLoading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={tintColor} />
               <Text style={[styles.loadingText, { color: tintColor }]}>{i18n.t('chat.ai_thinking')}</Text>
             </View>
           )}
+          */}
 
           <View style={[styles.inputContainer, { borderTopColor: separatorColor, backgroundColor: themedBackgroundColor }]}>
             {selectedImage ? (
@@ -532,15 +561,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 4,
   },
-  loadingContainer: {
+  loadingContainer: { // This style is no longer used directly for the main loading indicator but can be kept if used elsewhere or removed
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-  },
-  loadingText: {
-    marginLeft: 10,
-    fontSize: 16,
+    // position: 'absolute', // Remove if it was for overlay
+    // bottom: 70, // Remove if it was for overlay
+    // left: 0, // Remove if it was for overlay
+    // right: 0, // Remove if it was for overlay
   },
   inputContainer: {
     borderTopWidth: Platform.OS === 'ios' ? 0.5 : 1, // Thinner border for iOS
