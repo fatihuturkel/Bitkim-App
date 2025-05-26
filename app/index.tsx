@@ -1,69 +1,93 @@
-import { StyleSheet, Platform } from 'react-native';
-import { HelloWave } from '@/components/HelloWave';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import Button from '@/components/Button';
+import useUserStore from '@/zustand/userStore';
 import { router } from 'expo-router';
+import React from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import i18n from '@/i18n';
 
 export default function HomeScreen() {
+  const colorScheme = useColorScheme();
+  const firstName = useUserStore((state) => state.firstName);
+
   return (
-      <><ThemedView style={styles.titleContainer}>
-      <ThemedText type="title">Welcome Home!</ThemedText>
-      <HelloWave />
-    </ThemedView><ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView><ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView><ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+    <SafeAreaView style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
+      {/* Başlık */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>B İ T K İ M</Text>
+      </View>
 
-        <Button
-        title="Sign In"
-        onPress={() => router.push('/sign-in')} 
-        />
+      {/* Görsel */}
+      <Image
+        style={styles.usersImage}
+        source={require('@/assets/images/garden.png')}
+      />
 
-          
-      </ThemedView></>
+      {/* Hoşgeldin mesajı */}
+      <View style={styles.welcomeContainer}>
+        <Text style={styles.welcomeMessage2}>
+          {i18n.t('home.welcome')}
+          {firstName ? `, ${firstName}` : ''}
+        </Text>
+      </View>
+
+      {/* Giriş yap butonu */}
+      <Button
+        title={i18n.t('auth.login')}
+        onPress={() => router.push('/sign-in')}
+      />
+
+      {/* Kayıt yönlendirme */}
+      <Text style={styles.registerText}>
+        {i18n.t('home.signup_prompt')}{' '}
+        <Text style={styles.registerLink} onPress={() => router.push('/sign-up')}>
+          {i18n.t('auth.signUp')}
+        </Text>
+      </Text>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    padding: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  headerContainer: {
     position: 'absolute',
+    top: 80,
+    width: '100%',
+    alignItems: 'center',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#438254',
+  },
+  usersImage: {
+    marginBottom: 40,
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+  },
+  welcomeContainer: {
+    marginBottom: 40,
+    alignItems: 'center',
+  },
+  welcomeMessage2: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#666',
+  },
+  registerText: {
+    fontSize: 14,
+    color: '#444',
+    marginTop: 20,
+  },
+  registerLink: {
+    fontWeight: 'bold',
+    color: '#2e7d32',
+    textDecorationLine: 'underline',
   },
 });
