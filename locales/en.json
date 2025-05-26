@@ -9,7 +9,9 @@
     "changing": "Changing...",
     "send": "Send",
     "sending": "Sending...",
-    "clear": "Clear"
+    "clear": "Clear",
+    "delete": "Delete",
+    "deleting": "Deleting..."
   },
   "navigation": {
     "home": "Home",

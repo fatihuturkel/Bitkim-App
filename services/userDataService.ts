@@ -38,11 +38,11 @@ import i18n from '@/i18n';
 import { UriPrediction } from '@/zustand/imagePredictionData'; // Added import
 import useUserStore, { UserPreferences, UserState } from '@/zustand/userStore'; // Adjust the path to your zustand store
 import { Ionicons } from '@expo/vector-icons'; // Added import for icon type consistency, though not directly used in logic
+import * as FileSystem from 'expo-file-system'; // Import FileSystem
 import * as Localization from 'expo-localization';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, deleteField } from 'firebase/firestore'; 
+import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
-import * as FileSystem from 'expo-file-system'; // Import FileSystem
 
 
 export const retrieveCurrentUserData = async (): Promise<void> => {
@@ -517,13 +517,11 @@ export const fetchBaseAnalyzeHistory = async (language: string = 'en'): Promise<
             // Use language parameter to display appropriate name
             if (language === 'tr') {
               itemDetails.push(
-                `${i18n.t('analyze.top_prediction', { name: topPrediction.turkish_name || 'N/A' })}: ${(topPrediction.confidence * 100).toFixed(1)}%`
+              `${i18n.t('analyze.top_prediction', { name: topPrediction.turkish_name || 'N/A' })}`
               );
-              if (topPrediction.latin_name) {
-                itemDetails.push(
-                  i18n.t('analyze.latin', { name: topPrediction.latin_name })
-                );
-              }
+              itemDetails.push(
+                `${i18n.t('analyze.confidence', { percentage: (topPrediction.confidence * 100).toFixed(1) })}`
+              );
             } else {
               // Default to English for any other language setting
               itemDetails.push(

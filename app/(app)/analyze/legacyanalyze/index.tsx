@@ -26,11 +26,13 @@ const { width: screenWidth } = Dimensions.get('window');
 
 // Create a separate component for rendering prediction items
 // Define PredictionItem outside of the main component
-const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, insets }: {
+const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, insets, index, totalItems }: {
   item: UriPrediction;
   systemBackgroundColor: string;
   textColor: string;
   insets: { bottom: number };
+  index: number; // Added index
+  totalItems: number; // Added totalItems
 }) => {
   const [imageLoadError, setImageLoadError] = useState(false);
   const analysisResults: ResultItem[] = [];
@@ -132,22 +134,36 @@ const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, ins
 
   return (
     <View style={[styles.slide, { backgroundColor: systemBackgroundColor }]}>
-      <Image 
-        source={{ uri: imageSource }} 
-        style={styles.image} 
-        onError={(e) => {
-          console.error(`Image failed to load: ${imageSource}`, e.nativeEvent.error);
-          setImageLoadError(true);
-        }}
-      />
-      {imageLoadError && (
-        <View style={styles.imageErrorContainer}>
-          <Ionicons name="image-outline" size={50} color={textColor} />
-          <Text style={{ color: textColor, marginTop: 10 }}>
-            {i18n.t('analyze.image_load_error')}
-          </Text>
-        </View>
-      )}
+      <View style={styles.imageContainer}>
+        <Image 
+          source={{ uri: imageSource }} 
+          style={styles.image} 
+          onError={(e) => {
+            console.error(`Image failed to load: ${imageSource}`, e.nativeEvent.error);
+            setImageLoadError(true);
+          }}
+        />
+        {imageLoadError && (
+          <View style={styles.imageErrorContainer}>
+            <Ionicons name="image-outline" size={50} color={textColor} />
+            <Text style={{ color: textColor, marginTop: 10 }}>
+              {i18n.t('analyze.image_load_error')}
+            </Text>
+          </View>
+        )}
+        {/* Left Chevron */}
+        {totalItems > 1 && index > 0 && (
+          <View style={[styles.chevronContainer, styles.leftChevron]}>
+            <Ionicons name="chevron-back" size={30} color={useThemeColor({}, 'tertiaryLabel')} />
+          </View>
+        )}
+        {/* Right Chevron */}
+        {totalItems > 1 && index < totalItems - 1 && (
+          <View style={[styles.chevronContainer, styles.rightChevron]}>
+            <Ionicons name="chevron-forward" size={30} color={useThemeColor({}, 'tertiaryLabel')} />
+          </View>
+        )}
+      </View>
       <ScrollView
         style={styles.predictionScrollView}
         contentContainerStyle={{ paddingBottom: insets.bottom }}
@@ -250,20 +266,22 @@ export default function Analyze() {
   useEffect(() => {
     if (predictionsFromStore.length > 0) {
       console.log(`Current predictions in store: ${predictionsFromStore.length}`);
-      predictionsFromStore.forEach((prediction, index) => {
-        console.log(`Prediction ${index + 1}:`);
+      predictionsFromStore.forEach((prediction, idx) => { // Changed index to idx to avoid conflict
+        console.log(`Prediction ${idx + 1}:`);
         console.log(`  - URI: ${prediction.uri}`);
         console.log(`  - Permanent path: ${prediction.permanentImagePath || 'Not saved permanently'}`);
       });
     }  }, [predictionsFromStore]);
 
-  const renderItem = ({ item }: { item: UriPrediction }) => {
+  const renderItem = ({ item, index }: { item: UriPrediction; index: number }) => { // Added index from FlatList
     return (
       <PredictionItem 
         item={item} 
         systemBackgroundColor={systemBackgroundColor} 
         textColor={textColor} 
         insets={insets} 
+        index={index} // Pass index
+        totalItems={predictionsFromStore.length} // Pass total number of items
       />
     );
   };
@@ -332,9 +350,14 @@ const styles = StyleSheet.create({
     width: screenWidth,
     flex: 1,
   },
-  image: {
+  imageContainer: { // Added imageContainer style
     width: screenWidth,
     height: screenWidth, // Make image height same as width for a square aspect ratio
+    position: 'relative', // Needed for absolute positioning of chevrons
+  },
+  image: {
+    width: '100%', // Image fills the container
+    height: '100%',
     resizeMode: 'contain',
   },
   imageErrorContainer: {
@@ -342,13 +365,28 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: screenWidth,
+    bottom: 0, // Cover the entire image container
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.05)', // Slightly tinted background
   },
   predictionScrollView: {
     flex: 1,
+  },
+  chevronContainer: { // Style for chevron containers
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10, // Add some padding
+    // backgroundColor: 'rgba(0,0,0,0.1)', // Optional: for debugging or slight background
+  },
+  leftChevron: { // Style for left chevron
+    left: 5, // Position from the left
+  },
+  rightChevron: { // Style for right chevron
+    right: 5, // Position from the right
   },
   // predictionContainer, header, subHeader, alternativePrediction styles can be removed if not directly used
 });

@@ -10,7 +10,9 @@
     "changing": "Değiştiriliyor...",
     "send": "Gönder",
     "sending": "Gönderiliyor...",
-    "clear": "Temizle"
+    "clear": "Temizle",
+    "delete": "Sil",
+    "deleting": "Siliniyor..."
   },
   "navigation": {
     "home": "Ana Sayfa",
