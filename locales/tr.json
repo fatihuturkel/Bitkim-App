@@ -54,8 +54,7 @@
     "email_verification": "E-posta Doğrulama",
     "change_password": "Şifre Değiştir",
     "sign_out": "Çıkış Yap",
-    "email_verification_status_section_title": "E-POSTA DOĞRULAMA DURUMU",
-    
+    "email_verification_status_section_title": "E-POSTA DOĞRULAMA DURUMU"
   },
   "error": {
     "email_required": "E-posta gereklidir",
@@ -115,9 +114,9 @@
     "theme": "Tema",
     "select_language": "Dil Seçin",
     "app_language": "Uygulama Dili",
-    "scan_settings_title": "Tarama Ayarları",
-    "scan_settings_footer": "Tarama geçmişi otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
-    "base_scan_history_label": "Temel Tarama Geçmişi"
+    "history_settings_section_title": "GEÇMİŞ AYARLARI",
+    "history_settings_section_footer": "Geçmiş otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
+    "base_scan_history_label": "Temel Analiz Geçmişi"
   },
   "profile": {
     "title": "Profil",
@@ -135,7 +134,7 @@
     "edit_name_title": "Adı Düzenle",
     "edit_name": "Adı Düzenle",
     "name_and_surname_section_title": "AD VE SOYAD",
-    "profile_section_title" : "PROFİL BİLGİLERİ"
+    "profile_section_title": "PROFİL BİLGİLERİ"
   },
   "chat": {
     "clear_chat_confirm_title": "Sohbeti Temizle",
@@ -179,20 +178,26 @@
     "clear_images": "Resimleri Temizle",
     "ai_chat_button": "Yapay Zeka Sohbeti",
     "legacy_analyzer_button": "Temel Analiz",
-    "camera_roll_card_title": "Film Rulosu",
+    "camera_roll_card_title": "Galeri",
     "take_photo_card_title": "Fotoğraf Çek",
     "selected_images_count": "Seçili Resimler: %{count}",
     "permission_required_title": "İzin Gerekli",
-    "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?"
+    "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?",
+    "image_load_error": "Resim yüklenemedi"
+  },
+  "activity": {
+    "history_section_title": "GEÇMİŞ",
+    "base_analyze_history": "Temel Analiz Geçmişi",
+    "ai_history": "Yapay Zeka Sohbet Geçmişi",
+    "no_base_analyze_history_found": "Kaydedilmiş Temel Analiz geçmişi bulunamadı."
   },
   "home": {
-  "how_it_works": "Nasıl Çalışır?",
-  "how_it_works_description": "Aşağıdaki adımları takip ederek yaprağın hastalığını öğrenebilir ve çözüm alabilirsin.",
-  "step_take_photo": "Fotoğraf çek",
-  "step_get_result": "Sonucu al",
-  "step_treat": "Tedavi et",
-   "welcome": "Hoşgeldin",
-  "signup_prompt": "Yeni bir deneyim için"
-}
-
+    "how_it_works": "Nasıl Çalışır?",
+    "how_it_works_description": "Aşağıdaki adımları takip ederek yaprağın hastalığını öğrenebilir ve çözüm alabilirsin.",
+    "step_take_photo": "Fotoğraf çek",
+    "step_get_result": "Sonucu al",
+    "step_treat": "Tedavi et",
+    "welcome": "Hoşgeldin",
+    "signup_prompt": "Yeni bir deneyim için"
+  }
 }

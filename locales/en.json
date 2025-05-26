@@ -113,9 +113,9 @@
     "theme": "Theme",
     "select_language": "Select Language",
     "app_language": "App Language",
-    "scan_settings_title": "Scan Settings",
-    "scan_settings_footer": "Scan history is automatically saved in cloud storage. You can delete it from the settings page.",
-    "base_scan_history_label": "Base Scan History"
+    "history_settings_section_title": "History Settings",
+    "history_settings_section_footer": "History is automatically saved in cloud storage. You can delete it from the settings page.",
+    "base_scan_history_label": "Base Analyze History"
   },
   "profile": {
     "title": "Profile",
@@ -177,19 +177,26 @@
     "clear_images": "Clear Images",
     "ai_chat_button": "AI Chat",
     "legacy_analyzer_button": "Base Analyze",
-    "camera_roll_card_title": "Camera Roll",
+    "camera_roll_card_title": "Gallery",
     "take_photo_card_title": "Take Photo",
     "selected_images_count": "Selected Images: %{count}",
     "permission_required_title": "Permission Required",
-    "permission_required_message": "Permission to access camera is required! Do you want to go to settings to grant permission?"
+    "permission_required_message": "Permission to access camera is required! Do you want to go to settings to grant permission?",
+    "image_load_error": "Image failed to load"
+  },
+  "activity": {
+    "history_section_title": "History",
+    "base_analyze_history": "Base Analyze History",
+    "ai_history": "AI Chat History",
+    "no_base_analyze_history_found": "There is no Base Analyze history yet."
   },
   "home": {
-  "how_it_works": "How It Works?",
-  "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
-  "step_take_photo": "Take Photo",
-  "step_get_result": "Get Result",
-  "step_treat": "Treat It"
-}
-
-
+    "how_it_works": "How It Works?",
+    "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
+    "step_take_photo": "Take Photo",
+    "step_get_result": "Get Result",
+    "step_treat": "Treat It",
+    "welcome": "Hoşgeldin",
+    "signup_prompt": "Yeni bir deneyim için"
+  }
 }

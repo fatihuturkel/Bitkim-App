@@ -27,8 +27,10 @@ export interface PredictionData {
 }
 
 export interface UriPrediction {
-  uri: string;
+  uri: string; // Original URI of the image selected by the user
   prediction: PredictionData['prediction'];
+  permanentImagePath?: string; // Path to the image after it has been saved permanently
+  scanDate?: string;  // ISO string of the date when the scan/prediction was made
 }
 
 interface ImagePredictionState {

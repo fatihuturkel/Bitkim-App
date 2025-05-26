@@ -1,10 +1,16 @@
+import { useThemeColor } from '@/hooks/useThemeColor'; // Import useThemeColor
 import i18n from '@/i18n';
 import { Stack } from 'expo-router';
-import React from 'react';
 
 export default function SettingsLayout() {
+  const tintColor = useThemeColor({}, 'tint'); // Get the tint color for the header
+
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerTintColor: tintColor, // Set the header tint color globally for this stack
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
@@ -61,20 +67,36 @@ export default function SettingsLayout() {
         name="preferences/index" // Corresponds to preferences.tsx
         options={{
           title: i18n.t('preference.title'),
-          headerBackButtonDisplayMode: 'generic',
+          headerBackButtonDisplayMode: 'default', // Keep 'Settings' in the header
         }}
       />
 
-        <Stack.Screen
-        name = "profile/index" // Corresponds to profile.tsx
+      <Stack.Screen
+        name="profile/index" // Corresponds to profile.tsx
         options={{
           title: i18n.t('navigation.profile'),
           headerBackButtonDisplayMode: 'generic',
         }} />
 
 
+      <Stack.Screen
+        name="activity/index" // Corresponds to activity.tsx
+        options={{
+          title: i18n.t('navigation.activity'),
+          headerBackButtonDisplayMode: 'default', // Keep 'Settings' in the header
+        }}
+      />
+
+      <Stack.Screen
+        name="activity/baseAnalyzeHistory/index" // Corresponds to baseanalyzehistory.tsx
+        options={{
+          title: i18n.t('activity.base_analyze_history'),
+          headerBackButtonDisplayMode: 'generic',
+        }}
+      />
+
       {/* Add other nested setting screens here */}
-      
+
     </Stack>
   );
 }

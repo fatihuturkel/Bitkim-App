@@ -1,5 +1,6 @@
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import i18n from '@/i18n';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { BlurView } from 'expo-blur';
@@ -18,6 +19,8 @@ function TabIcon({ ionIcon, color }: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const tintColor = useThemeColor({}, 'tint'); // Get the tint color for the header
+  const systemGray3 = useThemeColor({}, 'systemGray3'); // Get the gray color for inactive tabs
 
   const { user, isLoading } = useSession(); // Changed 'session' to 'user'
 
@@ -40,8 +43,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        //tabBarActiveTintColor: (colorScheme === 'dark' ? Colors.dark.tint : Colors.light.tint),
-        //tabBarInactiveTintColor: (colorScheme === 'dark' ? Colors.dark.tabIconDefault : Colors.light.tabIconDefault),
+        tabBarActiveTintColor: tintColor,
+        //tabBarInactiveTintColor: systemGray3,
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
@@ -49,6 +52,7 @@ export default function TabLayout() {
             ios: 'transparent',
             android: 'rgba(255, 255, 255, 0.8)', // Fallback for Android
           }),
+
           borderTopWidth: 0,
           elevation: 0,
           height: 94,

@@ -37,11 +37,13 @@ export const Colors = {
     secondarySystemBackground: '#F2F2F7', // iOS Secondary Background
     tertiarySystemBackground: '#E5E5EA', // iOS Tertiary Background (Matches systemGray5 Light)
 
-    tint: '#007AFF', // iOS Tint Color (Primary Color)
+    //tint: '#007AFF', // iOS Tint Color (Primary Color)
+    tint: '#34C759', // Tint color changed to green for this app
 
     // --------- User Defined Colors ---------
     mixSystemBackground: '#F2F2F7',
     mixListItemBackground: '#FFFFFF',
+    darkGreen: 'rgb(20, 130, 44)',
   },
   dark: {
 
@@ -76,11 +78,13 @@ export const Colors = {
     secondarySystemBackground: '#1C1C1E', // iOS Secondary Background
     tertiarySystemBackground: '#2C2C2E', // iOS Tertiary Background (Matches systemGray5 Dark)
 
-    tint: '#0A84FF', // iOS Tint Color (Primary Color)
+    //tint: '#0A84FF', // iOS Tint Color (Primary Color)
+    tint: '#30D158', // Tint color changed to green for this app
 
     // --------- User Defined Colors ---------
     mixSystemBackground: '#000000',
     mixListItemBackground: '#1C1C1E',
+    darkGreen: 'rgb(12, 128, 49)', // Dark green for dark mode
   },
 };
 
