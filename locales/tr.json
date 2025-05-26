@@ -116,7 +116,7 @@
     "app_language": "Uygulama Dili",
     "history_settings_section_title": "GEÇMİŞ AYARLARI",
     "history_settings_section_footer": "Geçmiş otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
-    "base_scan_history_label": "Temel Tarama Geçmişi"
+    "base_scan_history_label": "Temel Analiz Geçmişi"
   },
   "profile": {
     "title": "Profil",
@@ -180,8 +180,15 @@
     "legacy_analyzer_button": "Temel Analiz",
     "camera_roll_card_title": "Galeri",
     "take_photo_card_title": "Fotoğraf Çek",
-    "selected_images_count": "Seçili Resimler: %{count}",
-    "permission_required_title": "İzin Gerekli",
-    "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?"
+    "selected_images_count": "Seçili Resimler: %{count}",    "permission_required_title": "İzin Gerekli",
+    "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?",
+    "image_load_error": "Resim yüklenemedi"
+  },
+  "activity": {
+    "history_section_title": "GEÇMİŞ",
+    "base_analyze_history": "Temel Analiz Geçmişi",
+    "ai_history": "Yapay Zeka Sohbet Geçmişi",
+    "no_base_analyze_history_found": "Kaydedilmiş Temel Analiz geçmişi bulunamadı."
+
   }
 }

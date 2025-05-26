@@ -84,7 +84,7 @@ export default function Settings() {
         <AppleSection title={i18n.t("navigation.settings")}>
           <ListItem
             label={i18n.t("navigation.activity")}
-            onPress={() => console.log("Activity pressed")}
+            onPress={() => router.push('/(app)/settings/activity')}
             icon={<Ionicons name="analytics-outline" />}
           />
           <ListItem

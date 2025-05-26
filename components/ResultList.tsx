@@ -1,7 +1,7 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 // Define TypeScript interfaces
 export interface ResultItem {
@@ -13,6 +13,7 @@ export interface ResultItem {
   icon?: keyof typeof Ionicons.glyphMap;
   isItemCollapsible?: boolean;
   initiallyItemCollapsed?: boolean;
+  imageUrl?: string | null; // URL to the image, can be a permanent path or original URI
 }
 
 interface ResultListProps {
@@ -97,8 +98,7 @@ const useStyles = () => {
       borderTopWidth: 1,
       borderBottomWidth: 1,
       borderRightColor: separatorColor,
-      borderTopColor: separatorColor,
-      borderBottomColor: separatorColor,
+      borderTopColor: separatorColor,      borderBottomColor: separatorColor,
       shadowColor: '#000', // Standard shadow color
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.1,
@@ -119,6 +119,12 @@ const useStyles = () => {
     },
     itemIcon: {
       marginRight: 5,
+    },
+    itemImage: {
+      width: 100,
+      height: 100,
+      borderRadius: 4,
+      marginRight: 10,
     },
     itemCollapsibleIcon: { // Style for the item's chevron icon
       marginLeft: 10, // Add some spacing
@@ -205,21 +211,26 @@ const ResultListItem: React.FC<{
       setIsItemCollapsed(!isItemCollapsed);
     }
   };
-
   return (
     <View key={item.id} style={styles.historyItem}>
       <TouchableOpacity onPress={toggleItemCollapse} disabled={!item.isItemCollapsible} activeOpacity={item.isItemCollapsible ? 0.7 : 1}>
         <View style={styles.historyItemHeader}>
           <View style={styles.plantNameContainer}>
-            {item.icon && (
+            {item.imageUrl ? (
+              <Image
+                source={{ uri: item.imageUrl }}
+                style={styles.itemImage}
+                resizeMode="cover"
+              />
+            ) : item.icon ? (
               <Ionicons
                 name={item.icon}
                 size={16}
                 color={itemIconColor}
                 style={styles.itemIcon}
               />
-            )}
-            <Text style={[styles.plantName, !item.icon && { marginLeft: 0 }]}>{item.title}</Text>
+            ) : null}
+            <Text style={[styles.plantName, !item.icon && !item.imageUrl && { marginLeft: 0 }]}>{item.title}</Text>
           </View>
           {item.status && !item.isItemCollapsible && ( // Only show status here if not collapsible, or handle differently
             <View style={styles.statusBadge}>

@@ -1,6 +1,7 @@
 import ResultList, { ResultItem } from '@/components/ResultList';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import i18n from '@/i18n'; // Add this import
 import { uploadImagesForPrediction } from '@/services/imageService';
 import { UriPrediction, useImagePredictionStore } from '@/zustand/imagePredictionData';
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore';
@@ -19,9 +20,114 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import i18n from '@/i18n'; // Add this import
 
 const { width: screenWidth } = Dimensions.get('window');
+
+// Create a separate component for rendering prediction items
+// Define PredictionItem outside of the main component
+const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, insets }: {
+  item: UriPrediction;
+  systemBackgroundColor: string;
+  textColor: string;
+  insets: { bottom: number };
+}) => {
+  const [imageLoadError, setImageLoadError] = useState(false);
+  const analysisResults: ResultItem[] = [];
+  
+  // Use permanentImagePath if available, otherwise fall back to uri
+  const imageSource = item.permanentImagePath || item.uri;
+  
+  console.log(`Rendering image from URI: ${imageSource}`);
+
+  const top = item.prediction?.analysis_results?.top_prediction;
+  if (top) {
+    analysisResults.push({
+      id: `${item.uri}-top-prediction`,
+      title: i18n.t('analyze.top_prediction', { name: top.english_name }),
+      details: [
+        i18n.t('analyze.turkish', { name: top.turkish_name }),
+        i18n.t('analyze.latin', { name: top.latin_name }),
+        i18n.t('analyze.confidence', { percentage: (top.confidence * 100).toFixed(2) }),
+      ],
+      icon: 'checkmark-circle-outline' as keyof typeof Ionicons.glyphMap,
+      status: i18n.t('analyze.prediction'),
+      isItemCollapsible: true,
+      initiallyItemCollapsed: true,
+    });
+  }
+
+  if (item.prediction?.analysis_results?.alternative_predictions) {
+    item.prediction.analysis_results.alternative_predictions.forEach((alt, index) => {
+      analysisResults.push({
+        id: `${item.uri}-alt-prediction-${index}`,
+        title: i18n.t('analyze.alternative_prediction', { 
+          index: index + 1, 
+          name: alt.english_name 
+        }),
+        details: [
+          i18n.t('analyze.turkish', { name: alt.turkish_name }),
+          i18n.t('analyze.latin', { name: alt.latin_name }),
+          i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }),
+        ],
+        icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
+        status: i18n.t('analyze.alternative'),
+        isItemCollapsible: true,
+        initiallyItemCollapsed: true,
+      });
+    });
+  }
+
+  const perf = item.prediction?.performance_metrics;
+  if (perf) {
+    analysisResults.push({
+      id: `${item.uri}-performance-metrics`,
+      title: i18n.t('analyze.performance_metrics'),
+      details: [
+        i18n.t('analyze.preprocessing', { ms: perf.preprocessing_ms?.toString() || '0' }),
+        i18n.t('analyze.inference', { ms: perf.inference_ms?.toString() || '0' }),
+        i18n.t('analyze.postprocessing', { ms: perf.postprocessing_ms?.toString() || '0' }),
+      ],
+      icon: 'speedometer-outline' as keyof typeof Ionicons.glyphMap,
+      status: i18n.t('analyze.metrics'),
+      isItemCollapsible: true,
+      initiallyItemCollapsed: true,
+    });
+  }
+
+  return (
+    <View style={[styles.slide, { backgroundColor: systemBackgroundColor }]}>
+      <Image 
+        source={{ uri: imageSource }} 
+        style={styles.image} 
+        onError={(e) => {
+          console.error(`Image failed to load: ${imageSource}`, e.nativeEvent.error);
+          setImageLoadError(true);
+        }}
+      />
+      {imageLoadError && (
+        <View style={styles.imageErrorContainer}>
+          <Ionicons name="image-outline" size={50} color={textColor} />
+          <Text style={{ color: textColor, marginTop: 10 }}>
+            {i18n.t('analyze.image_load_error')}
+          </Text>
+        </View>
+      )}
+      <ScrollView
+        style={styles.predictionScrollView}
+        contentContainerStyle={{ paddingBottom: insets.bottom }}
+      >
+        <ResultList
+          results={analysisResults}
+          title={i18n.t('analyze.analysis_details')}
+          headerIcon={'analytics-outline' as keyof typeof Ionicons.glyphMap}
+          emptyText={i18n.t('analyze.no_analysis_data')}
+          isCollapsible={false}
+          initiallyCollapsed={false}
+        />
+      </ScrollView>
+    </View>
+  );
+});
 
 export default function Analyze() {
   const storeSelectedImageUris = useImageSelectionStore((state) => state.selectedImageUris);
@@ -103,81 +209,25 @@ export default function Analyze() {
 
   // Effect 2 removed as predictionsFromStore will be used directly for rendering
 
+  // Add debugging to see the image URIs being processed
+  useEffect(() => {
+    if (predictionsFromStore.length > 0) {
+      console.log(`Current predictions in store: ${predictionsFromStore.length}`);
+      predictionsFromStore.forEach((prediction, index) => {
+        console.log(`Prediction ${index + 1}:`);
+        console.log(`  - URI: ${prediction.uri}`);
+        console.log(`  - Permanent path: ${prediction.permanentImagePath || 'Not saved permanently'}`);
+      });
+    }  }, [predictionsFromStore]);
+
   const renderItem = ({ item }: { item: UriPrediction }) => {
-    const analysisResults: ResultItem[] = [];
-
-    const top = item.prediction?.analysis_results?.top_prediction;
-    if (top) {
-      analysisResults.push({
-        id: `${item.uri}-top-prediction`,
-        title: i18n.t('analyze.top_prediction', { name: top.english_name }),
-        details: [
-          i18n.t('analyze.turkish', { name: top.turkish_name }),
-          i18n.t('analyze.latin', { name: top.latin_name }),
-          i18n.t('analyze.confidence', { percentage: (top.confidence * 100).toFixed(2) }),
-        ],
-        icon: 'checkmark-circle-outline' as keyof typeof Ionicons.glyphMap,
-        status: i18n.t('analyze.prediction'),
-        isItemCollapsible: true,
-        initiallyItemCollapsed: true,
-      });
-    }
-
-    if (item.prediction?.analysis_results?.alternative_predictions) {
-      item.prediction.analysis_results.alternative_predictions.forEach((alt, index) => {
-        analysisResults.push({
-          id: `${item.uri}-alt-prediction-${index}`,
-          title: i18n.t('analyze.alternative_prediction', { 
-            index: index + 1, 
-            name: alt.english_name 
-          }),
-          details: [
-            i18n.t('analyze.turkish', { name: alt.turkish_name }),
-            i18n.t('analyze.latin', { name: alt.latin_name }),
-            i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }),
-          ],
-          icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
-          status: i18n.t('analyze.alternative'),
-          isItemCollapsible: true,
-          initiallyItemCollapsed: true,
-        });
-      });
-    }
-
-    const perf = item.prediction?.performance_metrics;
-    if (perf) {
-      analysisResults.push({
-        id: `${item.uri}-performance-metrics`,
-        title: i18n.t('analyze.performance_metrics'),
-        details: [
-          i18n.t('analyze.preprocessing', { ms: perf.preprocessing_ms?.toString() || '0' }),
-          i18n.t('analyze.inference', { ms: perf.inference_ms?.toString() || '0' }),
-          i18n.t('analyze.postprocessing', { ms: perf.postprocessing_ms?.toString() || '0' }),
-        ],
-        icon: 'speedometer-outline' as keyof typeof Ionicons.glyphMap,
-        status: i18n.t('analyze.metrics'),
-        isItemCollapsible: true,
-        initiallyItemCollapsed: true,
-      });
-    }
-
     return (
-      <View style={[styles.slide, { backgroundColor: systemBackgroundColor }]}>
-        <Image source={{ uri: item.uri }} style={styles.image} />
-        <ScrollView
-          style={styles.predictionScrollView}
-          contentContainerStyle={{ paddingBottom: insets.bottom }}
-        >
-          <ResultList
-            results={analysisResults}
-            title={i18n.t('analyze.analysis_details')}
-            headerIcon={'analytics-outline' as keyof typeof Ionicons.glyphMap}
-            emptyText={i18n.t('analyze.no_analysis_data')}
-            isCollapsible={false}
-            initiallyCollapsed={false}
-          />
-        </ScrollView>
-      </View>
+      <PredictionItem 
+        item={item} 
+        systemBackgroundColor={systemBackgroundColor} 
+        textColor={textColor} 
+        insets={insets} 
+      />
     );
   };
 
@@ -249,6 +299,16 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: screenWidth, // Make image height same as width for a square aspect ratio
     resizeMode: 'contain',
+  },
+  imageErrorContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: screenWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.05)', // Slightly tinted background
   },
   predictionScrollView: {
     flex: 1,

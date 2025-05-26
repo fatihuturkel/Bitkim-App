@@ -1,5 +1,6 @@
 import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 import { auth, db } from '../firebaseConfig'; // Import Firestore and auth
+import { saveImage } from '../utils/fileUtils'; // Assuming saveImage is in ../utils/fileUtils.ts
 import { PredictionData, UriPrediction, useImagePredictionStore } from '../zustand/imagePredictionData';
 import { useImageSelectionStore } from '../zustand/imageSelectionStore';
 import useUserStore from '../zustand/userStore'; // Import the user store
@@ -57,6 +58,7 @@ const fetchPredictionForUri = async (imageUri: string): Promise<UriPrediction | 
     return {
       uri: imageUri,
       prediction: predictionResultData.prediction,
+      scanDate: new Date().toISOString(), // Add scanDate here
     };
   } catch (error) {
     console.error(`Failed to fetch prediction for image ${filename}:`, error);
@@ -64,22 +66,32 @@ const fetchPredictionForUri = async (imageUri: string): Promise<UriPrediction | 
   }
 };
 
-// New function to save a single prediction to Firestore
 const savePredictionToFirestore = async (uriPrediction: UriPrediction): Promise<void> => {
   const currentUser = auth.currentUser;
   if (!currentUser) {
-    console.warn("User not authenticated. Cannot save prediction to Firestore.");
+    console.error("User not authenticated. Cannot save prediction to Firestore.");
     return;
   }
 
-  // Check scan history preference
   const scanHistoryEnabled = useUserStore.getState().preferences?.isBasicScanHistoryEnabled;
-  if (scanHistoryEnabled === false) { // Explicitly check for false
+  if (scanHistoryEnabled === false) {
     console.log("Scan history is disabled. Skipping save to Firestore.");
     return;
   }
 
-  const filename = uriPrediction.uri.split('/').pop() || 'image.jpg';
+  let permanentImageUri = uriPrediction.permanentImagePath; // Use if already provided
+
+  if (!permanentImageUri) { // If not provided by the caller (e.g. first save attempt failed)
+    try {
+      permanentImageUri = await saveImage(uriPrediction.uri);
+      console.log(`Image saved permanently at: ${permanentImageUri} (in savePredictionToFirestore)`);
+    } catch (error) {
+      console.error(`Failed to save image permanently for URI ${uriPrediction.uri} in Firestore path:`, error);
+      permanentImageUri = uriPrediction.uri; // Fallback to original URI
+    }
+  }
+
+  const filename = permanentImageUri.split('/').pop() || 'image.jpg';
   // It's good practice to ensure prediction and its nested properties exist
   if (!uriPrediction.prediction || !uriPrediction.prediction.analysis_results) {
       console.error(`Prediction data is incomplete for ${filename}. Cannot save to Firestore.`);
@@ -91,15 +103,18 @@ const savePredictionToFirestore = async (uriPrediction: UriPrediction): Promise<
   const filenameWithoutExtension = filename.substring(0, filename.lastIndexOf('.')) || filename;
 
   // Reconstruct a PredictionData-like object for Firestore, including the full prediction details and a timestamp
-  const predictionDataForFirestore: PredictionData & { scanDate: string } = {
-    filename: filename, // Store the original filename
-    prediction: uriPrediction.prediction, // This is the nested prediction object
-    scanDate: new Date().toISOString(),
+  // Make sure to store the permanentImageUri if you want to reference the saved image
+  const predictionDataForFirestore: UriPrediction = {
+    ...uriPrediction,
+    uri: uriPrediction.uri, // Keep original URI for reference
+    prediction: uriPrediction.prediction,
+    scanDate: uriPrediction.scanDate || new Date().toISOString(),
+    permanentImagePath: permanentImageUri, // Store the determined permanent path
   };
 
   try {
     await setDoc(userDocRef, { [filenameWithoutExtension]: predictionDataForFirestore }, { merge: true });
-    console.log(`Prediction for ${filenameWithoutExtension} saved to Firestore for user ${userId}.`);
+    console.log(`Prediction for ${filenameWithoutExtension} (image at ${permanentImageUri}) saved to Firestore for user ${userId}.`);
   } catch (error) {
     console.error(`Failed to save prediction for ${filenameWithoutExtension} to Firestore:`, error);
   }
@@ -120,11 +135,24 @@ export const uploadImagesForPrediction = async (): Promise<void> => {
 
   for (const imageUri of selectedImageUris) {
     try {
-      const uriPredictionResult = await fetchPredictionForUri(imageUri);
+      const fetchedPrediction = await fetchPredictionForUri(imageUri);
 
-      if (uriPredictionResult) {
-        addPredictionToStore(uriPredictionResult); // Add to Zustand store
-        await savePredictionToFirestore(uriPredictionResult); // Save to Firestore
+      if (fetchedPrediction) {
+        const scanHistoryEnabled = useUserStore.getState().preferences?.isBasicScanHistoryEnabled;
+        if (scanHistoryEnabled !== false) { // Attempt to save image if history is not explicitly disabled
+          try {
+            const permanentPath = await saveImage(fetchedPrediction.uri);
+            fetchedPrediction.permanentImagePath = permanentPath; // Set for the store and subsequent Firestore save
+            console.log(`Image saved permanently at: ${permanentPath} (before adding to store)`);
+          } catch (error) {
+            console.error(`Failed to save image ${fetchedPrediction.uri} to permanent storage before adding to store:`, error);
+            // fetchedPrediction.permanentImagePath will remain undefined.
+            // The Image component will fallback to fetchedPrediction.uri.
+          }
+        }
+
+        addPredictionToStore(fetchedPrediction); // Add to Zustand store (now with permanentImagePath if successfully saved)
+        await savePredictionToFirestore(fetchedPrediction); // Save to Firestore
       } else {
         // Error already logged in fetchPredictionForUri
         console.log(`Skipping further processing for ${imageUri.split('/').pop()} due to fetch error.`);
