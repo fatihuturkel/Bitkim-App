@@ -83,7 +83,9 @@
     "update_profile_name": "Profil adı güncellenemedi",
     "phone_number_required": "Telefon numarası gereklidir.",
     "phone_number_invalid_format": "Telefon numarası biçimi geçersiz. 10 hane bekleniyor.",
-    "update_phone_number": "Telefon numarası güncellenemedi"
+    "update_phone_number": "Telefon numarası güncellenemedi",
+    "fetch_data_error": "Geçmiş getirilemedi.",
+    "delete_record_failed": "Kayıt silinemedi."
   },
   "security": {
     "title": "Güvenlik",
@@ -167,8 +169,9 @@
     "alternative_prediction": "Alt. %{index}: %{name}",
     "performance_metrics": "Performans Metrikleri",
     "preprocessing": "Ön İşleme: %{ms} ms",
-    "inference": "Çıkarım: %{ms} ms",
+    "inference": "Belirleme: %{ms} ms",
     "postprocessing": "Son İşleme: %{ms} ms",
+    "english": "İngilizce: %{name}",
     "turkish": "Türkçe: %{name}",
     "latin": "Latince: %{name}",
     "confidence": "Güven: %{percentage}%",
@@ -189,7 +192,12 @@
     "history_section_title": "GEÇMİŞ",
     "base_analyze_history": "Temel Analiz Geçmişi",
     "ai_history": "Yapay Zeka Sohbet Geçmişi",
-    "no_base_analyze_history_found": "Kaydedilmiş Temel Analiz geçmişi bulunamadı."
+    "no_base_analyze_history_found": "Kaydedilmiş Temel Analiz geçmişi bulunamadı.",
+    "record_deleted_successfully": "Kayıt başarıyla silindi.",
+    "confirm_delete_title": "Silmeyi Onayla",
+    "confirm_delete_message": "Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+    "record_details_title": "Kayıt Detayları",
+    "base_analyze_history_title": "Tarama Geçmişi"
   },
   "home": {
     "how_it_works": "Nasıl Çalışır?",

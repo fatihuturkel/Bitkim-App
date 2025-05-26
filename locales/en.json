@@ -82,7 +82,9 @@
     "update_profile_name": "Failed to update profile name",
     "phone_number_required": "Phone number is required.",
     "phone_number_invalid_format": "Phone number format is invalid. Expected 10 digits.",
-    "update_phone_number": "Failed to update phone number"
+    "update_phone_number": "Failed to update phone number",
+    "fetch_data_error": "Failed to fetch history.",
+    "delete_record_failed": "Failed to delete record."
   },
   "security": {
     "title": "Security",
@@ -168,6 +170,7 @@
     "preprocessing": "Preprocessing: %{ms} ms",
     "inference": "Inference: %{ms} ms",
     "postprocessing": "Postprocessing: %{ms} ms",
+    "english": "English: %{name}",
     "turkish": "Turkish: %{name}",
     "latin": "Latin: %{name}",
     "confidence": "Confidence: %{percentage}%",
@@ -188,7 +191,12 @@
     "history_section_title": "History",
     "base_analyze_history": "Base Analyze History",
     "ai_history": "AI Chat History",
-    "no_base_analyze_history_found": "There is no Base Analyze history yet."
+    "no_base_analyze_history_found": "There is no Base Analyze history yet.",
+    "record_deleted_successfully": "Record deleted successfully.",
+    "confirm_delete_title": "Confirm Delete",
+    "confirm_delete_message": "Are you sure you want to delete this record? This action cannot be undone.",
+    "record_details_title": "Record Details",
+    "base_analyze_history_title": "Scan History"
   },
   "home": {
     "how_it_works": "How It Works?",

@@ -14,6 +14,10 @@ export interface ResultItem {
   isItemCollapsible?: boolean;
   initiallyItemCollapsed?: boolean;
   imageUrl?: string | null; // URL to the image, can be a permanent path or original URI
+  expandedDetails?: {
+    analysisResults: ResultItem[];
+    imageSource?: string | null;
+  };
 }
 
 interface ResultListProps {

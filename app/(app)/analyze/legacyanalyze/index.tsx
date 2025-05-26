@@ -5,6 +5,7 @@ import i18n from '@/i18n'; // Add this import
 import { uploadImagesForPrediction } from '@/services/imageService';
 import { UriPrediction, useImagePredictionStore } from '@/zustand/imagePredictionData';
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore';
+import useUserStore from '@/zustand/userStore'; // Import useUserStore
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -33,7 +34,8 @@ const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, ins
 }) => {
   const [imageLoadError, setImageLoadError] = useState(false);
   const analysisResults: ResultItem[] = [];
-  
+  const language = useUserStore((state) => state.preferences?.language) || 'en'; // Get language from store
+
   // Use permanentImagePath if available, otherwise fall back to uri
   const imageSource = item.permanentImagePath || item.uri;
   
@@ -41,14 +43,28 @@ const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, ins
 
   const top = item.prediction?.analysis_results?.top_prediction;
   if (top) {
+    let title = '';
+    const details = [];
+    if (language === 'tr') {
+      title = i18n.t('analyze.top_prediction', { name: top.turkish_name });
+      details.push(i18n.t('analyze.english', { name: top.english_name }));
+      details.push(i18n.t('analyze.latin', { name: top.latin_name }));
+    } else if (language === 'en') {
+      title = i18n.t('analyze.top_prediction', { name: top.english_name });
+      details.push(i18n.t('analyze.turkish', { name: top.turkish_name }));
+      details.push(i18n.t('analyze.latin', { name: top.latin_name }));
+    } else {
+      // Default to English name for title if language is not 'tr' or 'en'
+      title = i18n.t('analyze.top_prediction', { name: top.english_name });
+      details.push(i18n.t('analyze.turkish', { name: top.turkish_name }));
+      details.push(i18n.t('analyze.latin', { name: top.latin_name }));
+    }
+    details.push(i18n.t('analyze.confidence', { percentage: (top.confidence * 100).toFixed(2) }));
+
     analysisResults.push({
       id: `${item.uri}-top-prediction`,
-      title: i18n.t('analyze.top_prediction', { name: top.english_name }),
-      details: [
-        i18n.t('analyze.turkish', { name: top.turkish_name }),
-        i18n.t('analyze.latin', { name: top.latin_name }),
-        i18n.t('analyze.confidence', { percentage: (top.confidence * 100).toFixed(2) }),
-      ],
+      title: title,
+      details: details,
       icon: 'checkmark-circle-outline' as keyof typeof Ionicons.glyphMap,
       status: i18n.t('analyze.prediction'),
       isItemCollapsible: true,
@@ -58,17 +74,37 @@ const PredictionItem = React.memo(({ item, systemBackgroundColor, textColor, ins
 
   if (item.prediction?.analysis_results?.alternative_predictions) {
     item.prediction.analysis_results.alternative_predictions.forEach((alt, index) => {
-      analysisResults.push({
-        id: `${item.uri}-alt-prediction-${index}`,
-        title: i18n.t('analyze.alternative_prediction', { 
+      let title = '';
+      const details = [];
+      if (language === 'tr') {
+        title = i18n.t('analyze.alternative_prediction', { 
+          index: index + 1, 
+          name: alt.turkish_name 
+        });
+        details.push(i18n.t('analyze.english', { name: alt.english_name }));
+        details.push(i18n.t('analyze.latin', { name: alt.latin_name }));
+      } else if (language === 'en') {
+        title = i18n.t('analyze.alternative_prediction', { 
           index: index + 1, 
           name: alt.english_name 
-        }),
-        details: [
-          i18n.t('analyze.turkish', { name: alt.turkish_name }),
-          i18n.t('analyze.latin', { name: alt.latin_name }),
-          i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }),
-        ],
+        });
+        details.push(i18n.t('analyze.turkish', { name: alt.turkish_name }));
+        details.push(i18n.t('analyze.latin', { name: alt.latin_name }));
+      } else {
+        // Default to English name for title if language is not 'tr' or 'en'
+        title = i18n.t('analyze.alternative_prediction', { 
+          index: index + 1, 
+          name: alt.english_name 
+        });
+        details.push(i18n.t('analyze.turkish', { name: alt.turkish_name }));
+        details.push(i18n.t('analyze.latin', { name: alt.latin_name }));
+      }
+      details.push(i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }));
+      
+      analysisResults.push({
+        id: `${item.uri}-alt-prediction-${index}`,
+        title: title,
+        details: details,
         icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
         status: i18n.t('analyze.alternative'),
         isItemCollapsible: true,
@@ -133,6 +169,7 @@ export default function Analyze() {
   const storeSelectedImageUris = useImageSelectionStore((state) => state.selectedImageUris);
   const predictionsFromStore = useImagePredictionStore((state) => state.predictions);
   const clearStorePredictions = useImagePredictionStore((state) => state.clearPredictions);
+  const language = useUserStore((state) => state.preferences?.language) || 'en'; // Get language from store
 
   // const [analysisData, setAnalysisData] = useState<UriPrediction[]>(> // Removed
   const [isLoading, setIsLoading] = useState(false);

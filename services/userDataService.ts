@@ -33,12 +33,16 @@
  * @sideEffects Updates the state of `useUserStore` by calling `setUserData` or `clearUserData`.
  * @sideEffects Interacts with Firebase Authentication and Firestore services.
  */
+import { ResultItem } from '@/components/ResultList'; // Added import
 import i18n from '@/i18n';
+import { UriPrediction } from '@/zustand/imagePredictionData'; // Added import
 import useUserStore, { UserPreferences, UserState } from '@/zustand/userStore'; // Adjust the path to your zustand store
+import { Ionicons } from '@expo/vector-icons'; // Added import for icon type consistency, though not directly used in logic
 import * as Localization from 'expo-localization';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc, updateDoc, deleteField } from 'firebase/firestore'; 
+import { auth, db } from '../firebaseConfig'; // Adjust the path if your firebaseConfig is elsewhere
+import * as FileSystem from 'expo-file-system'; // Import FileSystem
 
 
 export const retrieveCurrentUserData = async (): Promise<void> => {
@@ -91,15 +95,13 @@ export const retrieveCurrentUserData = async (): Promise<void> => {
       } else {
         // Fallback if createdAt is missing or has an unexpected type
         createdAtISOString = new Date().toISOString();
-      }
-
-      // Extract preferences from Firestore data with defaults if not present
+      }      // Extract preferences from Firestore data with defaults if not present
       const preferences = {
         notifications: userDocumentData.preferences?.notifications ?? true,
         darkMode: userDocumentData.preferences?.darkMode ?? false,
         language: userDocumentData.preferences?.language ?? 
           (userDocumentData.language || Localization.getLocales()[0]?.languageCode || 'en'),
-        scanHistory: userDocumentData.preferences?.scanHistory ?? true, // Add this line
+        isBasicScanHistoryEnabled: userDocumentData.preferences?.isBasicScanHistoryEnabled ?? true, // Fixed to match the correct property name in UserPreferences interface
       };
 
       // Extract address if available
@@ -391,7 +393,6 @@ export const updateUserPhoneNumber = async (phoneNumber: string): Promise<void> 
 
 
 
-
 export const signUp = async (email: string, password: string, firstName: string, lastName: string): Promise<void> => {
   const { setUserData } = useUserStore.getState();
 
@@ -408,6 +409,260 @@ export const signUp = async (email: string, password: string, firstName: string,
 
   await setDoc(doc(db, 'users', user.uid), userData);
   setUserData({ ...userData, loggedIn: true });
+};
+
+export const fetchBaseAnalyzeHistory = async (language: string = 'en'): Promise<ResultItem[]> => {
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) {
+    throw new Error(i18n.t('error.not_authenticated', { defaultValue: "User not authenticated." }));
+  }
+
+  try {
+    const userHistoryRef = doc(db, 'user_legacy_scan_history', currentUser.uid);
+    const docSnap = await getDoc(userHistoryRef);
+
+    if (docSnap.exists()) {
+      const firestoreData = docSnap.data();
+      const items: ResultItem[] = Object.keys(firestoreData)
+        .map(key => {          const record = firestoreData[key] as UriPrediction;
+          const topPrediction = record.prediction?.analysis_results?.top_prediction;
+          const alternativePredictions = record.prediction?.analysis_results?.alternative_predictions || [];
+          const performanceMetrics = record.prediction?.performance_metrics;
+          
+          // We'll prepare detailed results similar to legacyanalyze
+          const analysisResults: ResultItem[] = [];
+          
+          // Add top prediction
+          if (topPrediction) {
+            let title = '';
+            const details = [];
+            if (language === 'tr') {
+              title = i18n.t('analyze.top_prediction', { name: topPrediction.turkish_name || 'N/A' });
+              details.push(i18n.t('analyze.english', { name: topPrediction.english_name || 'N/A' }));
+              details.push(i18n.t('analyze.latin', { name: topPrediction.latin_name || 'N/A' }));
+            } else {
+              title = i18n.t('analyze.top_prediction', { name: topPrediction.english_name || 'N/A' });
+              details.push(i18n.t('analyze.turkish', { name: topPrediction.turkish_name || 'N/A' }));
+              details.push(i18n.t('analyze.latin', { name: topPrediction.latin_name || 'N/A' }));
+            }
+            details.push(i18n.t('analyze.confidence', { percentage: (topPrediction.confidence * 100).toFixed(2) }));
+            
+            analysisResults.push({
+              id: `${key}-top-prediction`,
+              title: title,
+              details: details,
+              icon: 'checkmark-circle-outline' as keyof typeof Ionicons.glyphMap,
+              status: i18n.t('analyze.prediction'),
+              isItemCollapsible: true,
+              initiallyItemCollapsed: true,
+            });
+          }
+          
+          // Add alternative predictions
+          if (alternativePredictions && alternativePredictions.length > 0) {
+            alternativePredictions.forEach((alt, index) => {
+              let title = '';
+              const details = [];
+              if (language === 'tr') {
+                title = i18n.t('analyze.alternative_prediction', { 
+                  index: index + 1, 
+                  name: alt.turkish_name || 'N/A'
+                });
+                details.push(i18n.t('analyze.english', { name: alt.english_name || 'N/A' }));
+                details.push(i18n.t('analyze.latin', { name: alt.latin_name || 'N/A' }));
+              } else {
+                title = i18n.t('analyze.alternative_prediction', { 
+                  index: index + 1, 
+                  name: alt.english_name || 'N/A' 
+                });
+                details.push(i18n.t('analyze.turkish', { name: alt.turkish_name || 'N/A' }));
+                details.push(i18n.t('analyze.latin', { name: alt.latin_name || 'N/A' }));
+              }
+              details.push(i18n.t('analyze.confidence', { percentage: (alt.confidence * 100).toFixed(2) }));
+              
+              analysisResults.push({
+                id: `${key}-alt-prediction-${index}`,
+                title: title,
+                details: details,
+                icon: 'help-circle-outline' as keyof typeof Ionicons.glyphMap,
+                status: i18n.t('analyze.alternative'),
+                isItemCollapsible: true,
+                initiallyItemCollapsed: true,
+              });
+            });
+          }
+          
+          // Add performance metrics if available
+          if (performanceMetrics) {
+            analysisResults.push({
+              id: `${key}-performance-metrics`,
+              title: i18n.t('analyze.performance_metrics'),
+              details: [
+                i18n.t('analyze.preprocessing', { ms: performanceMetrics.preprocessing_ms?.toString() || '0' }),
+                i18n.t('analyze.inference', { ms: performanceMetrics.inference_ms?.toString() || '0' }),
+                i18n.t('analyze.postprocessing', { ms: performanceMetrics.postprocessing_ms?.toString() || '0' }),
+              ],
+              icon: 'speedometer-outline' as keyof typeof Ionicons.glyphMap,
+              status: i18n.t('analyze.metrics'),
+              isItemCollapsible: true,
+              initiallyItemCollapsed: true,
+            });
+          }
+          
+          // Create summary for the main history view
+          const itemDetails: string[] = [];
+
+          if (topPrediction) {
+            // Use language parameter to display appropriate name
+            if (language === 'tr') {
+              itemDetails.push(
+                `${i18n.t('analyze.top_prediction', { name: topPrediction.turkish_name || 'N/A' })}: ${(topPrediction.confidence * 100).toFixed(1)}%`
+              );
+              if (topPrediction.latin_name) {
+                itemDetails.push(
+                  i18n.t('analyze.latin', { name: topPrediction.latin_name })
+                );
+              }
+            } else {
+              // Default to English for any other language setting
+              itemDetails.push(
+                `${i18n.t('analyze.top_prediction', { name: topPrediction.english_name || 'N/A' })}: ${(topPrediction.confidence * 100).toFixed(1)}%`
+              );
+              if (topPrediction.latin_name) {
+                itemDetails.push(
+                  i18n.t('analyze.latin', { name: topPrediction.latin_name })
+                );
+              }
+            }
+          } else {
+            itemDetails.push(i18n.t('analyze.no_prediction_data', { defaultValue: "No prediction data available." }));
+          }          let title = key; // Default title to the Firestore document key
+          let imageUrl = null; // Initialize imageUrl variable
+
+          // Use top prediction as title if available, based on language
+          if (topPrediction) {
+            if (language === 'tr' && topPrediction.turkish_name) {
+              title = topPrediction.turkish_name;
+            } else if (topPrediction.english_name) {
+              title = topPrediction.english_name;
+            }
+          } else {
+            // Fall back to filename if no prediction is available
+            // Use permanent image path if available, otherwise fallback to uri
+            if (record.permanentImagePath) {
+              imageUrl = record.permanentImagePath;
+              const permanentPathString = String(record.permanentImagePath);
+              try {
+                // Get filename from permanent path
+                const decodedPath = decodeURIComponent(permanentPathString);
+                const lastSlashIndex = decodedPath.lastIndexOf('/');
+                if (lastSlashIndex !== -1 && lastSlashIndex < decodedPath.length - 1) {
+                  title = decodedPath.substring(lastSlashIndex + 1);
+                } else if (decodedPath) {
+                  title = decodedPath;
+                }
+              } catch (e) {
+                // Fallback for permanent path handling errors
+                const lastSlashIdx = permanentPathString.lastIndexOf('/');
+                if (lastSlashIdx !== -1 && lastSlashIdx < permanentPathString.length - 1) {
+                  title = decodeURIComponent(permanentPathString.substring(lastSlashIdx + 1));
+                } else if (permanentPathString) {
+                  title = decodeURIComponent(permanentPathString);
+                }
+              }
+            } else if (record.uri) {
+              // Fallback to original URI if no permanent path is available
+              imageUrl = record.uri;
+              const uriString = String(record.uri);
+              try {
+                // Attempt to decode and extract the last segment of the URI path
+                const decodedUriPath = decodeURIComponent(uriString.includes('://') ? new URL(uriString).pathname : uriString);
+                const lastSlashIndex = decodedUriPath.lastIndexOf('/');
+                if (lastSlashIndex !== -1 && lastSlashIndex < decodedUriPath.length - 1) {
+                  title = decodedUriPath.substring(lastSlashIndex + 1);
+                } else if (decodedUriPath) { // If no slash, or it's the last char, but path is not empty
+                  title = decodedUriPath;
+                }
+              } catch (e) {
+                // Fallback for invalid URIs or if URL parsing fails: use the part after the last slash
+                const lastSlashIdx = uriString.lastIndexOf('/');
+                if (lastSlashIdx !== -1 && lastSlashIdx < uriString.length - 1) {
+                  title = decodeURIComponent(uriString.substring(lastSlashIdx + 1));
+                } else if (uriString) {
+                  title = decodeURIComponent(uriString);
+                }                  // If all else fails, title remains 'key'
+              }
+            }
+          }
+
+          // Set image URL regardless of title source
+          if (record.permanentImagePath) {
+            imageUrl = record.permanentImagePath;
+          } else if (record.uri) {
+            imageUrl = record.uri;
+          }          return {
+            id: key,
+            title: title, // Use the derived title (from URI or key)
+            timestamp: record.scanDate,
+            details: itemDetails,
+            icon: 'leaf-outline' as keyof typeof Ionicons.glyphMap,
+            isItemCollapsible: true,
+            initiallyItemCollapsed: true,
+            imageUrl: imageUrl, // Add the image URL
+            expandedDetails: {
+              analysisResults: analysisResults,
+              imageSource: imageUrl,
+            },
+          };
+        })
+        .sort((a, b) => new Date(b.timestamp as string).getTime() - new Date(a.timestamp as string).getTime());
+      return items;
+    } else {
+      return []; // No history document found
+    }
+  } catch (e) {
+    console.error("Failed to fetch base analysis history from service:", e);
+    // Re-throw a more specific error or a generic one for the component to handle
+    if (e instanceof Error) {
+        throw new Error(i18n.t('error.fetch_data_error_service', {defaultValue: `Failed to fetch history: ${e.message}`}));
+    }
+    throw new Error(i18n.t('error.fetch_data_error_service', {defaultValue: "Failed to fetch history due to an unknown error."}));
+  }
+};
+
+export const deleteBaseAnalyzeHistoryRecord = async (recordId: string, imagePath?: string | null): Promise<void> => {
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error(i18n.t('error.not_authenticated', { defaultValue: "User not authenticated." }));
+  }
+
+  try {
+    // Delete the record from Firestore
+    const userHistoryRef = doc(db, 'user_legacy_scan_history', currentUser.uid);
+    await updateDoc(userHistoryRef, {
+      [recordId]: deleteField()
+    });
+
+    // Attempt to delete the local image file if a path is provided and it's a local file
+    if (imagePath && imagePath.startsWith('file://')) {
+      try {
+        await FileSystem.deleteAsync(imagePath);
+        console.log(`Successfully deleted local image: ${imagePath}`);
+      } catch (fileError) {
+        console.error(`Failed to delete local image ${imagePath}:`, fileError);
+        // Optionally, decide if this error should be surfaced to the user
+        // For now, we'll log it and let the Firestore deletion be the primary success/failure indicator
+      }
+    }
+
+  } catch (e) {
+    console.error("Failed to delete base analysis history record from service:", e);
+    if (e instanceof Error) {
+      throw new Error(i18n.t('error.delete_record_error_service', { defaultValue: `Failed to delete record: ${e.message}` }));
+    }
+    throw new Error(i18n.t('error.delete_record_error_service', { defaultValue: "Failed to delete record due to an unknown error." }));
+  }
 };
 
 
