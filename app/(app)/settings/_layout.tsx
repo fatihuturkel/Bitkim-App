@@ -1,10 +1,16 @@
+import { useThemeColor } from '@/hooks/useThemeColor'; // Import useThemeColor
 import i18n from '@/i18n';
 import { Stack } from 'expo-router';
-import React from 'react';
 
 export default function SettingsLayout() {
+  const tintColor = useThemeColor({}, 'tint'); // Get the tint color for the header
+
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerTintColor: tintColor, // Set the header tint color globally for this stack
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{

@@ -71,9 +71,9 @@ export default function Preferences() {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        
-        <AppleSection title={i18n.t("preference.scan_settings_title")}
-          footer={i18n.t("preference.scan_settings_footer")}>
+
+        <AppleSection title={i18n.t("preference.history_settings_section_title")}
+          footer={i18n.t("preference.history_settings_section_footer")}>
           <ListSwitch
             label={i18n.t("preference.base_scan_history_label")}
             value={isScanHistoryEnabled}

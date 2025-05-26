@@ -1,21 +1,26 @@
+import { useThemeColor } from '@/hooks/useThemeColor'; // Added
 import React from 'react';
 import {
   ActivityIndicator,
-  Platform,
   StyleSheet,
   Text,
   TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
+  ViewStyle
 } from 'react-native';
 
-// Define standard iOS colors (you might want to move these to a theme file)
-const iOSBlue = '#007AFF';
-const iOSRed = '#FF3B30';
-const iOSGray = '#8E8E93'; // Standard gray text color
-const iOSGrayBackground = Platform.OS === 'ios' ? 'rgba(120, 120, 128, 0.12)' : '#F2F2F7'; // secondarySystemBackground equivalent or fallback
-const iOSWhite = '#FFFFFF';
+// Helper function to convert hex to RGB (can be moved to a utils file if used elsewhere)
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+};
 
 interface ButtonProps {
   /**
@@ -39,14 +44,15 @@ interface ButtonProps {
    */
   disabled?: boolean;
   /**
-   * The tint color of the button. Affects background and text based on style. Defaults to iOS blue.
+   * The tint color of the button. Affects background and text based on style.
+   * If not provided, defaults to the theme's 'systemBlue' color.
    */
   color?: string;
   /**
    * The visual style of the button. Defaults to 'filled'.
    * 'filled': Background color is `color`, text is white.
    * 'tinted': Light background derived from `color`, text is `color`.
-   * 'gray': Gray background, text is `color`.
+   * 'gray': Gray background (theme's 'systemGray5'), text is `color`.
    * 'plain': No background, text is `color`.
    */
   buttonStyle?: 'filled' | 'tinted' | 'gray' | 'plain';
@@ -72,12 +78,40 @@ const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
   disabled = false,
-  color = iOSBlue,
+  color: propColor, // Renamed to avoid conflict
   buttonStyle = 'filled', // Default to 'filled'
   role = 'normal',
   loading = false,
   icon,
 }) => {
+  // --- Theme Colors ---
+  const themedSystemBlue = useThemeColor({}, 'systemBlue');
+  const themedSystemRed = useThemeColor({}, 'systemRed');
+  const themedSystemGray = useThemeColor({}, 'systemGray'); // For text or icons
+  const themedSystemGray5 = useThemeColor({}, 'systemGray5'); // For gray button background
+  const themedWhiteColor = '#FFFFFF'; // Fixed white for high contrast text
+  const themedSystemGreen = useThemeColor({}, 'systemGreen'); // For success messages or icons
+
+  // Resolve the button's base color: use propColor if provided, otherwise default to themed systemGreen
+  const baseButtonColor = propColor ?? themedSystemGreen;
+
+  // Helper for generating tinted backgrounds
+  const getTintedBackground = (baseColorHex: string, fallbackColorHex: string, opacity: number): string => {
+    let rgb = hexToRgb(baseColorHex);
+    if (!rgb) {
+      rgb = hexToRgb(fallbackColorHex); // Try fallback if baseColorHex is not a valid hex
+    }
+    if (rgb) {
+      return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+    }
+    // Absolute fallback (e.g., if systemGreen itself is not a hex, though unlikely from Colors.ts)
+    const defaultGreenRgb = hexToRgb(themedSystemGreen);
+    if (defaultGreenRgb) {
+      return `rgba(${defaultGreenRgb.r}, ${defaultGreenRgb.g}, ${defaultGreenRgb.b}, ${opacity})`;
+    }
+    return `rgba(52, 199, 89, ${opacity})`; // Last resort, non-themed green tint
+  };
+
   const buttonStyles: ViewStyle[] = [styles.button];
   const textStylesList: TextStyle[] = [styles.text];
 
@@ -87,22 +121,20 @@ const Button: React.FC<ButtonProps> = ({
   // 1. Determine base styles based on buttonStyle
   switch (buttonStyle) {
     case 'filled':
-      finalBackgroundColor = color;
-      finalTextColor = iOSWhite;
+      finalBackgroundColor = baseButtonColor;
+      finalTextColor = themedWhiteColor;
       break;
     case 'tinted':
-      // Default tinted background (similar to 'normal' role in original logic)
-      // Ideally, this tint would be dynamically generated from `color`
-      finalBackgroundColor = 'rgba(0, 122, 255, 0.15)';
-      finalTextColor = color;
+      finalBackgroundColor = getTintedBackground(baseButtonColor, themedSystemGreen, 0.15);
+      finalTextColor = baseButtonColor;
       break;
     case 'gray':
-      finalBackgroundColor = iOSGrayBackground;
-      finalTextColor = color;
+      finalBackgroundColor = themedSystemGray5; // Use themed gray background
+      finalTextColor = baseButtonColor; // Text color is still the baseButtonColor
       break;
     case 'plain':
       finalBackgroundColor = 'transparent';
-      finalTextColor = color;
+      finalTextColor = baseButtonColor;
       break;
   }
 
@@ -112,28 +144,25 @@ const Button: React.FC<ButtonProps> = ({
       textStylesList.push({ fontWeight: '700' }); // Primary is always bolder
       if (buttonStyle === 'tinted') {
         // Specific background for primary tinted
-        finalBackgroundColor = 'rgba(0, 122, 255, 0.3)';
+        finalBackgroundColor = getTintedBackground(baseButtonColor, themedSystemGreen, 0.30);
       }
       // Note: 'filled' primary uses the base 'filled' style + bold text
       break;
     case 'destructive':
-      finalTextColor = iOSRed; // Destructive text is typically red
+      finalTextColor = themedSystemRed; // Destructive text is typically red
       if (buttonStyle === 'filled') {
-        finalBackgroundColor = iOSRed;
-        finalTextColor = iOSWhite; // Override text color for filled destructive
+        finalBackgroundColor = themedSystemRed;
+        finalTextColor = themedWhiteColor; // Override text color for filled destructive
       } else if (buttonStyle === 'tinted') {
         // Specific background for destructive tinted
-        finalBackgroundColor = Platform.OS === 'ios' ? 'rgba(255, 59, 48, 0.15)' : '#FFEBEE';
+        finalBackgroundColor = getTintedBackground(themedSystemRed, themedSystemRed, 0.15);
       }
       // For 'gray' and 'plain', only the text color changes to red
       break;
     case 'cancel':
-      // Per original logic's final override, cancel role forces a gray style appearance
-      // regardless of the initial buttonStyle.
-      finalBackgroundColor = iOSGrayBackground;
-      finalTextColor = color; // Text color remains the tint color
-      // If 'cancel' should behave differently based on buttonStyle, this needs adjustment.
-      // E.g., maybe only override 'filled' or 'tinted' to gray.
+      // Cancel role forces a gray style appearance
+      finalBackgroundColor = themedSystemGray5;
+      finalTextColor = baseButtonColor; // Text color remains the baseButtonColor (often themedSystemGreen by default)
       break;
     case 'normal':
       // No specific overrides needed for normal role, base styles apply.
@@ -151,8 +180,8 @@ const Button: React.FC<ButtonProps> = ({
   // Apply disabled/loading styles
   if (disabled || loading) {
     buttonStyles.push(styles.disabled);
-    // Adjust text color for disabled state if needed, e.g., make it gray
-    // textStylesList.push({ color: iOSGray }); // Example: Gray out text when disabled
+    // Optionally, adjust text color for disabled state if needed
+    // textStylesList.push({ color: themedSystemGray });
   }
 
   // Apply custom styles if provided (these will override defaults)
@@ -161,7 +190,7 @@ const Button: React.FC<ButtonProps> = ({
 
   // Determine ActivityIndicator color based on final text color
   const finalTextStyle = StyleSheet.flatten(textStylesList);
-  const indicatorColor = finalTextStyle.color || iOSGray;
+  const indicatorColor = finalTextStyle.color || themedSystemGray;
 
   // Determine if icon and/or title should be shown
   const showIcon = !loading && icon;

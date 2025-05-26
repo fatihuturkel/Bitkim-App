@@ -2,21 +2,20 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
 import {
   ActivityIndicator,
-  Platform,
   StyleSheet,
   Text,
   TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
+  ViewStyle
 } from 'react-native';
 
 // Define standard iOS colors (copied from Button.tsx for self-containment)
-const iOSBlue = '#007AFF';
-const iOSRed = '#FF3B30';
-const iOSGray = '#8E8E93';
-const iOSGrayBackground = Platform.OS === 'ios' ? 'rgba(120, 120, 128, 0.12)' : '#F2F2F7';
-const iOSWhite = '#FFFFFF';
+// const iOSBlue = '#007AFF';
+// const iOSRed = '#FF3B30';
+// const iOSGray = '#8E8E93';
+// const iOSGrayBackground = Platform.OS === 'ios' ? 'rgba(120, 120, 128, 0.12)' : '#F2F2F7';
+// const iOSWhite = '#FFFFFF';
 
 // Helper function to convert hex to RGB (can be moved to a utils file)
 const hexToRgb = (hex: string) => {
@@ -49,13 +48,44 @@ const AppleStyleCard: React.FC<AppleStyleCardProps> = ({
   style,
   textStyle,
   disabled = false,
-  color = iOSBlue, // Default color, same as Button
+  color: propColor, // Renamed to avoid conflict with themed colors
   buttonStyle = 'filled', // Default style, same as Button
   role = 'normal',
   loading = false,
   icon,
 }) => {
   const themedBorderColor = useThemeColor({ light: '#C6C6C8', dark: '#38383A' }, 'separator');
+
+  // --- Theme Colors ---
+  const themedSystemBlue = useThemeColor({}, 'systemBlue');
+  const darkGreen = useThemeColor({}, 'darkGreen'); // Added for primary color
+  const themedSystemRed = useThemeColor({}, 'systemRed');
+  const themedSystemGray = useThemeColor({}, 'systemGray'); // For text or icons
+  const themedSystemGray5 = useThemeColor({}, 'systemGray5'); // For gray button background
+  const themedWhiteColor = '#FFFFFF'; // Fixed white for high contrast text
+  // const themedSecondarySystemFill = useThemeColor({}, 'secondarySystemFill'); // Good for tinted backgrounds
+
+
+  // Resolve the card's base color: use propColor if provided, otherwise default to themed systemGreen
+  const baseCardColor = propColor ?? darkGreen; // Default to dark green if no color is provided
+
+  // Helper for generating tinted backgrounds (similar to Button.tsx)
+  const getTintedBackground = (baseColorHex: string, fallbackColorHex: string, opacity: number): string => {
+    let rgb = hexToRgb(baseColorHex);
+    if (!rgb) {
+      rgb = hexToRgb(fallbackColorHex);
+    }
+    if (rgb) {
+      return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
+    }
+    // Fallback if all else fails (e.g., if systemGreen is not a hex)
+    const defaultGreenRgb = hexToRgb(darkGreen); // Default to themed green
+    if (defaultGreenRgb) {
+      return `rgba(${defaultGreenRgb.r}, ${defaultGreenRgb.g}, ${defaultGreenRgb.b}, ${opacity})`;
+    }
+    return `rgba(52, 199, 89, ${opacity})`; // Last resort, non-themed green tint
+  };
+
 
   const cardStylesArray: ViewStyle[] = [styles.cardBase, { borderColor: themedBorderColor }];
   const textStylesArray: TextStyle[] = [styles.titleBase];
@@ -66,25 +96,20 @@ const AppleStyleCard: React.FC<AppleStyleCardProps> = ({
   // 1. Determine base styles based on buttonStyle
   switch (buttonStyle) {
     case 'filled':
-      finalBackgroundColor = color;
-      finalTextColor = iOSWhite;
+      finalBackgroundColor = baseCardColor;
+      finalTextColor = themedWhiteColor;
       break;
     case 'tinted':
-      const rgbTintColor = hexToRgb(color);
-      if (rgbTintColor) {
-        finalBackgroundColor = `rgba(${rgbTintColor.r}, ${rgbTintColor.g}, ${rgbTintColor.b}, 0.15)`;
-      } else {
-        finalBackgroundColor = 'rgba(0, 122, 255, 0.15)'; // Fallback for invalid hex (iOSBlue tint)
-      }
-      finalTextColor = color;
+      finalBackgroundColor = getTintedBackground(baseCardColor, darkGreen, 0.15);
+      finalTextColor = baseCardColor;
       break;
     case 'gray':
-      finalBackgroundColor = iOSGrayBackground;
-      finalTextColor = color;
+      finalBackgroundColor = themedSystemGray5; // Use a theme-aware gray
+      finalTextColor = baseCardColor;
       break;
     case 'plain':
       finalBackgroundColor = 'transparent';
-      finalTextColor = color;
+      finalTextColor = baseCardColor;
       break;
   }
 
@@ -93,27 +118,21 @@ const AppleStyleCard: React.FC<AppleStyleCardProps> = ({
     case 'primary':
       textStylesArray.push({ fontWeight: '700' });
       if (buttonStyle === 'tinted') {
-        const rgbPrimaryTintColor = hexToRgb(color);
-        if (rgbPrimaryTintColor) {
-          finalBackgroundColor = `rgba(${rgbPrimaryTintColor.r}, ${rgbPrimaryTintColor.g}, ${rgbPrimaryTintColor.b}, 0.30)`;
-        } else {
-          finalBackgroundColor = 'rgba(0, 122, 255, 0.30)'; // Fallback (iOSBlue tint)
-        }
+        finalBackgroundColor = getTintedBackground(baseCardColor, darkGreen, 0.30);
       }
       break;
     case 'destructive':
-      finalTextColor = iOSRed;
+      finalTextColor = themedSystemRed;
       if (buttonStyle === 'filled') {
-        finalBackgroundColor = iOSRed;
-        finalTextColor = iOSWhite;
+        finalBackgroundColor = themedSystemRed;
+        finalTextColor = themedWhiteColor;
       } else if (buttonStyle === 'tinted') {
-        // Destructive tint is based on red
-        finalBackgroundColor = Platform.OS === 'ios' ? 'rgba(255, 59, 48, 0.15)' : 'rgba(255, 59, 48, 0.1)';
+        finalBackgroundColor = getTintedBackground(themedSystemRed, themedSystemRed, 0.15);
       }
       break;
     case 'cancel':
-      finalBackgroundColor = iOSGrayBackground;
-      finalTextColor = color;
+      finalBackgroundColor = themedSystemGray5; // Use a theme-aware gray
+      finalTextColor = baseCardColor; // Text color remains the baseCardColor
       break;
     case 'normal':
       // No specific overrides
@@ -140,7 +159,7 @@ const AppleStyleCard: React.FC<AppleStyleCardProps> = ({
   if (textStyle) textStylesArray.push(textStyle);
 
   const finalTextStyle = StyleSheet.flatten(textStylesArray);
-  const indicatorColor = finalTextStyle.color || iOSGray; // Use final text color for indicator
+  const indicatorColor = finalTextStyle.color || themedSystemGray; // Use final text color or themed gray for indicator
 
   const showIcon = !loading && icon;
   const showTitle = !loading && title; // title is required

@@ -114,8 +114,8 @@
     "theme": "Tema",
     "select_language": "Dil Seçin",
     "app_language": "Uygulama Dili",
-    "scan_settings_title": "Tarama Ayarları",
-    "scan_settings_footer": "Tarama geçmişi otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
+    "history_settings_section_title": "GEÇMİŞ AYARLARI",
+    "history_settings_section_footer": "Geçmiş otomatik olarak bulut depolama alanına kaydedilir. Ayarlar sayfasından silebilirsiniz.",
     "base_scan_history_label": "Temel Tarama Geçmişi"
   },
   "profile": {
@@ -178,7 +178,7 @@
     "clear_images": "Resimleri Temizle",
     "ai_chat_button": "Yapay Zeka Sohbeti",
     "legacy_analyzer_button": "Temel Analiz",
-    "camera_roll_card_title": "Film Rulosu",
+    "camera_roll_card_title": "Galeri",
     "take_photo_card_title": "Fotoğraf Çek",
     "selected_images_count": "Seçili Resimler: %{count}",
     "permission_required_title": "İzin Gerekli",
