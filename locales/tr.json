@@ -54,7 +54,8 @@
     "email_verification": "E-posta Doğrulama",
     "change_password": "Şifre Değiştir",
     "sign_out": "Çıkış Yap",
-    "email_verification_status_section_title": "E-POSTA DOĞRULAMA DURUMU"
+    "email_verification_status_section_title": "E-POSTA DOĞRULAMA DURUMU",
+    
   },
   "error": {
     "email_required": "E-posta gereklidir",
@@ -183,5 +184,15 @@
     "selected_images_count": "Seçili Resimler: %{count}",
     "permission_required_title": "İzin Gerekli",
     "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?"
-  }
+  },
+  "home": {
+  "how_it_works": "Nasıl Çalışır?",
+  "how_it_works_description": "Aşağıdaki adımları takip ederek yaprağın hastalığını öğrenebilir ve çözüm alabilirsin.",
+  "step_take_photo": "Fotoğraf çek",
+  "step_get_result": "Sonucu al",
+  "step_treat": "Tedavi et",
+   "welcome": "Hoşgeldin",
+  "signup_prompt": "Yeni bir deneyim için"
+}
+
 }

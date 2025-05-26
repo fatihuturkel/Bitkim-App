@@ -182,5 +182,14 @@
     "selected_images_count": "Selected Images: %{count}",
     "permission_required_title": "Permission Required",
     "permission_required_message": "Permission to access camera is required! Do you want to go to settings to grant permission?"
-  }
+  },
+  "home": {
+  "how_it_works": "How It Works?",
+  "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
+  "step_take_photo": "Take Photo",
+  "step_get_result": "Get Result",
+  "step_treat": "Treat It"
+}
+
+
 }
