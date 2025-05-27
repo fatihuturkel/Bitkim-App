@@ -9,6 +9,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { SessionProvider } from '../context/AuthContext';
+import useUserStore from '@/zustand/userStore'; // <-- ekle
+
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

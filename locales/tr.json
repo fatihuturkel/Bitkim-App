@@ -206,14 +206,27 @@
     "record_details_title": "Kayıt Detayları",
     "base_analyze_history_title": "Tarama Geçmişi"
   },
-  "home": {
-    "how_it_works": "Nasıl Çalışır?",
-    "how_it_works_description": "Aşağıdaki adımları takip ederek yaprağın hastalığını öğrenebilir ve çözüm alabilirsin.",
-    "step_take_photo": "Fotoğraf çek",
-    "step_get_result": "Sonucu al",
-    "step_treat": "Tedavi et",
-    "welcome": "Hoşgeldin!",
-    "signup_prompt": "Yeni bir deneyim için",
-    "appName": "B İ T K İ M"
-  }
+"home": {
+  "how_it_works": "Nasıl Çalışır?",
+  "how_it_works_description": "Aşağıdaki adımları takip ederek yaprak hastalığını tespit edebilir ve çözüm bulabilirsin.",
+  "step_take_photo": "Fotoğraf çek",
+  "step_get_result": "Sonucu al",
+  "step_treat": "Tedavi et",
+  "tips_title": "Bakım İpuçları",
+  "tip1": "Yaprakların alt yüzeylerini haftada bir kontrol etmeyi unutma.",
+  "tip2": "Sulama saatlerini sabah erken veya akşam geç saatlere ayarla.",
+  "tip3": "Bitkini doğrudan güneş ışığından koruyarak dolaylı ışıkla besle.",
+  "tip4": "Haftada bir yapraklara nemlendirici sprey uygulayarak kuruluğu önle.",
+  "tip5": "Küf oluşumunu önlemek için ortamı havalandırmayı unutma.",
+  "common_diseases": "Sık Görülen Hastalıklar ve Çözümleri",
+  "disease1_title": "🦠 Mildiyö",
+  "disease1_desc": "Yapraklarda sararma ve küf görünür. Bitkiyi havalandır, mantar ilacı kullan.",
+  "disease2_title": "🍂 Külleme",
+  "disease2_desc": "Yapraklar beyaz tozla kaplanır. Hastalıklı yaprakları kes ve karbonat spreyi dene.",
+  "disease3_title": "🌬️ Pas",
+  "disease3_desc": "Turuncu lekeler oluşur. Nemli yaprakları kurut, pas mantar ilacı uygula.",
+  "disease4_title": "🌿 Yaprak Lekesi",
+  "disease4_desc": "Benekli lekeler çıkar. Aşırı sulamadan kaçın, organik sprey kullan."
+}
+
 }
