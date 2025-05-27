@@ -1,45 +1,42 @@
+import Button from '@/components/Button'; // Import Button
 import ResultList, { ResultItem } from '@/components/ResultList';
+import AppleSection from '@/components/Section'; // Added import
 import { ThemedView } from '@/components/ThemedView';
+import ToastNotification from '@/components/ToastNotification'; // Import ToastNotification
 import { useThemeColor } from '@/hooks/useThemeColor';
 import i18n from '@/i18n';
+import { deleteBaseAnalyzeHistoryRecord, fetchBaseAnalyzeHistory } from '@/services/userDataService'; // Import delete function
+import useUserStore from '@/zustand/userStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native'; // Import useNavigation
-import { fetchBaseAnalyzeHistory, deleteBaseAnalyzeHistoryRecord } from '@/services/userDataService'; // Import delete function
-import useUserStore from '@/zustand/userStore';
-import React, { useCallback, useState, useLayoutEffect } from 'react'; // Add useLayoutEffect
-import { ActivityIndicator, Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-import Button from '@/components/Button'; // Import Button
-import ToastNotification from '@/components/ToastNotification'; // Import ToastNotification
+import React, { useCallback, useLayoutEffect, useState } from 'react'; // Add useLayoutEffect
+import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-// Get screen dimensions for the image display
-const { width: screenWidth } = Dimensions.get('window');
 
 // Define a component for displaying expanded details of an analysis
-const ExpandedAnalysisView = React.memo(({ item, onClose }: { 
-  item: ResultItem; 
+const ExpandedAnalysisView = React.memo(({ item, onClose }: {
+  item: ResultItem;
   onClose: () => void;
 }) => {
-  const systemBackgroundColor = useThemeColor({}, 'systemBackground');
   const textColor = useThemeColor({}, 'label');
-  const tertiaryTextColor = useThemeColor({}, 'tertiaryLabel');
   const analysisResults = item.expandedDetails?.analysisResults || [];
   const imageSource = item.expandedDetails?.imageSource;
 
   return (
-    <View style={[styles.expandedView, { backgroundColor: systemBackgroundColor }]}>
+    <ThemedView style={styles.expandedView}>
       <View style={styles.expandedHeader}>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
           <Ionicons name="close-outline" size={28} color={textColor} />
         </TouchableOpacity>
         <Text style={[styles.expandedTitle, { color: textColor }]}>{item.title}</Text>
       </View>
-      
+
       <ScrollView style={styles.expandedScrollView}>
         {imageSource && (
-          <Image 
-            source={{ uri: imageSource }} 
-            style={styles.expandedImage} 
-            resizeMode="contain" 
+          <Image
+            source={{ uri: imageSource }}
+            style={styles.expandedImage}
+            resizeMode="contain"
             onError={() => console.error(`Failed to load image: ${imageSource}`)}
           />
         )}
@@ -52,7 +49,7 @@ const ExpandedAnalysisView = React.memo(({ item, onClose }: {
           initiallyCollapsed={false}
         />
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 });
 
@@ -63,9 +60,10 @@ export default function BaseAnalyzeHistoryScreen() {
   const [selectedItem, setSelectedItem] = useState<ResultItem | null>(null);
   const language = useUserStore((state) => state.preferences?.language) || 'en';
 
-  const themedBackgroundColor = useThemeColor({}, 'systemBackground');
   const textColor = useThemeColor({}, 'label');
-  
+  const mixListItemBackgroundColor = useThemeColor({}, 'mixListItemBackground'); // Add this line
+  const themedSeparatorColor = useThemeColor({}, 'separator'); // Added for themed separator
+
   const navigation = useNavigation(); // Get navigation object
 
   // State for delete operation
@@ -98,7 +96,7 @@ export default function BaseAnalyzeHistoryScreen() {
       console.error("Failed to fetch base analysis history from screen:", e);
       // The error from the service should already be i18n'd if it's a known type
       // Otherwise, use a generic fallback.
-      const errorMessage = e instanceof Error ? e.message : i18n.t('error.fetch_data_error', {defaultValue: "Failed to fetch history."});
+      const errorMessage = e instanceof Error ? e.message : i18n.t('error.fetch_data_error', { defaultValue: "Failed to fetch history." });
       setError(errorMessage);
       setHistoryItems([]); // Ensure history items are empty on error
     } finally {
@@ -178,41 +176,51 @@ export default function BaseAnalyzeHistoryScreen() {
   }, [navigation, selectedItem, isDeleting, handleDeleteItem, i18n]);
 
   // Custom renderer for history items with click handling
-  const renderHistoryItem = ({ item }: { item: ResultItem }) => (
-    <TouchableOpacity 
-      onPress={() => handleItemSelect(item)}
-      style={styles.itemContainer}
-      activeOpacity={item.expandedDetails?.analysisResults ? 0.7 : 1}
-    >
-      <View style={styles.itemContent}>
-        {item.imageUrl && (
-          <Image 
-            source={{ uri: item.imageUrl }} 
-            style={styles.thumbnailImage} 
-            resizeMode="cover" 
-          />
-        )}
-        <View style={styles.itemTextContainer}>
-          <Text style={[styles.itemTitle, { color: textColor }]}>{item.title}</Text>
-          {item.details && item.details.map((detail, index) => (
-            <Text key={index} style={[styles.itemDetail, { color: textColor }]}>{detail}</Text>
-          ))}
-          {item.timestamp && (
-            <Text style={[styles.itemTimestamp, { color: textColor }]}>
-              {new Date(item.timestamp).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </Text>
+  const renderHistoryItem = ({ item, index }: { item: ResultItem, index: number }) => {
+    const isLastItem = index === historyItems.length - 1;
+    return (
+      <TouchableOpacity
+        onPress={() => handleItemSelect(item)}
+        style={[
+          styles.itemContainer,
+          {
+            backgroundColor: mixListItemBackgroundColor,
+            borderBottomColor: themedSeparatorColor,
+            borderBottomWidth: isLastItem ? 0 : StyleSheet.hairlineWidth,
+          }
+        ]}
+        activeOpacity={item.expandedDetails?.analysisResults ? 0.7 : 1}
+      >
+        <View style={styles.itemContent}>
+          {item.imageUrl && (
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={styles.thumbnailImage}
+              resizeMode="cover"
+            />
           )}
+          <View style={styles.itemTextContainer}>
+            <Text style={[styles.itemTitle, { color: textColor }]}>{item.title}</Text>
+            {item.details && item.details.map((detail, i) => (
+              <Text key={i} style={[styles.itemDetail, { color: textColor }]}>{detail}</Text>
+            ))}
+            {item.timestamp && (
+              <Text style={[styles.itemTimestamp, { color: textColor }]}>
+                {new Date(item.timestamp).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </Text>
+            )}
+          </View>
+          <Ionicons name="chevron-forward" size={24} color={textColor} style={styles.itemArrow} />
         </View>
-        <Ionicons name="chevron-forward" size={24} color={textColor} style={styles.itemArrow} />
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   let content;
   if (isLoading) {
@@ -232,37 +240,45 @@ export default function BaseAnalyzeHistoryScreen() {
   } else {
     content = (
       <SafeAreaView style={styles.flex}>
-        <FlatList
-          data={historyItems}
-          renderItem={renderHistoryItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.scrollContent}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: textColor }]}>
-                {i18n.t('activity.no_base_analyze_history_found')}
-              </Text>
-            </View>
-          }
-        />
+        <AppleSection >
+          <FlatList
+            data={historyItems}
+            renderItem={renderHistoryItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingVertical: styles.scrollContent.paddingVertical || 8 }}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={[styles.emptyText, { color: textColor }]}>
+                  {i18n.t('activity.no_base_analyze_history_found')}
+                </Text>
+              </View>
+            }
+          />
+        </AppleSection>
       </SafeAreaView>
     );
   }
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: themedBackgroundColor }]}>
+    <ThemedView style={styles.container}>
       <ToastNotification
         message={toastMessage}
         type={toastType}
         visible={toastVisible}
         onDismiss={dismissToast}
       />
-      {content}
+      <View style={styles.contentWrapper}>
+        {content}
+      </View>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  contentWrapper: {
+    flex: 1,
+    margin: 8,
+  },
   flex: {
     flex: 1,
   },
@@ -278,9 +294,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     textAlign: 'center',
-  },
-  scrollView: {
-    flex: 1,
   },
   scrollContent: {
     paddingVertical: 8, // Changed from padding: 16
@@ -325,9 +338,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    backgroundColor: 'transparent',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    backgroundColor: 'transparent', // Base background, dynamic one will override
+    // borderBottomColor is now applied dynamically
+    borderBottomWidth: StyleSheet.hairlineWidth, // Default width, can be overridden to 0 for last item
   },
   itemContent: {
     flexDirection: 'row',
