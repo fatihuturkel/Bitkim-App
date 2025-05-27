@@ -5,7 +5,7 @@ import { PredictionData, UriPrediction, useImagePredictionStore } from '../zusta
 import { useImageSelectionStore } from '../zustand/imageSelectionStore';
 import useUserStore from '../zustand/userStore'; // Import the user store
 
-const API_URL = "https://plant-disease-api-2859171769.europe-west1.run.app/predict/";
+const API_URL = "https://plant-disease-apiv2-2859171769.europe-west1.run.app/predict/";
 
 // New function to fetch a prediction for a single image URI
 const fetchPredictionForUri = async (imageUri: string): Promise<UriPrediction | null> => {

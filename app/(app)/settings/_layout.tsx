@@ -27,7 +27,7 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="security/(signOut)/index" // Corresponds to signout.tsx
         options={{
-          title: i18n.t('auth.signout'),
+          title: i18n.t('auth.sign_out'),
           headerBackButtonDisplayMode: 'generic',
         }}
       />

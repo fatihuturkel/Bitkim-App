@@ -38,7 +38,7 @@ export default function RootLayout() {
           screenOptions={{
             headerTintColor: tintColor, // Set the header tint color globally for this stack
           }}>
-          <Stack.Screen name="index" options={{ title: i18n.t('navigation.home'), headerShown: true }} />
+          <Stack.Screen name="index" options={{ title: i18n.t('navigation.home'), headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
