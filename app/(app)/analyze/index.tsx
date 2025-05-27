@@ -1,8 +1,10 @@
-import AppleStyleCard from "@/components/AppleStyleCard";
 import Button from "@/components/Button";
+import ListItem from "@/components/ListItem"; // Added import
+import AppleSection from "@/components/Section"; // Added import
 import { ThemedView } from "@/components/ThemedView";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useThemeColor } from '@/hooks/useThemeColor';
 import i18n from '@/i18n'; // Add this import
+import { useImagePredictionStore } from '@/zustand/imagePredictionData'; // Add this import
 import { useImageSelectionStore } from '@/zustand/imageSelectionStore'; // Import the store
 import { Ionicons } from '@expo/vector-icons'; // Import an icon set
 import * as ImagePicker from 'expo-image-picker';
@@ -12,9 +14,12 @@ import { Alert, Dimensions, FlatList, Image, Linking, SafeAreaView, ScrollView, 
 
 export default function Analyze() {
   const { selectedImageUris, setSelectedImageUris, addImageUri, clearSelectedImages: clearStoreImages } = useImageSelectionStore();
+  const { predictions: legacyPredictions } = useImagePredictionStore(); // Get predictions
   const [currentIndex, setCurrentIndex] = useState(0); // Add state for current index
   const flatListRef = useRef<FlatList<string>>(null); // Add ref for FlatList
+  const primaryLabelColor = useThemeColor({}, 'label');
   const tertiaryLabelColor = useThemeColor({}, 'tertiaryLabel');
+  const backgroundColor = useThemeColor({}, 'mixListItemBackground');
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -153,29 +158,62 @@ export default function Analyze() {
             </View>
           ) : (
             <>
-              <View style={styles.cardContainer}>
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.camera_roll_card_title')}
-                  onPress={pickImage}
-                />
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.take_photo_card_title')}
+              <AppleSection>
+                <ListItem
+                  label={i18n.t('analyze.take_photo_card_title')}
                   onPress={takePhoto}
+                  icon={<Ionicons name="camera-outline" size={24} />}
+                  isLast={false}
+                  accessoryType="none"
                 />
+                <ListItem
+                  label={i18n.t('analyze.camera_roll_card_title')}
+                  onPress={pickImage}
+                  icon={<Ionicons name="images-outline" size={24} />}
+                  accessoryType="none"
+                  isLast={true}
+                />
+              </AppleSection>
+
+
+              <View style={styles.sectionContainer}>
+                <Text style={[styles.sectionTitle, { color: primaryLabelColor }]}>
+                  {i18n.t('analyze.ai_chat_button')}
+                </Text>
+                <View style={[styles.sectionCard, { backgroundColor: backgroundColor }]}>
+                  <Ionicons name="chatbubble-ellipses-outline" size={40} color={primaryLabelColor} style={{ marginBottom: 10 }} />
+                  <Text style={[styles.sectionDescription, { color: primaryLabelColor }]}>
+                    {i18n.t('analyze.ai_chat_description')}
+                  </Text>
+                  <Button
+                    title={i18n.t('analyze.start_chat_button')}
+                    onPress={() => router.push('/analyze/chat')}
+                    style={styles.sectionButton}
+                  />
+                </View>
               </View>
-              <View style={styles.cardContainer}>
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.legacy_analyzer_button')}
-                  onPress={() => router.push('/analyze/legacyanalyze')}
-                />
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.ai_chat_button')}
-                  onPress={() => router.push('/analyze/chat')}
-                />
+
+              <View style={styles.sectionContainer}>
+                <Text style={[styles.sectionTitle, { color: primaryLabelColor }]}>
+                  {i18n.t('analyze.legacy_analyzer_button')}
+                </Text>
+                <View style={[styles.sectionCard , { backgroundColor: backgroundColor }]}>
+                  <Ionicons name="search" size={40} color={primaryLabelColor} style={{ marginBottom: 10 }} />
+                  <Text style={[styles.sectionDescription, { color: primaryLabelColor }]}>
+                    {i18n.t('analyze.legacy_analyzer_description')}
+                  </Text>
+                  <Button
+                    title={legacyPredictions.length === 0 ? i18n.t('analyze.start_analysis_button') : i18n.t('analyze.view_analysis_button')}
+                    onPress={() => {
+                      if (legacyPredictions.length === 0) {
+                        takePhoto();
+                      } else {
+                        router.push('/analyze/legacyanalyze');
+                      }
+                    }}
+                    style={styles.sectionButton}
+                  />
+                </View>
               </View>
             </>
           )}
@@ -198,10 +236,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     marginBottom: 16,
-  },
-  expandedCard: {
-    flex: 1,
-    marginHorizontal: 8,
   },
   imagePreviewContainer: {
     flex: 1,
@@ -270,5 +304,43 @@ const styles = StyleSheet.create({
     // This style might no longer be needed or can be merged into actionButton
     // marginTop: 8, 
   },
+  sectionContainer: {
+    marginBottom: 32,
+    //paddingHorizontal: 16,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#111',
+  },
+  sectionCard: {
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    elevation: 1,
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: '#444',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  sectionButton: {
+    marginTop: 4,
+    paddingHorizontal: 20,
+  },
+  cardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+    gap: 12,
+  },
+  expandedCard: {
+    flex: 1,
+    aspectRatio: 1,
+    //marginHorizontal: 4,
+  },
+
 });
 
