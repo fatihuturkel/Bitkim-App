@@ -1,19 +1,22 @@
 import Button from '@/components/Button';
-import useUserStore from '@/zustand/userStore';
+import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import i18n from '@/i18n';
 import { router } from 'expo-router';
 import React from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import i18n from '@/i18n';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const colorScheme = useColorScheme();
-  const firstName = useUserStore((state) => state.firstName);
+  const darkGreenColor = useThemeColor({}, 'darkGreen');
+  const primaryLabelColor = useThemeColor({}, 'label');
+  const secondaryLabelColor = useThemeColor({}, 'secondaryLabel');
+  const tintColor = useThemeColor({}, 'tint');
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#fff' }]}>
+    <ThemedView style={styles.container}>
       {/* Başlık */}
       <View style={styles.headerContainer}>
-        <Text style={styles.header}>B İ T K İ M</Text>
+        <Text style={[styles.header, { color: darkGreenColor }]}>B İ T K İ M</Text>
       </View>
 
       {/* Görsel */}
@@ -24,9 +27,8 @@ export default function HomeScreen() {
 
       {/* Hoşgeldin mesajı */}
       <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeMessage2}>
+        <Text style={[styles.welcomeMessage2, { color: primaryLabelColor }]}>
           {i18n.t('home.welcome')}
-          {firstName ? `, ${firstName}` : ''}
         </Text>
       </View>
 
@@ -37,13 +39,13 @@ export default function HomeScreen() {
       />
 
       {/* Kayıt yönlendirme */}
-      <Text style={styles.registerText}>
+      <Text style={[styles.registerText, { color: secondaryLabelColor }]}>
         {i18n.t('home.signup_prompt')}{' '}
-        <Text style={styles.registerLink} onPress={() => router.push('/sign-up')}>
+        <Text style={[styles.registerLink, { color: tintColor }]} onPress={() => router.push('/sign-up')}>
           {i18n.t('auth.signUp')}
         </Text>
       </Text>
-    </SafeAreaView>
+    </ThemedView>
   );
 }
 
@@ -63,7 +65,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#438254',
   },
   usersImage: {
     marginBottom: 40,
@@ -78,16 +79,13 @@ const styles = StyleSheet.create({
   welcomeMessage2: {
     fontWeight: 'bold',
     fontSize: 24,
-    color: '#666',
   },
   registerText: {
     fontSize: 14,
-    color: '#444',
     marginTop: 20,
   },
   registerLink: {
     fontWeight: 'bold',
-    color: '#2e7d32',
     textDecorationLine: 'underline',
   },
 });

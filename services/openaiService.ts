@@ -10,8 +10,8 @@ const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
   defaultHeaders: {
-    "HTTP-Referer": "expodeneme1", // Optional. Site URL for rankings on openrouter.ai.
-    "X-Title": "expodeneme1", // Optional. Site title for rankings on openrouter.ai.
+    "HTTP-Referer": "bitkim", // Optional. Site URL for rankings on openrouter.ai.
+    "X-Title": "bitkim", // Optional. Site title for rankings on openrouter.ai.
   },
 });
 
