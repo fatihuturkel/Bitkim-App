@@ -202,7 +202,7 @@ export default function Login() {
           </AppleSection>
 
           <Text style={[styles.registerText, { color: secondaryLabelColor }]}>
-            {i18n.t('home.signup_prompt')}{' '}
+            {i18n.t('auth.dont_have_account')}{' '}
             <Text style={[styles.registerLink, { color: tintColor }]} onPress={() => router.push('/sign-up')}>
               {i18n.t('auth.signUp')}
             </Text>
