@@ -188,7 +188,12 @@
     "selected_images_count": "Seçili Resimler: %{count}",
     "permission_required_title": "İzin Gerekli",
     "permission_required_message": "Kameraya erişim izni gerekli! İzin vermek için ayarlara gitmek ister misiniz?",
-    "image_load_error": "Resim yüklenemedi"
+    "image_load_error": "Resim yüklenemedi",
+    "ai_chat_description": "Yapay zekâ destekli sohbet ile görsellerinizi analiz edin. Anlık sorular sorabilir, rehberlik alabilirsiniz.",
+    "start_chat_button": "Sohbeti Başlat",
+    "legacy_analyzer_description": "Geleneksel algoritmamız ile yüklediğiniz görselleri analiz edin. Hızlı ve güvenilirdir.",
+    "start_analysis_button": "Analize Başla",
+    "view_analysis_button": "Analizi Görüntüle"
   },
   "activity": {
     "history_section_title": "GEÇMİŞ",

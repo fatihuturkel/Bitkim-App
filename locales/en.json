@@ -187,7 +187,12 @@
     "selected_images_count": "Selected Images: %{count}",
     "permission_required_title": "Permission Required",
     "permission_required_message": "Permission to access camera is required! Do you want to go to settings to grant permission?",
-    "image_load_error": "Image failed to load"
+    "image_load_error": "Image failed to load",
+    "ai_chat_description": "Analyze your visuals with AI-powered chat. Ask instant questions, get guidance.",
+    "start_chat_button": "Start Chat",
+    "legacy_analyzer_description": "Analyze your uploaded images with our traditional algorithm. Fast and reliable.",
+    "start_analysis_button": "Start Analysis",
+    "view_analysis_button": "View Analysis"
   },
   "activity": {
     "history_section_title": "History",

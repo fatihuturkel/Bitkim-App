@@ -56,7 +56,15 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+       name="index"
+       options={{
+         // This tab will be hidden in the tab bar.
+         href: null,
+       }}
+      />
+
+      <Tabs.Screen
+        name="(home)"
         options={{
           title: i18n.t('navigation.home'),
           tabBarIcon: ({ color }) => <TabIcon ionIcon="home-sharp" color={color} />,
