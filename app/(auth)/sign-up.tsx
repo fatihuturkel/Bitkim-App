@@ -69,7 +69,7 @@ export default function SignUp() {
     }
 
     if (!validatePassword(password)) {
-      setPasswordErrorMessage(i18n.t('error.password_length', { length: 6 }));
+      setPasswordErrorMessage(i18n.t('error.password_length'));
       isValid = false;
     } else {
       setPasswordErrorMessage('');
@@ -96,7 +96,29 @@ export default function SignUp() {
       // Navigation is handled by useEffect
     } catch (err: any) {
       console.error("Sign up failed in component:", err);
-      setSignUpError(err.message || i18n.t('auth.signUpFailed'));
+      let displayMessageKey = 'auth.signUpFailed'; // Default
+      if (err.code) {
+        switch (err.code) {
+          case 'auth/email-already-in-use':
+            displayMessageKey = 'error.email_already_in_use';
+            break;
+          case 'auth/invalid-email':
+            displayMessageKey = 'error.invalid_email';
+            break;
+          case 'auth/operation-not-allowed':
+            displayMessageKey = 'error.generic_error'; 
+            break;
+          case 'auth/weak-password':
+            displayMessageKey = 'error.weak_password';
+            break;
+          default:
+            console.warn(`Unhandled auth error code during sign up: ${err.code}. Falling back to default sign up error message.`);
+            break;
+        }
+      } else if (err.message) {
+        console.warn(`Sign up error without specific code (message: ${err.message}). Falling back to default sign up error message.`);
+      }
+      setSignUpError(i18n.t(displayMessageKey));
     }
   };
 

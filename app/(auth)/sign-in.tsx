@@ -12,6 +12,8 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleShe
 export default function Login() {
   // Define state variables for theme colors
   const systemBlue = useThemeColor({}, 'systemBlue');
+  const secondaryLabelColor = useThemeColor({}, 'secondaryLabel'); // Define secondary label color
+  const tintColor = useThemeColor({}, 'tint');
 
   // State for form inputs
   const [email, setEmail] = useState(''); // State for email input
@@ -146,41 +148,41 @@ export default function Login() {
 
           <AppleSection>
             <FormInputField
-            formItems={
-              [
-                {
-                  id: 'email',
-                  value : email,
-                  onChangeText: function (id: string, value: string): void {
-                    setEmail(value);
-                    if (emailErrorMessage) setEmailErrorMessage(''); // Clear error message on input change
-                    if (loginError) setLoginError(''); // Clear general login error
+              formItems={
+                [
+                  {
+                    id: 'email',
+                    value: email,
+                    onChangeText: function (id: string, value: string): void {
+                      setEmail(value);
+                      if (emailErrorMessage) setEmailErrorMessage(''); // Clear error message on input change
+                      if (loginError) setLoginError(''); // Clear general login error
+                    },
+                    placeholder: i18n.t('auth.email_placeholder'),
+                    keyboardType: 'email-address',
+                    maxLength: 50,
+                    multiline: false,
+                    secureTextEntry: false,
+                    showClearButton: true,
+                    errorMessage: emailErrorMessage,
                   },
-                  placeholder: i18n.t('auth.email_placeholder'),
-                  keyboardType: 'email-address',
-                  maxLength: 50,
-                  multiline: false,
-                  secureTextEntry: false,
-                  showClearButton: true,
-                  errorMessage: emailErrorMessage,
-                },
-                {
-                  id: 'password',
-                  value : password,
-                  onChangeText: function (id: string, value: string): void {
-                    setPassword(value);
-                    if (passwordErrorMessage) setPasswordErrorMessage(''); // Clear error message on input change
-                    if (loginError) setLoginError(''); // Clear general login error
-                  },
-                  placeholder: i18n.t('auth.password_placeholder'),
-                  keyboardType: 'default',
-                  maxLength: 50,
-                  multiline: false,
-                  secureTextEntry: true,
-                  showClearButton: true,
-                  errorMessage: passwordErrorMessage,
-                }
-              ]}
+                  {
+                    id: 'password',
+                    value: password,
+                    onChangeText: function (id: string, value: string): void {
+                      setPassword(value);
+                      if (passwordErrorMessage) setPasswordErrorMessage(''); // Clear error message on input change
+                      if (loginError) setLoginError(''); // Clear general login error
+                    },
+                    placeholder: i18n.t('auth.password_placeholder'),
+                    keyboardType: 'default',
+                    maxLength: 50,
+                    multiline: false,
+                    secureTextEntry: true,
+                    showClearButton: true,
+                    errorMessage: passwordErrorMessage,
+                  }
+                ]}
             />
           </AppleSection>
 
@@ -199,12 +201,13 @@ export default function Login() {
             {isLoading && <ActivityIndicator size="small" color={systemBlue} style={styles.loadingIndicator} />}
           </AppleSection>
 
-          <Text
-  style={styles.registerLink}
-  onPress={() => router.push('/sign-up')}
->
-  Hesabınız yok mu? Kayıt olun
-</Text>
+          <Text style={[styles.registerText, { color: secondaryLabelColor }]}>
+            {i18n.t('home.signup_prompt')}{' '}
+            <Text style={[styles.registerLink, { color: tintColor }]} onPress={() => router.push('/sign-up')}>
+              {i18n.t('auth.signUp')}
+            </Text>
+          </Text>
+
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -213,13 +216,6 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  leftButtonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  navIcon: {
-    marginRight: 4, // Keep consistent spacing
-  },
   container: {
     flex: 1,
   },
@@ -242,11 +238,14 @@ const styles = StyleSheet.create({
   loadingIndicator: {
     marginTop: 10, // Add some space above the indicator if needed
   },
-   registerLink: {
-    color: '#007aff',
-    textAlign: 'center',
-    marginTop: 20,
+  registerText: {
     fontSize: 15,
     fontWeight: '500',
+    textAlign: 'center', // Center the text
+  },
+  registerLink: {
+    fontSize: 15,
+    fontWeight: '500',
+    // Removed textAlign and marginTop as they are handled by the container
   },
 });

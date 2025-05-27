@@ -1,9 +1,10 @@
 import Button from '@/components/Button';
 import { ThemedView } from '@/components/ThemedView';
+import { useSession } from '@/context/AuthContext'; // Import useSession
 import { useThemeColor } from '@/hooks/useThemeColor';
 import i18n from '@/i18n';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
@@ -12,11 +13,17 @@ export default function HomeScreen() {
   const secondaryLabelColor = useThemeColor({}, 'secondaryLabel');
   const tintColor = useThemeColor({}, 'tint');
 
+  const { user } = useSession(); // Get user from session
+
+  useEffect(() => {
+    if (user) router.replace('/(app)');
+  }, [user, router]); // Add router to dependency array
+
   return (
     <ThemedView style={styles.container}>
       {/* Başlık */}
       <View style={styles.headerContainer}>
-        <Text style={[styles.header, { color: darkGreenColor }]}>B İ T K İ M</Text>
+        <Text style={[styles.header, { color: darkGreenColor }]}>{i18n.t('home.appName')}</Text>
       </View>
 
       {/* Görsel */}
