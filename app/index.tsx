@@ -26,12 +26,10 @@ export default function HomeScreen() {
         <Text style={[styles.header, { color: darkGreenColor }]}>{i18n.t('home.appName')}</Text>
       </View>
 
-      {/* Görsel */}
-      <Image
-        style={styles.usersImage}
-        source={require('@/assets/images/garden.png')}
-      />
-
+            <ThemedView style={styles.iconStack}>
+               <Image source={require('@/assets/images/leaf.png')} style={styles.overlayIcon} />
+               <Image source={require('@/assets/images/scan (1).png')} style={styles.baseIcon} />
+             </ThemedView>
       {/* Hoşgeldin mesajı */}
       <View style={styles.welcomeContainer}>
         <Text style={[styles.welcomeMessage2, { color: primaryLabelColor }]}>
@@ -94,5 +92,24 @@ const styles = StyleSheet.create({
   registerLink: {
     fontWeight: 'bold',
     textDecorationLine: 'underline',
+  },
+    iconStack: {
+    width: 100,
+    height: 100,
+    marginBottom: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  baseIcon: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  overlayIcon: {
+    position: 'absolute',
+    width: 26,
+    height: 26,
+    resizeMode: 'contain',
   },
 });

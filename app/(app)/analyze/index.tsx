@@ -153,30 +153,59 @@ export default function Analyze() {
             </View>
           ) : (
             <>
-              <View style={styles.cardContainer}>
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.camera_roll_card_title')}
-                  onPress={pickImage}
-                />
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.take_photo_card_title')}
-                  onPress={takePhoto}
-                />
-              </View>
-              <View style={styles.cardContainer}>
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.legacy_analyzer_button')}
-                  onPress={() => router.push('/analyze/legacyanalyze')}
-                />
-                <AppleStyleCard
-                  style={styles.expandedCard}
-                  title={i18n.t('analyze.ai_chat_button')}
-                  onPress={() => router.push('/analyze/chat')}
-                />
-              </View>
+
+<View style={styles.cardRow}>
+  <AppleStyleCard
+    icon={<Ionicons name="camera-outline" size={32} color="#4B5563" />}
+    title={i18n.t('analyze.take_photo_card_title')}
+    onPress={takePhoto}
+    style={styles.expandedCard}
+  />
+  <AppleStyleCard
+    icon={<Ionicons name="images-outline" size={32} color="#4B5563" />}
+    title={i18n.t('analyze.camera_roll_card_title')}
+    onPress={pickImage}
+    style={styles.expandedCard}
+  />
+</View>
+
+
+<View style={styles.sectionContainer}>
+  <Text style={styles.sectionTitle}>
+     {i18n.t('analyze.ai_chat_button')}
+  </Text>
+  <View style={styles.sectionCard}>
+    <Ionicons name="chatbubble-ellipses-outline" size={40} color="#333" style={{ marginBottom: 10 }} />
+    <Text style={styles.sectionDescription}>
+      Yapay zekâ destekli sohbet ile görsellerinizi analiz edin. Anlık sorular sorabilir, rehberlik alabilirsiniz.
+    </Text>
+    <Button
+      title="Sohbeti Başlat"
+      onPress={() => router.push('/analyze/chat')}
+      style={styles.sectionButton}
+    />
+  </View>
+</View>
+
+<View style={styles.sectionContainer}>
+  <Text style={styles.sectionTitle}>
+     {i18n.t('analyze.legacy_analyzer_button')}
+  </Text>
+  <View style={styles.sectionCard}>
+    <Ionicons name="search" size={40} color="#333" style={{ marginBottom: 10 }} />
+    <Text style={styles.sectionDescription}>
+      Geleneksel algoritmamız ile yüklediğiniz görselleri analiz edin. Hızlı, güvenilir ve offline desteklidir.
+    </Text>
+    <Button
+      title="Analize Başla"
+      onPress={() => router.push('/analyze/legacyanalyze')}
+      style={styles.sectionButton}
+    />
+  </View>
+</View>
+
+
+
             </>
           )}
         </ScrollView>
@@ -270,5 +299,44 @@ const styles = StyleSheet.create({
     // This style might no longer be needed or can be merged into actionButton
     // marginTop: 8, 
   },
+sectionContainer: {
+  marginBottom: 32,
+  paddingHorizontal: 16,
+},
+sectionTitle: {
+  fontSize: 18,
+  fontWeight: '600',
+  marginBottom: 12,
+  color: '#111',
+},
+sectionCard: {
+  backgroundColor: '#F9F9F9',
+  borderRadius: 16,
+  padding: 16,
+  alignItems: 'center',
+  elevation: 1,
+},
+sectionDescription: {
+  fontSize: 14,
+  color: '#444',
+  textAlign: 'center',
+  marginBottom: 12,
+},
+sectionButton: {
+  marginTop: 4,
+  paddingHorizontal: 20,
+},
+cardRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 24,
+  gap: 12,
+},
+expandedCard: {
+  flex: 1,
+  aspectRatio: 1,
+  marginHorizontal: 4,
+},
+ 
 });
 

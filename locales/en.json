@@ -200,14 +200,26 @@
     "record_details_title": "Record Details",
     "base_analyze_history_title": "Scan History"
   },
-  "home": {
-    "how_it_works": "How It Works?",
-    "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
-    "step_take_photo": "Take Photo",
-    "step_get_result": "Get Result",
-    "step_treat": "Treat It",
-    "welcome": "Welcome!",
-    "signup_prompt": "For a new experience,",
-    "appName": "B İ T K İ M"
-  }
+ "home": {
+  "how_it_works": "How It Works?",
+  "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
+  "step_take_photo": "Take Photo",
+  "step_get_result": "Get Result",
+  "step_treat": "Treat It",
+  "tips_title": "Care Tips",
+  "tip1": "Check the underside of the leaves once a week.",
+  "tip2": "Schedule watering for early morning or late evening.",
+  "tip3": "Keep the plant in indirect sunlight.",
+  "tip4": "Spray moisturizing mist weekly to prevent dryness.",
+  "tip5": "Ventilate the area to prevent mold.",
+  "common_diseases": "Common Diseases and Solutions",
+  "disease1_title": "Mildew",
+  "disease1_desc": "Yellowing and mold on leaves. Ventilate the plant and use fungicide.",
+  "disease2_title": "Powdery Mildew",
+  "disease2_desc": "White powder on leaves. Cut infected leaves and try baking soda spray.",
+  "disease3_title": "Rust",
+  "disease3_desc": "Orange spots appear. Dry the wet leaves and apply rust fungicide.",
+  "disease4_title": "Leaf Spot",
+  "disease4_desc": "Spotted patches appear. Avoid overwatering, use organic spray."
 }
+  }

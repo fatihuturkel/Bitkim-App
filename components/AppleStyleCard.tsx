@@ -63,11 +63,13 @@ const AppleStyleCard: React.FC<AppleStyleCardProps> = ({
   const themedSystemGray = useThemeColor({}, 'systemGray'); // For text or icons
   const themedSystemGray5 = useThemeColor({}, 'systemGray5'); // For gray button background
   const themedWhiteColor = '#FFFFFF'; // Fixed white for high contrast text
+  const themedSystemGreen = useThemeColor({}, 'systemGreen'); // Default green for tinted backgrounds
   // const themedSecondarySystemFill = useThemeColor({}, 'secondarySystemFill'); // Good for tinted backgrounds
 
 
   // Resolve the card's base color: use propColor if provided, otherwise default to themed systemGreen
-  const baseCardColor = propColor ?? darkGreen; // Default to dark green if no color is provided
+  const baseCardColor = propColor ?? themedSystemGreen;
+ // Default to dark green if no color is provided
 
   // Helper for generating tinted backgrounds (similar to Button.tsx)
   const getTintedBackground = (baseColorHex: string, fallbackColorHex: string, opacity: number): string => {
@@ -196,13 +198,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, // Horizontal padding
     alignItems: 'center', // Center content within the card
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 3, // For Android shadow
     //margin: 10, // Margin around the card
     //minWidth: 100, // Ensure a minimum width
