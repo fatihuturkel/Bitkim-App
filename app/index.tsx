@@ -23,17 +23,18 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       {/* Başlık */}
       <View style={styles.headerContainer}>
-        <Text style={[styles.header, { color: darkGreenColor }]}>{i18n.t('home.appName')}</Text>
+        <Text style={[styles.header, { color: darkGreenColor }]}>{i18n.t('home.app_name')}</Text>
       </View>
 
-            <ThemedView style={styles.iconStack}>
-               <Image source={require('@/assets/images/leaf.png')} style={styles.overlayIcon} />
-               <Image source={require('@/assets/images/scan (1).png')} style={styles.baseIcon} />
-             </ThemedView>
+      <ThemedView style={styles.iconStack}>
+        <Image source={require('@/assets/images/leaf.png')} style={styles.overlayIcon} />
+        <Image source={require('@/assets/images/scan (1).png')} style={styles.baseIcon} />
+      </ThemedView>
+      
       {/* Hoşgeldin mesajı */}
       <View style={styles.welcomeContainer}>
         <Text style={[styles.welcomeMessage2, { color: primaryLabelColor }]}>
-          {i18n.t('home.welcome')}
+          {i18n.t('common.welcome')}
         </Text>
       </View>
 
@@ -45,7 +46,7 @@ export default function HomeScreen() {
 
       {/* Kayıt yönlendirme */}
       <Text style={[styles.registerText, { color: secondaryLabelColor }]}>
-        {i18n.t('home.signup_prompt')}{' '}
+        {i18n.t('auth.dont_have_account')}{' '}
         <Text style={[styles.registerLink, { color: tintColor }]} onPress={() => router.push('/sign-up')}>
           {i18n.t('auth.signUp')}
         </Text>

@@ -11,7 +11,15 @@
     "sending": "Sending...",
     "clear": "Clear",
     "delete": "Delete",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "update": "Update",
+    "updating": "Updating...",
+    "search": "Search",
+    "searching": "Searching..."
   },
   "navigation": {
     "home": "Home",
@@ -24,7 +32,10 @@
     "scan": "Scan",
     "analyze": "Analyze",
     "legacyAnalyze": "Base Analyze",
-    "aichat": "AI Chat"
+    "aichat": "AI Chat",
+    "notifications": "Notifications",
+    "help": "Help",
+    "about": "About"
   },
   "auth": {
     "email_placeholder": "Enter your email address",
@@ -55,7 +66,14 @@
     "email_verification": "Email Verification",
     "change_password": "Change Password",
     "sign_out": "Sign Out",
-    "email_verification_status_section_title": "Email Verification Status"
+    "email_verification_status_section_title": "Email Verification Status",
+    "create_account": "Create Account",
+    "already_have_account": "Already have an account?",
+    "dont_have_account": "Don't have an account?",
+    "remember_me": "Remember Me",
+    "verification_email_sent": "Verification email has been sent to your address",
+    "phone_number": "Phone Number",
+    "phone_placeholder": "Enter your phone number"
   },
   "error": {
     "email_required": "Email is required",
@@ -86,7 +104,13 @@
     "phone_number_invalid_format": "Phone number format is invalid. Expected 10 digits.",
     "update_phone_number": "Failed to update phone number",
     "fetch_data_error": "Failed to fetch history.",
-    "delete_record_failed": "Failed to delete record."
+    "delete_record_failed": "Failed to delete record.",
+    "empty_field": "This field cannot be empty",
+    "server_error": "Server error, please try again later",
+    "unauthorized": "You are not authorized to perform this action",
+    "session_expired": "Your session has expired, please login again",
+    "camera_permission_denied": "Camera permission denied",
+    "gallery_permission_denied": "Gallery access permission denied"
   },
   "security": {
     "title": "Security",
@@ -192,7 +216,14 @@
     "start_chat_button": "Start Chat",
     "legacy_analyzer_description": "Analyze your uploaded images with our traditional algorithm. Fast and reliable.",
     "start_analysis_button": "Start Analysis",
-    "view_analysis_button": "View Analysis"
+    "view_analysis_button": "View Analysis",
+    "scanning": "Scanning...",
+    "retake_photo": "Retake Photo",
+    "upload_image": "Upload Image",
+    "processing_image": "Processing image...",
+    "disease_detected": "Disease Detected",
+    "healthy_plant": "Healthy Plant",
+    "treatment_recommendations": "Treatment Recommendations"
   },
   "activity": {
     "history_section_title": "History",
@@ -206,6 +237,7 @@
     "base_analyze_history_title": "Scan History"
   },
  "home": {
+  "app_name": "BİTKİM",
   "how_it_works": "How It Works?",
   "how_it_works_description": "Follow the steps below to detect the leaf disease and get a solution.",
   "step_take_photo": "Take Photo",

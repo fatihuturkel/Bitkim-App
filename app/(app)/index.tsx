@@ -5,9 +5,9 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 export default function AppIndex() {
   // Function to navigate to the home page
   const goToHome = () => {
-    router.replace('/(app)/(home)'); // Update the path to match your folder structure
+    router.replace('/(app)/(home)',); // Update the path to match your folder structure
   };
-
+[]
   // Run the goToHome function once when component mounts
   useEffect(() => {
     goToHome();
