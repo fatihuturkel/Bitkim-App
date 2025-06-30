@@ -20,7 +20,8 @@
     "update": "Güncelle",
     "updating": "Güncelleniyor...",
     "search": "Ara",
-    "searching": "Aranıyor..."
+    "searching": "Aranıyor...",
+    "welcome_to_BITKIM_with_name": "BİTKİM'e Hoş Geldin, %{name}!"
   },
   "navigation": {
     "home": "Ana Sayfa",

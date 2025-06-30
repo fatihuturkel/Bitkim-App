@@ -9,8 +9,6 @@ import i18n from '@/i18n';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function HomeScreen() {
-  const firstName = useUserStore((state) => state.firstName);
-
   const tipBgColor = useThemeColor({ light: '#E3F2FD', dark: '#1C2A38' }, 'background');
   const diseaseBgColor = useThemeColor({ light: '#F1F8E9', dark: '#1E2A1D' }, 'background');
   const diseaseTitleColor = useThemeColor({ light: '#33691E', dark: '#AED581' }, 'text');

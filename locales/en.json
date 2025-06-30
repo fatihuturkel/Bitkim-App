@@ -19,7 +19,8 @@
     "update": "Update",
     "updating": "Updating...",
     "search": "Search",
-    "searching": "Searching..."
+    "searching": "Searching...",
+    "welcome_to_BITKIM_with_name": "Welcome to BITKIM, %{name}!"
   },
   "navigation": {
     "home": "Home",
