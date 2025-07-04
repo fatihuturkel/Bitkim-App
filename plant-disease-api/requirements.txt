@@ -1,0 +1,11 @@
+FastAPI
+uvicorn
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch    
+torchvision 
+ultralytics  # ultralytics should be installed after torch to only install the CPU version
+python-multipart
+pydantic
+aiofiles
+opencv-python-headless

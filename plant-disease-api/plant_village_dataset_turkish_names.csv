@@ -1,0 +1,39 @@
+0, Apple___Apple_scab, Elma kara lekesi, Venturia inaequalis , Apple scab
+1, Apple___Black_rot, Elma siyah çürüklüğü, Botryosphaeria obtusa , Apple black rot
+2, Apple___Cedar_apple_rust, Elma sedir pası, Gymnosporangium juniperi-virginianae, Apple cedar rust
+3, Apple___healthy, Sağlıklı elma, -,  Healthy apple
+4, Background_without_leaves, Yapraksız arka plan, -, Background without leaves
+5, Blueberry___healthy, Sağlıklı yaban mersini, -,  Healthy blueberry
+6, Cherry___Powdery_mildew, Kiraz küllemesi, Podosphaera clandestina, Cherry powdery mildew
+7, Cherry___healthy, Sağlıklı kiraz, -, Healthy cherry
+8, Corn___Cercospora_leaf_spot Gray_leaf_spot, Mısır gri yaprak lekesi, Cercospora zeae-maydis, Corn cercospora leaf spot
+9, Corn___Common_rust_, Mısır pası, Puccinia sorghi, Corn common rust
+10, Corn___Northern_Leaf_Blight, Mısır kuzey yaprak lekesi, Exserohilum turcicum, Corn northern leaf blight
+11, Corn___healthy, Sağlıklı mısır, -, Healthy corn
+12, Grape___Black_rot, Üzüm siyah çürüklüğü, Guignardia bidwellii, Grape black rot
+13, Grape___Esca_(Black_Measles), Üzüm siyah benek hastalığı, Phaeomoniella aleophilum, Grape esca (black measles)
+14, Grape___Leaf_blight_(Isariopsis_Leaf_Spot), Üzüm yaprak lekesi, Isariopsis griseola, Grape leaf blight (isariopsis leaf spot)
+15, Grape___healthy, Sağlıklı üzüm, -, Healthy grape
+16, Orange___Haunglongbing_(Citrus_greening), Portakal huanglongbing hastalığı, Candidatus Liberibacter spp., Orange haunglongbing (citrus greening)
+17, Peach___Bacterial_spot, Şeftali bakteriyel leke hastalığı, Xanthomonas campestris, Peach bacterial spot
+18, Peach___healthy, Sağlıklı şeftali, -, Healthy peach
+19, Pepper_bell___Bacterial_spot, Biber bakteriyel leke hastalığı, Xanthomonas campestris pv. vesicatoria, Pepper bell bacterial spot
+20, Pepper_bell___healthy, Sağlıklı biber, -, Healthy pepper bell
+21, Potato___Early_blight, Patates erken yaprak yanıklığı, Alternaria solani, Potato early blight
+22, Potato___Late_blight, Patates mildiyösü, Phytophthora infestans, Potato late blight
+23, Potato___healthy, Sağlıklı patates, -, Healthy potato
+24, Raspberry___healthy, Sağlıklı ahududu, -, Healthy raspberry
+25, Soybean___healthy, Sağlıklı soya fasulyesi, -, Healthy soybean
+26, Squash___Powdery_mildew, Kabak küllemesi, Podosphaera xanthii, Healthy squash powdery mildew
+27, Strawberry___Leaf_scorch, Çilek yaprak yanıklığı, Diplocarpon earlianum, Healthy strawberry leaf scorch
+28, Strawberry___healthy, Sağlıklı çilek, -, Healthy strawberry
+29, Tomato___Bacterial_spot, Domates bakteriyel leke hastalığı, Xanthomonas campestris pv. vesicatoria, Healthy tomato bacterial spot
+30, Tomato___Early_blight, Domates erken lekesi, Alternaria solani, Healthy tomato early blight
+31, Tomato___Late_blight, Domates geç lekesi, Phytophthora infestans, Healthy tomato late blight
+32, Tomato___Leaf_Mold, Domates yaprak küfü, Fulvia fulva, Healthy tomato leaf mold
+33, Tomato___Septoria_leaf_spot, Domates septoria yaprak lekesi, Septoria lycopersici, Healthy tomato septoria leaf spot
+34, Tomato___Spider_mites Two-spotted_spider_mite, Domates örümcek akar iki noktalı örümcek akar, Tetranychus urticae, Healthy tomato spider mites two-spotted spider mite
+35, Tomato___Target_Spot, Domates lekesi, Corynespora cassiicola, Healthy tomato target spot
+36, Tomato___Tomato_Yellow_Leaf_Curl_Virus, Domates sarı yaprak kıvrılma virüsü, Tomato yellow leaf curl virus, Healthy tomato yellow leaf curl virus
+37, Tomato___Tomato_mosaic_virus, Domates mozaik virüsü, Tomato mosaic virus, Healthy tomato mosaic virus
+38, Tomato___healthy, Sağlıklı domates, -, Healthy tomato
